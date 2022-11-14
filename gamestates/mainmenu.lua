@@ -6,12 +6,11 @@ function mainmenu:init()
 end
 
 function mainmenu:update(dt)
-	Slab.BeginWindow("mainmenu", {NoOutline = true, BgColor = {0,0,0,0}, X = push:getWidth()/2 - 63, Y = push:getHeight()/2, W = 500, H = 600})
+	Slab.BeginWindow("mainmenu", {NoOutline = true, BgColor = {0,0,0,0}, X = push:getWidth()/2 - 150, Y = push:getHeight()/2 -300, W = 500, H = 600})
 		if Slab.Button("Start a new game", {W = 300, H = 50}) then
-			ButtonPressed = true
+			StartButtonPressed = true
 		end
-
-		if ButtonPressed then 
+		if StartButtonPressed then 
 			
 		end
 	Slab.EndWindow()

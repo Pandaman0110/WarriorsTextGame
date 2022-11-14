@@ -1,15 +1,25 @@
 function love.load(args)
+	--third party libraries
 	lume = require "libraries/lume"
 	class = require "libraries/middleclass"
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	timer = require "libraries/timer"
 	Slab = require "libraries/Slab"
+
+	---misc files
 	require "conf"
-	require "clan"
 	require "functions"
+	require "data"
+
+	--classes
+	require "Cats"
+	require "Clan"
+
+	--gamestates
 	require "gamestates/mainmenu"
 	require "gamestates/startup"
+	require "gamestates/CharacterCreate"
 
 	---------------------
 
@@ -23,13 +33,15 @@ function love.load(args)
 	Slab.Initialize(args)
 
 	gamestate.switch(startup)
-	
 end
 
 function love.keypressed(key)
 	gamestate.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
+	end
+	if key == "l" then
+		print(Prefixes[1])
 	end
 end
 
