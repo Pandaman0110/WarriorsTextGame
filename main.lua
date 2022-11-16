@@ -24,8 +24,8 @@ function love.load(args)
 	---------------------
 
 	local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
-	local windowWidth, windowHeight = love.window.getDesktopDimensions()	
-	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true})
+	windowWidth, windowHeight = love.window.getDesktopDimensions()	
+	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = true, pixelperfect = true, stretched = true})
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	---------------------
@@ -33,6 +33,11 @@ function love.load(args)
 	Slab.Initialize(args)
 
 	gamestate.switch(startup)
+
+	ThunderClan = genClan("ThunderClan")
+	table.insert(ThunderClan:getWarriors(), genRandomCat("Warrior"))
+	table.insert(ThunderClan:getWarriors(), genRandomCat("Warrior"))
+
 end
 
 function love.keypressed(key)
@@ -40,8 +45,21 @@ function love.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
 	end
+	if key == "o" then
+		for i, v in ipairs (ThunderClan:getCats()) do
+			if lume.isarray(v) then
+				for k, b in ipairs (v) do
+					b:printDetails()
+				end
+			else 
+				v:printDetails()
+			end
+		end
+		
+	end
 	if key == "l" then
-		print(Prefixes[1])
+		ThunderClan:getLeader():printDetails()
+		ThunderClan:printMemberDetails()
 	end
 end
 

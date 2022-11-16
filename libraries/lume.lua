@@ -129,16 +129,17 @@ function lume.vector(angle, magnitude)
   return math.cos(angle) * magnitude, math.sin(angle) * magnitude
 end
 
+--both rand functions work better now, auto seed
 
 function lume.random(a, b)
   if not a then a, b = 0, 1 end
   if not b then b = 0 end
-  return a + math.random() * (b - a)
+  return a + love.math.random() * (b - a)
 end
 
 
 function lume.randomchoice(t)
-  return t[math.random(#t)]
+  return t[love.math.random(#t)]
 end
 
 
