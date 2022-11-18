@@ -35,8 +35,7 @@ function love.load(args)
 	gamestate.switch(startup)
 
 	ThunderClan = genClan("ThunderClan")
-	table.insert(ThunderClan:getWarriors(), genRandomCat("Warrior"))
-	table.insert(ThunderClan:getWarriors(), genRandomCat("Warrior"))
+	ThunderClan:setLeader(genRandomCat("Leader"))
 
 end
 
@@ -46,19 +45,9 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 	if key == "o" then
-		for i, v in ipairs (ThunderClan:getCats()) do
-			if lume.isarray(v) then
-				for k, b in ipairs (v) do
-					b:printDetails()
-				end
-			else 
-				v:printDetails()
-			end
-		end
 		
 	end
 	if key == "l" then
-		ThunderClan:getLeader():printDetails()
 		ThunderClan:printMemberDetails()
 	end
 end

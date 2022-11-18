@@ -17,6 +17,9 @@ function Clan:initialize()
 
 	--table of all the cats
 	self.cats = {self.leader, self.deputy, self.medecine_cat, self.senior_warriors, self.warriors, self.apprentices, self.kits}
+	self.cats[1] = self.leader
+	self.cats[2] = self.deputy
+	self.cats[3] = self.medecine_cat
 end
 
 --accessors
@@ -63,14 +66,17 @@ end
 
 function Clan:setLeader(leader)
 	self.leader = leader
+	self.cats[1] = self.leader
 end
 
 function Clan:setDeputy(deputy)
 	self.deputy = deputy
+	self.cats[2] = self.deputy
 end
 
 function Clan:setMedecineCat(medecine_cat)
 	self.medecine_cat = medecine_cat
+	self.cats[3] = self.medecine_cat
 end
 
 function Clan:printDetails()
@@ -85,10 +91,8 @@ function Clan:printDetails()
 end
 
 function Clan:printMemberDetails()
-	print("Nigger")
-	for i, v in ipairs(self.cats) do
-		v:printDetails()
+	for i = 1, 3 do self.cats[i]:printDetails() end
+	for i = 4, 7 do 
+		printTableCats(self.cats[i])
 	end
-	self.leader:printDetails()
-	print(type(self.cats[1]))
 end

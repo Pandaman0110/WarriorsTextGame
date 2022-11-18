@@ -12,8 +12,11 @@ function Cat:initialize()
 	self.eyecolor = eyecolor
 	self.pelt = pelt
 	self.fur_length = fur_length
-	self.dad = dad 
+	self.dad = dad
 	self.mom = mom
+	self.kits = {}
+	self.mentor = mentor 
+	self.apprentice = apprentice
 end
 
 --accessors
@@ -51,6 +54,14 @@ end
 
 function Cat:getParents()
 	return self.dad, self.mom
+end
+
+function Cat:getMentor()
+	return self.mentor
+end
+
+function Cat:getApprentice()
+	return self.mentor
 end
 
 --mutators
@@ -93,6 +104,14 @@ function Cat:setParents(dad, mom)
 	self.mom = mom
 end
 
+function Cat:setMentor(mentor)
+	self.mentor = setmentor 
+end
+
+function Cat:setApprentice(apprentice)
+	self.apprentice = apprentice
+end
+
 -- other functions
 function Cat:printDetails()
 	print("Name: " .. self.name)
@@ -103,7 +122,11 @@ function Cat:printDetails()
 	print("Eyecolor: " .. self.eyecolor)
 	print("Pelt: " .. self.pelt)
 	print("Fur Length: " .. self.fur_length)
+	if self.mentor then print("Mentor " .. self.mentor) end
+	if self.apprentice then print("Apprentice" .. self.apprentice) end
 	print("Dad: " .. self.dad)
 	print("Mom: " .. self.mom)
+	if lume.isarray(self.kits) then print("Kits") printTableCats(self.kits)end
 	print(" ")
 end
+

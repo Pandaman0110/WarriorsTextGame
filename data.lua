@@ -519,7 +519,7 @@ Furlengths = {
 Roles = {
 "Leader",
 "Deputy",
-"Medecine Cat",
+"Medicine Cat",
 "Senior Warrior", 
 "Warrior", 
 "Apprentice", 

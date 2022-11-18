@@ -16,17 +16,17 @@ end
 --generates a random name
 --suffix is optional, if passed it will give the appropriate suffix
 --reference the Prefixes and Suffixes tables in data.lua
-function genName(suffix)
+function genName(role)
 	local prefix = lume.randomchoice(Prefixes)
 	local suffix
 	suffix = lume.randomchoice(Suffixes)
-	if suffix == "Leader" then
+	if role == "Leader" then
 		suffix  = "star"
-	elseif suffix == "Apprentice" then
+	elseif role == "Apprentice" then
 		suffix = "paw"
-	elseif suffix == "Kit" then
+	elseif role == "Kit" then
 		suffix = "kit"
-	elseif suffix == "Clan" then
+	elseif role == "Clan" then
 		suffix = "clan"
 	end
 	local name = prefix .. suffix
@@ -70,7 +70,7 @@ end
 --generates a role ex
 function randExRole()
 	local role = lume.randomchoice(Roles)
-	while role == "Leader" or role == "Deputy" or role == "Medecine Cat" do
+	while role == "Leader" or role == "Deputy" or role == "Medicine Cat" do
 		role = lume.randomchoice(Roles)
 	end
 	return role
@@ -123,12 +123,35 @@ function genParent()
 	return parent 
 end
 
+--prints the table of cats passed in
+function printTableCats(table, names)
+	for i, v in ipairs(table) do
+		if not names then v:printDetails() end
+		if names then print(v:getName()) end
+	end
+end
+
 function genClan(name)
 	local clan = Clan:new()
 	if not name then clan:setName(genName("Clan")) end
 	if name then clan:setName(name) end
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
-	clan:setMedecineCat(genRandomCat("Medecine Cat"))
+	clan:setMedecineCat(genRandomCat("Medicine Cat"))
+	for i = 1, lume.random(2, 4) do
+		table.insert(clan:getSeniorWarriors(), genRandomCat("Senior Warrior"))
+	end
+	for i = 1, lume.random(4, 8) do
+		table.insert(clan:getWarriors(), genRandomCat("Warrior"))
+	end
+	for i = 1, lume.random(2, 4) do
+		table.insert(clan:getApprentices(), genRandomCat("Apprentice"))
+	end
+	for i = 1, lume.random(2, 4) do
+		table.insert(clan:getKits(), genRandomCat("Kit"))
+	end
 	return clan
 end
+
+
+
