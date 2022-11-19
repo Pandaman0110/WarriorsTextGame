@@ -34,9 +34,6 @@ function love.load(args)
 
 	gamestate.switch(startup)
 
-	ThunderClan = genClan("ThunderClan")
-	ThunderClan:setLeader(genRandomCat("Leader"))
-
 end
 
 function love.keypressed(key)
@@ -45,10 +42,14 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 	if key == "o" then
-		
 	end
 	if key == "l" then
-		ThunderClan:printMemberDetails()
+		testClan = genClan()
+		testClan:printDetails()
+		--testClan:printMemberDetails()
+		for i, v in ipairs(testClan:getKits()) do
+			print(v)
+		end
 	end
 end
 

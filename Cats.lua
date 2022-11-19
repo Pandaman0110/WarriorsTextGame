@@ -53,7 +53,7 @@ function Cat:getMom()
 end
 
 function Cat:getParents()
-	return self.dad, self.mom
+	return self.mom, self.dad
 end
 
 function Cat:getMentor()
@@ -62,6 +62,10 @@ end
 
 function Cat:getApprentice()
 	return self.mentor
+end
+
+function Cat:getKits()
+	return self.kits
 end
 
 --mutators
@@ -99,9 +103,9 @@ function Cat:setMom(mom)
 	self.mom = mom
 end
 
-function Cat:setParents(dad, mom)
-	self.dad = dad
+function Cat:setParents(mom, dad)
 	self.mom = mom
+	self.dad = dad
 end
 
 function Cat:setMentor(mentor)
@@ -110,6 +114,10 @@ end
 
 function Cat:setApprentice(apprentice)
 	self.apprentice = apprentice
+end
+
+function Cat:setKits(kits)
+	self.kits = kits
 end
 
 -- other functions
@@ -124,9 +132,9 @@ function Cat:printDetails()
 	print("Fur Length: " .. self.fur_length)
 	if self.mentor then print("Mentor " .. self.mentor) end
 	if self.apprentice then print("Apprentice" .. self.apprentice) end
-	print("Dad: " .. self.dad)
-	print("Mom: " .. self.mom)
-	if lume.isarray(self.kits) then print("Kits") printTableCats(self.kits)end
+	if self.dad then print("Dad: " .. self.dad:getName()) end
+	if self.mom then print("Mom: " .. self.mom:getName()) end
+	if lume.isarray(self.kits) then print("Kits") printTableCats(self.kits, "names") end
 	print(" ")
 end
 

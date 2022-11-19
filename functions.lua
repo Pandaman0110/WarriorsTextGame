@@ -1,6 +1,7 @@
 --generates a random cat
 --role is optional, if set it will set the role to whatever
-function genRandomCat(role)
+--rec is stop stack overflow from infinite recursion, dont touch it unless you know what that means
+function genRandomCat(role, rec)
 	local cat = Cat:new()
 	if not role then cat:setRole(randExRole()) end
 	if role then cat:setRole(role) end
@@ -9,9 +10,36 @@ function genRandomCat(role)
 	cat:setHealth(genHealth(cat:getMoons()))
 	cat:setGender(randGender())
 	cat:setAppearence(randPelt(cat:getGender()), randEyecolor(), randFurlength())
-	cat:setParents(genParent(), genParent())
+	if not rec then cat:setParents(genParent(), genParent()) end
 	return cat
 end
+
+--generates a random clan
+function genClan(name)
+	local clan = Clan:new()
+	if not name then clan:setName(genName("Clan")) end
+	if name then clan:setName(name) end
+	clan:setLeader(genRandomCat("Leader"))
+	clan:setDeputy(genRandomCat("Deputy"))
+	clan:setMedecineCat(genRandomCat("Medicine Cat"))
+	for i = 1, lume.round(lume.random(2, 4)) do
+		clan:insertSeniorWarrior(genRandomCat("Senior Warrior"))
+	end
+	for i = 1, lume.round(lume.random(4, 8)) do
+		clan:insertWarrior(genRandomCat("Warrior"))
+	end
+	for i = 1, lume.round(lume.random(2, 4)) do
+		clan:insertApprentice(genRandomCat("Apprentice"))
+	end
+	for i = 1, lume.round(lume.random(1, 2)) do
+		local kits  = genKits(clan:grabRandomCat({1, 2, 4, 5}), clan:grabRandomCat({1, 2, 4, 5}))
+		for i, v in ipairs (kits) do
+			clan:insertKit(v)
+		end
+	end
+	return clan
+end
+
 
 --generates a random name
 --suffix is optional, if passed it will give the appropriate suffix
@@ -19,7 +47,6 @@ end
 function genName(role)
 	local prefix = lume.randomchoice(Prefixes)
 	local suffix
-	suffix = lume.randomchoice(Suffixes)
 	if role == "Leader" then
 		suffix  = "star"
 	elseif role == "Apprentice" then
@@ -28,6 +55,8 @@ function genName(role)
 		suffix = "kit"
 	elseif role == "Clan" then
 		suffix = "clan"
+	else 
+		suffix = lume.randomchoice(Suffixes)
 	end
 	local name = prefix .. suffix
 	return name
@@ -115,10 +144,11 @@ function genParent()
 	local parent
 	local unknown = lume.round(lume.random(0, 1))
 	if unknown == 1 then
-		parent = "Unknown"
+		parent = genRandomCat("cum", true)
+		parent:setName("Unknown")
 	end
 	if unknown == 0 then 
-		parent = genName()
+		parent = genRandomCat("cum", true)	
 	end
 	return parent 
 end
@@ -131,27 +161,20 @@ function printTableCats(table, names)
 	end
 end
 
-function genClan(name)
-	local clan = Clan:new()
-	if not name then clan:setName(genName("Clan")) end
-	if name then clan:setName(name) end
-	clan:setLeader(genRandomCat("Leader"))
-	clan:setDeputy(genRandomCat("Deputy"))
-	clan:setMedecineCat(genRandomCat("Medicine Cat"))
-	for i = 1, lume.random(2, 4) do
-		table.insert(clan:getSeniorWarriors(), genRandomCat("Senior Warrior"))
+--generates a litter of cats for two cats
+--pass the actual mom and dad cat objects in
+function genKits(mom, dad)
+	local kits = {}
+	for i = 1, lume.round(lume.random(1, 4)) do
+		local cat = genRandomCat("Kit")
+		cat:setParents(mom, dad)
+		table.insert(kits, cat)
 	end
-	for i = 1, lume.random(4, 8) do
-		table.insert(clan:getWarriors(), genRandomCat("Warrior"))
-	end
-	for i = 1, lume.random(2, 4) do
-		table.insert(clan:getApprentices(), genRandomCat("Apprentice"))
-	end
-	for i = 1, lume.random(2, 4) do
-		table.insert(clan:getKits(), genRandomCat("Kit"))
-	end
-	return clan
+	mom:setKits(kits)
+	dad:setKits(kits)
+	return kits
 end
+
 
 
 

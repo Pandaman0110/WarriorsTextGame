@@ -1,4 +1,24 @@
---
+function genClan(name)
+  local clan = Clan:new()
+  if not name then clan:setName(genName("Clan")) end
+  if name then clan:setName(name) end
+  clan:setLeader(genRandomCat("Leader"))
+  clan:setDeputy(genRandomCat("Deputy"))
+  clan:setMedecineCat(genRandomCat("Medicine Cat"))
+  for i = 1, lume.random(2, 4) do
+    table.insert(clan:getSeniorWarriors(), genRandomCat("Senior Warrior"))
+  end
+  for i = 1, lume.random(4, 8) do
+    table.insert(clan:getWarriors(), genRandomCat("Warrior"))
+  end
+  for i = 1, lume.random(2, 4) do
+    table.insert(clan:getApprentices(), genRandomCat("Apprentice"))
+  end
+  for i = 1, lume.random(2, 4) do
+    table.insert(clan:getKits(), genRandomCat("Kit"))
+  end
+  return clan
+end--
 -- lume
 --
 -- Copyright (c) 2020 rxi
@@ -138,7 +158,7 @@ function lume.random(a, b)
 end
 
 
-function lume.randomchoice(t)
+function lume.randomchoice(t, limit)
   return t[love.math.random(#t)]
 end
 

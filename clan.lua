@@ -56,6 +56,9 @@ function Clan:getKits()
 end
 
 function Clan:getCats()
+	self.cats[1] = self.leader
+	self.cats[2] = self.deputy
+	self.cats[3] = self.medecine_cat
 	return self.cats
 end
 
@@ -79,14 +82,46 @@ function Clan:setMedecineCat(medecine_cat)
 	self.cats[3] = self.medecine_cat
 end
 
+function Clan:insertSeniorWarrior(cat)
+	table.insert(self.senior_warriors, cat)
+end
+
+function Clan:insertWarrior(cat)
+	table.insert(self.warriors, cat)
+end
+
+function Clan:insertApprentice(cat)
+	table.insert(self.apprentices, cat)
+end
+
+function Clan:insertKit(cat)
+	table.insert(self.kits, cat)
+end
+
+--grabs a random cat from the clan
+--t is a table that contains indexs to cats you want
+--for example if u only want to choose from warriors you should pass {5}
+function Clan:grabRandomCat(t)
+	local cat
+	if not t then index = lume.round(lume.random(1, 7)) end
+	if t then index = lume.randomchoice(t) end
+	if index <= 3 then
+		cat = self.cats[index]
+	elseif index >= 4 then
+		cat = lume.randomchoice(self.cats[index])
+	end
+	return cat
+end
+
 function Clan:printDetails()
+	print (self.name)
 	print ("The leader is " .. self.leader:getName())
 	print ("The deputy is " .. self.deputy:getName())
-	print ("The medecine cat is " .. self.medecine_cat:getName())
-	print ("There are " .. #self.senior_warriors .. " Senior Warriors")
-	print ("There are " .. #self.warriors .. " Warriors")
-	print ("There are " .. #self.apprentices .. " Apprentices")
-	print ("There are " .. #self.kits .. " Kits")
+	print ("The medicine cat is " .. self.medecine_cat:getName())
+	print ("There are " .. #self.senior_warriors .. " senior warriors")
+	print ("There are " .. #self.warriors .. " warriors")
+	print ("There are " .. #self.apprentices .. " apprentices")
+	print ("There are " .. #self.kits .. " kits")
 	print (" ")
 end
 
