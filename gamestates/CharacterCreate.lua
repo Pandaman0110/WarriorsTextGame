@@ -1,13 +1,13 @@
-CharacterCreate = {}
+characterCreate = {}
 
-function CharacterCreate:init()
-
-end
-
-function CharacterCreate:update(dt)
+function characterCreate:init()
 
 end
 
-function CharacterCreate:draw()
+function characterCreate:update(dt)
+	
+end
+
+function characterCreate:draw()
 
 end

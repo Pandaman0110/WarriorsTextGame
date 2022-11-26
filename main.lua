@@ -5,12 +5,12 @@ function love.load(args)
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	timer = require "libraries/timer"
-	Slab = require "libraries/Slab"
 
 	---misc files
 	require "conf"
 	require "functions"
 	require "data"
+	require "buttons"
 
 	--classes
 	require "Cats"
@@ -25,12 +25,11 @@ function love.load(args)
 
 	local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()	
-	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = true, pixelperfect = true, stretched = true})
+	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = false, pixelperfect = true, stretched = true})
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	---------------------
 
-	Slab.Initialize(args)
 
 	gamestate.switch(startup)
 
@@ -45,17 +44,12 @@ function love.keypressed(key)
 	end
 	if key == "l" then
 		testClan = genClan()
-		testClan:printDetails()
-		--testClan:printMemberDetails()
-		for i, v in ipairs(testClan:getKits()) do
-			print(v)
-		end
+		testClan:printMemberDetails()
 	end
 end
 
 function love.update(dt)
 	timer.update(dt)
-	Slab.Update(dt)
 	gamestate.update(dt)
 end
 
@@ -63,7 +57,6 @@ end
 function love.draw()
 	push:start()
 		gamestate.draw()
-		Slab.Draw()
 	push:finish()
 end
 

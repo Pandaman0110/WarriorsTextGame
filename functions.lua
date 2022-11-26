@@ -29,7 +29,10 @@ function genClan(name)
 		clan:insertWarrior(genRandomCat("Warrior"))
 	end
 	for i = 1, lume.round(lume.random(2, 4)) do
-		clan:insertApprentice(genRandomCat("Apprentice"))
+		local apprentice = genRandomCat("Apprentice")
+		apprenticeCat(apprentice, clan:grabRandomCat({2, 4, 5}))
+		print(apprentice:getMentor())
+		clan:insertApprentice(apprentice)
 	end
 	for i = 1, lume.round(lume.random(1, 2)) do
 		local kits  = genKits(clan:grabRandomCat({1, 2, 4, 5}), clan:grabRandomCat({1, 2, 4, 5}))
@@ -161,6 +164,16 @@ function printTableCats(table, names)
 	end
 end
 
+function mateCats(mom, dad)
+	mom:setMate(dad)
+	dad:setMate(mom)
+end
+
+function apprenticeCat(apprentice, mentor)
+	apprentice:setMentor(mentor)
+	mentor:setApprentice(apprentice)
+end
+
 --generates a litter of cats for two cats
 --pass the actual mom and dad cat objects in
 function genKits(mom, dad)
@@ -172,6 +185,7 @@ function genKits(mom, dad)
 	end
 	mom:setKits(kits)
 	dad:setKits(kits)
+	if mom:getMate() ~= dad then mateCats(mom, dad) end
 	return kits
 end
 
