@@ -1,13 +1,41 @@
-function imageCenterX(image) 
-	local image_width = image:getWidth()
-	local game_width = push:getWidth()
-	local x = game_width / 2 - image_width / 2
-	return x
+Button = class("Button")
+
+
+function Button:initialize(x, y, image)
+	self.image = image
+	self.x = x
+	self.y = y
+	self.width = self.image:getWidth()
+	self.height = self.image:getHeight()
+
 end
 
-function imageCenterY(image) 
-	local image_height = image:getHeight()
-	local game_height = push:getHeight()
-	local y = game_height / 2 - image_height / 2
-	return y 
+function Button:update(dt)
+	local mx, my = love.mouse.getPosition()
+
+
 end
+
+function Button:draw()
+	love.graphics.draw(self.image, self.x, self.y)
+end 
+
+function Button:getX()
+	return self.x 
+end
+
+function Button:getY()
+	return self.y 
+end
+
+function Button:getWidth()
+	return self.width
+end
+
+function Button:getHeight()
+	return self.height
+end
+
+
+
+

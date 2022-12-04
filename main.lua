@@ -8,9 +8,10 @@ function love.load(args)
 
 	---misc files
 	require "conf"
-	require "functions"
+	require "catfunctions"
 	require "data"
 	require "buttons"
+	require "functions"
 
 	--classes
 	require "Cats"
@@ -46,6 +47,10 @@ function love.keypressed(key)
 		testClan = genClan()
 		testClan:printMemberDetails()
 	end
+end
+
+function love.mousepressed(x, y, button)
+	gamestate.mousepressed(x, y, button)
 end
 
 function love.update(dt)
