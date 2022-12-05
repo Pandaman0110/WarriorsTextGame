@@ -5,6 +5,7 @@ function love.load(args)
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	timer = require "libraries/timer"
+	utf8 = require("utf8")
 
 	---misc files
 	require "conf"
@@ -20,7 +21,7 @@ function love.load(args)
 	--gamestates
 	require "gamestates/mainmenu"
 	require "gamestates/startup"
-	require "gamestates/CharacterCreate"
+	require "gamestates/charactercreate"
 
 	---------------------
 
@@ -30,8 +31,8 @@ function love.load(args)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	---------------------
-
-
+	
+	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
 
 end
@@ -41,12 +42,10 @@ function love.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
 	end
-	if key == "o" then
-	end
-	if key == "l" then
-		testClan = genClan()
-		testClan:printMemberDetails()
-	end
+end
+
+function love.textinput(t)
+	gamestate.textinput(t)
 end
 
 function love.mousepressed(x, y, button)

@@ -20,5 +20,5 @@ end
 function mouseInside(mouseX, mouseY, rectX, rectY, rectWidth, rectHeight)
 	if mouseX > rectX and mouseX < (rectX + rectWidth) and mouseY > rectY and mouseY < (rectY + rectHeight) then
 		return true
-	end
+	else return false end
 end
