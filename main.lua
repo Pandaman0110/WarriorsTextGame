@@ -25,7 +25,7 @@ function love.load(args)
 
 	---------------------
 
-	local gameWidth, gameHeight = 1920, 1080 --fixed game resolution
+	local gameWidth, gameHeight = 640, 480 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()	
 	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = false, pixelperfect = true, stretched = true})
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -60,6 +60,7 @@ end
 
 function love.draw()
 	push:start()
+		love.graphics.setDefaultFilter("nearest", "nearest")
 		gamestate.draw()
 	push:finish()
 end
