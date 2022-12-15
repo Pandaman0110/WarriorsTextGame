@@ -22,6 +22,7 @@ function love.load(args)
 	require "gamestates/mainmenu"
 	require "gamestates/startup"
 	require "gamestates/charactercreate"
+	require "gamestates/chooseclan"
 
 	---------------------
 
