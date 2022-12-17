@@ -13,7 +13,6 @@ function Button:initialize(x, y, image)
 end
 
 function Button:update(dt)
-
 end
 
 function Button:mouseInside(x, y)
@@ -38,6 +37,10 @@ end
 
 function Button:getHeight()
 	return self.height
+end
+
+function Button:getImage()
+	return self.image
 end
 
 --TextBox class, inherited from button
