@@ -18,7 +18,7 @@ end
 function genClan(name)
 	local clan = Clan:new()
 	if not name then clan:setName(genName("Clan")) end
-	if name then clan:setName(name) end
+	if name then clan:setName(genName("Clan", name)) end
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
 	clan:setMedecineCat(genRandomCat("Medicine Cat"))
@@ -31,7 +31,6 @@ function genClan(name)
 	for i = 1, lume.round(lume.random(2, 4)) do
 		local apprentice = genRandomCat("Apprentice")
 		apprenticeCat(apprentice, clan:grabRandomCat({2, 4, 5}))
-		print(apprentice:getMentor())
 		clan:insertApprentice(apprentice)
 	end
 	for i = 1, lume.round(lume.random(1, 2)) do
@@ -47,8 +46,10 @@ end
 --generates a random name
 --suffix is optional, if passed it will give the appropriate suffix
 --reference the Prefixes and Suffixes tables in data.lua
-function genName(role)
-	local prefix = lume.randomchoice(Prefixes)
+function genName(role, name)
+	local prefix
+	if not name then prefix = lume.randomchoice(Prefixes) end
+	if name then prefix = name end
 	local suffix
 	if role == "Leader" then
 		suffix  = "star"
@@ -61,8 +62,8 @@ function genName(role)
 	else 
 		suffix = lume.randomchoice(Suffixes)
 	end
-	local name = prefix .. suffix
-	return name
+	local _name = prefix .. suffix
+	return _name
 end
 
 --moon is required, generates a random health value based on the age of the cat

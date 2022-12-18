@@ -14,7 +14,15 @@ function startup:keypressed(key)
 end
 
 function startup:draw()
-	love.graphics.print('"The only true borders lie between day and night, life and death." - Brambleberry', (push:getWidth() / 2) - 250, push:getHeight() / 2, 0)
-	love.graphics.print("Press space to continue", (push:getWidth() / 2) - 75, (push:getHeight() / 2) + 200, 0)
+	love.graphics.setFont(EBG_I_Large)
+
+	love.graphics.pop()
+		love.graphics.print('"The only true borders lie between day and night, life and death." - Brambleberry', 320 / xScale, 480 / yScale)
+		love.graphics.print("Press space to continue", 800 / xScale, 800 / yScale)
+	love.graphics.push()
+	
+	--love.graphics.print('"The only true borders lie between day and night, life and death." - Brambleberry', 320 / 3, 480 /3)
+	--love.graphics.print("Press space to continue", 800 / 3, 800 / 3)
+	
 end
 

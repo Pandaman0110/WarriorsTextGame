@@ -26,10 +26,19 @@ function love.load(args)
 
 	---------------------
 
+	EBG_R = love.graphics.newFont("fonts/EBG_R.ttf", 16)
+	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 40)
+
+	EBG_R:setFilter("nearest", "nearest")
+	EBG_I_Large:setFilter("nearest", "nearest")
+
 	local gameWidth, gameHeight = 640, 480 --fixed game resolution
-	windowWidth, windowHeight = love.window.getDesktopDimensions()	
+	windowWidth, windowHeight = love.window.getDesktopDimensions()
 	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = false, pixelperfect = true, stretched = true})
 	love.graphics.setDefaultFilter("nearest", "nearest")
+
+	xScale = 1920 / windowWidth
+	yScale = 1080 / windowHeight
 
 	---------------------
 	

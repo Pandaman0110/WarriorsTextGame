@@ -1,16 +1,25 @@
 charactercreate = {}
 
 function charactercreate:init()
+	self.background = love.graphics.newImage("Images/BrownBackground.png")
+
 	--buttons
 	self.buttons = {}
-	local nextButtonImage = love.graphics.newImage("Images/Next.png")
-	self.nextBox = Button:new(imageCenterX(nextButtonImage) + 16, imageCenterY(nextButtonImage) +  150, nextButtonImage)
-	table.insert(self.buttons, self.nextBox)
-	
+
+	local _next = love.graphics.newImage("Images/next.png")
+	self.next_button = Button:new(480, 400, _next)
+
+	table.insert(self.buttons, self.next_button)
+end
+
+function charactercreate:enter(previous, clan)
+	self.playerClanName = clan
+	self.playerClan = genClan(self.playerClanName)
+	self.playerClan:printDetails()
 end
 
 function charactercreate:update(dt)
-	
+
 end
 
 
@@ -20,7 +29,7 @@ function charactercreate:mousepressed(x, y, button)
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
-				if _button == self.nextBox then gamestate.switch() end
+				if _button == self.next_button then gamestate.switch() end
 			end
 		end
 	end
@@ -28,6 +37,8 @@ end
 
 
 function charactercreate:draw()
+	love.graphics.draw(self.background, 0, 0)
+
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
