@@ -33,14 +33,24 @@ function charactercreate:mousepressed(x, y, button)
 			end
 		end
 	end
+
+	self.playerClan:getLeader():getName()
 end
 
 
 function charactercreate:draw()
+	clear()
 	love.graphics.draw(self.background, 0, 0)
 
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
 
+	love.graphics.setFont(EBG_R)
+	
+
+	love.graphics.pop()
+		love.graphics.setColor(110/255, 38/255, 14/255)
+		love.graphics.print(self.playerClan:getLeader():getName(), 30 / xScale, 30 / yScale)
+	love.graphics.push()
 end

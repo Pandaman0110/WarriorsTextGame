@@ -22,3 +22,7 @@ function mouseInside(mouseX, mouseY, rectX, rectY, rectWidth, rectHeight)
 		return true
 	else return false end
 end
+
+function clear()
+	love.graphics.setColor(0,0,0,0)
+end
