@@ -17,6 +17,7 @@ end
 --generates a random clan
 function genClan(name)
 	local clan = Clan:new()
+	local usedNames = {}
 	if not name then clan:setName(genName("Clan")) end
 	if name then clan:setName(genName("Clan", name)) end
 	clan:setLeader(genRandomCat("Leader"))
@@ -34,7 +35,11 @@ function genClan(name)
 		clan:insertApprentice(apprentice)
 	end
 	for i = 1, lume.round(lume.random(1, 2)) do
-		local kits  = genKits(clan:grabRandomCat({1, 2, 4, 5}), clan:grabRandomCat({1, 2, 4, 5}))
+		local mom = clan:grabRandomCat({1, 2, 4, 5})
+		local dad = clan:grabRandomCat({1, 2, 4, 5})
+		while mom:getGender() ~= "Female" or mom:hasKits() do mom = clan:grabRandomCat({1, 2, 4, 5}) end
+		while dad:getGender() ~= "Male" or dad:hasKits() do dad = clan:grabRandomCat({1, 2, 4, 5}) end
+		local kits = genKits(mom, dad)
 		for i, v in ipairs (kits) do
 			clan:insertKit(v)
 		end
@@ -58,7 +63,7 @@ function genName(role, name)
 	elseif role == "Kit" then
 		suffix = "kit"
 	elseif role == "Clan" then
-		suffix = "clan"
+		suffix = "Clan"
 	else 
 		suffix = lume.randomchoice(Suffixes)
 	end
@@ -82,11 +87,11 @@ end
 function randMoons(role)
 	local moons
 	if role == "Warrior" then
-		moons = lume.random(12, 36)
+		moons = lume.random(13, 36)
 	elseif role == "Apprentice" then
 		moons = lume.random(6, 12)
 	elseif role == "Kit" then
-		moons = lume.random(0, 6)
+		moons = lume.random(0, 5)
 	else
 		moons = lume.random(36, 180)
 	end
@@ -179,9 +184,11 @@ end
 --pass the actual mom and dad cat objects in
 function genKits(mom, dad)
 	local kits = {}
-	for i = 1, lume.round(lume.random(1, 4)) do
+	local moons = randMoons("Kit")
+	for i = 1, lume.round(lume.weightedchoice({[1] = 1, [2] = 2, [3] = 2})) do
 		local cat = genRandomCat("Kit")
 		cat:setParents(mom, dad)
+		cat:setMoons(moons)
 		table.insert(kits, cat)
 	end
 	mom:setKits(kits)
@@ -189,7 +196,5 @@ function genKits(mom, dad)
 	if mom:getMate() ~= dad then mateCats(mom, dad) end
 	return kits
 end
-
-
 
 

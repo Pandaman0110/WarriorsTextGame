@@ -525,3 +525,7 @@ Roles = {
 "Apprentice", 
 "Kit"
 }
+
+CatImages = {
+	love.graphics.newImage("catimage/catIdle.png"),
+}

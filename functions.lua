@@ -4,14 +4,14 @@
 --these are for putting buttons in the middle of the screen, not the center coordiantes of the image
 function imageCenterX(image) 
 	local image_width = image:getWidth()
-	local game_width = push:getWidth()
+	local game_width = Push:getWidth()
 	local x = game_width / 2 - image_width / 2
 	return x
 end
 
 function imageCenterY(image) 
 	local image_height = image:getHeight()
-	local game_height = push:getHeight()
+	local game_height = Push:getHeight()
 	local y = game_height / 2 - image_height / 2
 	return y 
 end
@@ -24,5 +24,17 @@ function mouseInside(mouseX, mouseY, rectX, rectY, rectWidth, rectHeight)
 end
 
 function clear()
-	love.graphics.setColor(0,0,0,0)
+	love.graphics.setColor(255,255,255,1)
+end
+
+function textSettings()
+	love.graphics.setColor(58/255, 31/255, 12/255)
+end
+
+function scX()
+	return 1/xScale
+end
+
+function scY()
+	return 1/yScale
 end

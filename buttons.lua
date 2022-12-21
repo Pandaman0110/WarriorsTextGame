@@ -4,19 +4,26 @@
 
 Button = class("Button")
 
-function Button:initialize(x, y, image)
+function Button:initialize(x, y, image, w, h)
 	self.image = image
 	self.x = x
 	self.y = y
-	self.width = self.image:getWidth()
-	self.height = self.image:getHeight()
+	self.width = 0
+	self.height = 0
+	if image then 
+		self.width = self.image:getWidth()
+		self.height = self.image:getHeight()
+	elseif not image then
+		self.width = w
+		self.height = h
+	end
 end
 
 function Button:update(dt)
 end
 
-function Button:mouseInside(x, y)
-	return mouseInside(x, y, self.x, self.y, self.width, self.height)
+function Button:mouseInside(mx, my)
+	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
 end
 
 function Button:draw()
@@ -48,7 +55,7 @@ end
 TextBox = class("TextBox", Button)
 
 function TextBox:initialize(x, y, image)
-	Button:initialize(x, y, image) --calls parents constructor, : operator Button.initialize(self, x, y, image)
+	Button.initialize(self, x, y, image) --calls parents constructor, : operator Button.initialize(self, x, y, image)
 	self.active = false
 	self.text = ""
 end
@@ -89,4 +96,43 @@ end
 --when u just wanna set the text
 function TextBox:setText(text)
 	self.text = text
+end
+
+TextButton = class("TextButton", button)
+
+function TextButton:initialize(x, y, image)
+	Button.initialize(self, x, y, image)
+	self.text = ""
+end
+
+function TextButton:draw()
+	love.graphics.draw(self.image, self.x, self.y)
+	love.graphics.print(self.text)
+end
+
+function TextButton:getText()
+	return self.text
+end
+
+function TextButton:setText(text)
+	self.text = text
+end
+
+InvisibleButton = class("InvisibleButton", button)
+
+function InvisibleButton:initialize(x, y, w, h, object)
+	Button.initialize(self, x, y, nil, w, h)
+	self.object = object
+end
+
+function InvisibleButton:getObject()
+	return self.object
+end
+
+function InvisibleButton:setObejct(object)
+	self.object = object
+end
+
+function InvisibleButton:mouseInside(mx, my)
+	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
 end

@@ -1,8 +1,10 @@
 function love.load(args)
+	love.graphics.setDefaultFilter("nearest", "nearest")
+
 	--third party libraries
 	lume = require "libraries/lume"
 	class = require "libraries/middleclass"
-	push = require "libraries/push"
+	Push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	timer = require "libraries/timer"
 	utf8 = require("utf8")
@@ -13,6 +15,7 @@ function love.load(args)
 	require "data"
 	require "buttons"
 	require "functions"
+	require "saving"
 
 	--classes
 	require "Cats"
@@ -23,31 +26,36 @@ function love.load(args)
 	require "gamestates/startup"
 	require "gamestates/charactercreate"
 	require "gamestates/chooseclan"
+	require "gamestates/options"
 
 	---------------------
 
-	local gameWidth, gameHeight = 640, 480 --fixed game resolution
+	local gameWidth, gameHeight = 640, 360 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()
-	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, canvas = false, pixelperfect = true, stretched = true})
-	love.graphics.setDefaultFilter("nearest", "nearest")
+	Push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true})
 
-	xScale = 1920 / windowWidth
-	yScale = 1080 / windowHeight
+	xScale = windowWidth / 640
+	yScale = windowHeight / 360
 
 	---------------------
-
-	EBG_R = love.graphics.newFont("fonts/EBG_R.ttf", 30 / xScale)
-	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 40 / xScale)
-
-	EBG_R:setFilter("nearest", "nearest")
-	EBG_I_Large:setFilter("nearest", "nearest")
 	
+	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale)
+	EBG_R_10:setFilter("nearest", "nearest")
+
+	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale)
+	EBG_R_20:setFilter("nearest", "nearest")
+
+	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale)
+	EBG_I_Large:setFilter("nearest", "nearest")
 
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
 
+	local testClan = genClan()
+
+	saveCat(testClan:getLeader())
 end
 
 function love.keypressed(key)
@@ -72,9 +80,9 @@ end
 
 
 function love.draw()
-	push:start()
+	Push:start()
 		love.graphics.setDefaultFilter("nearest", "nearest")
 		gamestate.draw()
-	push:finish()
+	Push:finish()
 end
 

@@ -1,9 +1,10 @@
---This file contains the base class for all cats, "Cat",  and all subclasses, Leader, Deputy, Elder, Warrior, Apprentice, Kit, and Queen
+--This file contains the base class for all cats, "Cat"
 
 Cat = class("Cat")
 
 function Cat:initialize()
-	--self.cat_image =  love.graphics.newImage("")
+	--refer to data, easy saving
+	self.cat_image = 1
 	self.name = name
 	self.role = role
 	self.gender = gender
@@ -20,7 +21,19 @@ function Cat:initialize()
 	self.apprentice = apprentice
 end
 
+function Cat:draw(x, y)
+	love.graphics.draw(CatImages[self.cat_image], x, y)
+end
+
 --accessors
+function Cat:getImage()
+	return CatImages[self.cat_image]
+end
+
+function Cat:getImageNum()
+	return self.cat_image
+end
+
 function Cat:getName()
 	return self.name
 end
@@ -43,6 +56,18 @@ end
 
 function Cat:getAppearence()
 	return self.eyecolor, self.pelt, self.fur_length
+end
+
+function Cat:getEyecolor()
+	return self.eyecolor
+end
+
+function Cat:getPelt()
+	return self.pelt
+end
+
+function Cat:getFurlength()
+	return self.fur_length
 end
 
 function Cat:getDad()
@@ -100,6 +125,18 @@ function Cat:setAppearence(eyecolor, pelt, fur_length)
 	self.fur_length = fur_length
 end
 
+function Cat:setEyecolor(eyecolor)
+	self.eyecolor = eyecolor
+end
+
+function Cat:setPelt(pelt)
+	self.pelt = pelt
+end
+
+function Cat:setFurlength(fur_length)
+	self.fur_length = fur_length
+end
+
 function Cat:setDad(dad)
 	self.dad = dad 
 end
@@ -130,6 +167,14 @@ function Cat:setKits(kits)
 end
 
 -- other functions
+function Cat:hasKits()
+	local hasKits
+	if next(self.kits) == nil then
+		hasKits = false
+	else hasKits = true end
+	return hasKits
+end
+
 function Cat:printDetails()
 	print("Name: " .. self.name)
 	print("Role: " .. self.role)

@@ -21,7 +21,7 @@ local push = {
     pixelperfect = false,
     highdpi = true,
     canvas = true,
-    stencil = true
+    stretched = true
   }
   
 }
@@ -271,6 +271,11 @@ function push:resize(w, h)
   if self._highdpi then w, h = w / self._PSCALE, h / self._PSCALE end
   self._RWIDTH = w
   self._RHEIGHT = h
+  self:initValues()
+end
+
+function push:switchStretched()
+  self._stretched = not self._stretched
   self:initValues()
 end
 
