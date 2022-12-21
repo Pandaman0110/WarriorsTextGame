@@ -4,7 +4,7 @@ function love.load(args)
 	--third party libraries
 	lume = require "libraries/lume"
 	class = require "libraries/middleclass"
-	Push = require "libraries/push"
+	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	timer = require "libraries/timer"
 	utf8 = require("utf8")
@@ -32,7 +32,7 @@ function love.load(args)
 
 	local gameWidth, gameHeight = 640, 360 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()
-	Push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true})
+	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true})
 
 	xScale = windowWidth / 640
 	yScale = windowHeight / 360
@@ -80,9 +80,9 @@ end
 
 
 function love.draw()
-	Push:start()
+	push:start()
 		love.graphics.setDefaultFilter("nearest", "nearest")
 		gamestate.draw()
-	Push:finish()
+	push:finish()
 end
 

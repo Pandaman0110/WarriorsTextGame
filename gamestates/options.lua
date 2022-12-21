@@ -17,7 +17,7 @@ function options:init()
 end
 
 function options:mousepressed(x, y, button)
-	local mx, my = Push:toGame(x, y)
+	local mx, my = push:toGame(x, y)
 
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do

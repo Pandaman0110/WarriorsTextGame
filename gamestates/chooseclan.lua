@@ -32,7 +32,7 @@ function chooseclan:update(dt)
 end
 
 function chooseclan:mousepressed(x, y, button)
-	local mx, my = Push:toGame(x, y)
+	local mx, my = push:toGame(x, y)
 
 	if button == 1 then 
 		for i, _button in ipairs (self.buttons) do
@@ -62,7 +62,7 @@ function chooseclan:draw()
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-	if self.choice ~= "" then love.graphics.printf(self.choice .. "Clan", 238, 200, 500, "center" , 0, scX()) end
+	if self.choice ~= "" then love.graphics.printf(self.choice .. "Clan", 280, 200, 500, "left" , 0, scX()) end
 	clear()
 
 
