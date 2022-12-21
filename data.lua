@@ -520,7 +520,6 @@ Roles = {
 "Leader",
 "Deputy",
 "Medicine Cat",
-"Senior Warrior", 
 "Warrior", 
 "Apprentice", 
 "Kit"

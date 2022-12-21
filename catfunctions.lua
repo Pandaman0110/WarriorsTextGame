@@ -22,10 +22,9 @@ function genClan(name)
 	if name then clan:setName(genName("Clan", name)) end
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
+	clan:insertWarrior(clan:getLeader())
+	clan:insertWarrior(clan:getDeputy())
 	clan:setMedecineCat(genRandomCat("Medicine Cat"))
-	for i = 1, lume.round(lume.random(2, 4)) do
-		clan:insertSeniorWarrior(genRandomCat("Senior Warrior"))
-	end
 	for i = 1, lume.round(lume.random(4, 8)) do
 		clan:insertWarrior(genRandomCat("Warrior"))
 	end

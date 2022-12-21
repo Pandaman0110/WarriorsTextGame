@@ -10,16 +10,12 @@ function Clan:initialize()
 	self.medecine_cat = medecine_cat
 
 	--tables of cats
-	self.senior_warriors = {}
 	self.warriors = {}
 	self.apprentices = {}
 	self.kits = {}
 
 	--table of all the cats
-	self.cats = {self.leader, self.deputy, self.medecine_cat, self.senior_warriors, self.warriors, self.apprentices, self.kits}
-	self.cats[1] = self.leader
-	self.cats[2] = self.deputy
-	self.cats[3] = self.medecine_cat
+	self.cats = {}
 end
 
 --accessors
@@ -39,10 +35,6 @@ function Clan:getMedecineCat()
 	return self.medecine_cat
 end
 
-function Clan:getSeniorWarriors()
-	return self.senior_warriors
-end
-
 function Clan:getWarriors()
 	return self.warriors
 end
@@ -56,9 +48,6 @@ function Clan:getKits()
 end
 
 function Clan:getCats()
-	self.cats[1] = self.leader
-	self.cats[2] = self.deputy
-	self.cats[3] = self.medecine_cat
 	return self.cats
 end
 
@@ -69,21 +58,14 @@ end
 
 function Clan:setLeader(leader)
 	self.leader = leader
-	self.cats[1] = self.leader
 end
 
 function Clan:setDeputy(deputy)
 	self.deputy = deputy
-	self.cats[2] = self.deputy
 end
 
 function Clan:setMedecineCat(medecine_cat)
 	self.medecine_cat = medecine_cat
-	self.cats[3] = self.medecine_cat
-end
-
-function Clan:insertSeniorWarrior(cat)
-	table.insert(self.senior_warriors, cat)
 end
 
 function Clan:insertWarrior(cat)
@@ -98,11 +80,27 @@ function Clan:insertKit(cat)
 	table.insert(self.kits, cat)
 end
 
+function Clan:updateCats()
+	table.insert(self.cats, self.leader)
+	table.insert(self.cats, self.deputy)
+	table.insert(self.cats, self.medecine_cat)
+	for i, cat in ipairs(self.warriors) do
+		table.insert(self.cats, cat)
+	end
+	for i, cat in ipairs(self.apprentices) do
+		table.insert(self.cats, cat)
+	end
+	for i, cat in ipairs(self.kits) do
+		table.insert(self.cats, cat)
+	end
+end
+
 --grabs a random cat from the clan
 --t is a table that contains indexs to cats you want
 --for example if u only want to choose from warriors you should pass {5}
 function Clan:grabRandomCat(t)
 	local cat
+	local index
 	if not t then index = lume.round(lume.random(1, 7)) end
 	if t then index = lume.randomchoice(t) end
 	if index <= 3 then
@@ -118,7 +116,6 @@ function Clan:printDetails()
 	print ("The leader is " .. self.leader:getName())
 	print ("The deputy is " .. self.deputy:getName())
 	print ("The medicine cat is " .. self.medecine_cat:getName())
-	print ("There are " .. #self.senior_warriors .. " senior warriors")
 	print ("There are " .. #self.warriors .. " warriors")
 	print ("There are " .. #self.apprentices .. " apprentices")
 	print ("There are " .. #self.kits .. " kits")
@@ -127,7 +124,7 @@ end
 
 function Clan:printMemberDetails()
 	for i = 1, 3 do self.cats[i]:printDetails() end
-	for i = 4, 7 do 
+	for i = 3, 6 do 
 		printTableCats(self.cats[i])
 	end
 end
