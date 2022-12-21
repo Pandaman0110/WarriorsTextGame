@@ -66,16 +66,16 @@ function charactercreate:draw()
 	end
 
 	local cat = self.currentCat
-	love.graphics.draw(cat:getImage(), imageCenterX(cat:getImage()) - 20, 60, 0 , 2, 2)
+	love.graphics.draw(cat:getImage(), imageCenterX(cat:getImage()) - 120, 120, 0 , 2, 2)
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-	love.graphics.printf(cat:getName(), 285, 120, 500, "left", 0, scX())
+	love.graphics.printf(cat:getName(), 275, 100, 500, "left", 0, scX())
 
 	love.graphics.setFont(EBG_R_10)
-	love.graphics.printf(cat:getMoons().." moons old", 250, 165, 500, "left", 0, scX())
-	love.graphics.printf(cat:getGender(), 250, 180, 500, "left", 0, scX())
-	love.graphics.printf(cat:getHealth().." health", 250, 195, 500, "left", 0, scX())
+	love.graphics.printf(cat:getMoons().." moons old", 275, 130, 500, "left", 0, scX())
+	love.graphics.printf(cat:getGender(), 275, 145, 500, "left", 0, scX())
+	love.graphics.printf(cat:getHealth().." health", 275, 160, 500, "left", 0, scX())
 
 	local str = ""
 	for i, kit in ipairs (cat:getMom():getKits()) do 
@@ -83,7 +83,7 @@ function charactercreate:draw()
 		if i == #kits then str = str .. kit:getName()
 		else str = str .. kit:getName() .. ", " end
 	end
-	love.graphics.printf("Siblings... ".. str, 250, 210, 500, "left", 0, scX())
+	love.graphics.printf("Siblings... ".. str, 275, 175, 500, "left", 0, scX())
 
 	clear()
 end

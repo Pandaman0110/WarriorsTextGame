@@ -55,14 +55,14 @@ function chooseclan:draw()
 		_button:draw()
 	end
 
-	if self.choice == "Thunder" then love.graphics.draw(self.thunder_clan:getImage(), 320-48, 240) end
-	if self.choice == "River" then love.graphics.draw(self.river_clan:getImage(), 320-48, 240) end
-	if self.choice == "Shadow" then love.graphics.draw(self.shadow_clan:getImage(), 320-48, 240) end
-	if self.choice == "Wind" then love.graphics.draw(self.wind_clan:getImage(), 320-48, 240) end
+	if self.choice == "Thunder" then love.graphics.draw(self.thunder_clan:getImage(), 128 + 64, 240) end
+	if self.choice == "River" then love.graphics.draw(self.river_clan:getImage(), 128 + 64, 240) end
+	if self.choice == "Shadow" then love.graphics.draw(self.shadow_clan:getImage(), 128 + 64, 240) end
+	if self.choice == "Wind" then love.graphics.draw(self.wind_clan:getImage(), 128 + 64, 240) end
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-	if self.choice ~= "" then love.graphics.printf(self.choice .. "Clan", 280, 200, 500, "left" , 0, scX()) end
+	if self.choice ~= "" then love.graphics.printf(self.choice .. "Clan", 320, 280, 500, "left" , 0, scX()) end
 	clear()
 
 
