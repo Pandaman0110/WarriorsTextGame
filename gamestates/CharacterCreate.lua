@@ -26,14 +26,7 @@ function charactercreate:enter(previous, clan)
 		table.insert(self.cat_buttons, cat_button)
 	end
 
-	self.currentCat = nil
-	for i, kit in pairs(self.playerClan:getCats()) do
-		local foundKit = false
-		if kit:getRole() == "Kit" and foundKit == false then
-			self.currentCat = kit
-			foundKit = true
-		end
-	end
+	self.currentCat = self.playerClan:getKits()[1]
 end
 
 function charactercreate:update(dt)
