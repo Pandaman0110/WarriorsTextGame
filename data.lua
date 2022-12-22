@@ -522,7 +522,8 @@ Roles = {
 "Medicine Cat",
 "Warrior", 
 "Apprentice", 
-"Kit"
+"Kit",
+"Elder"
 }
 
 CatImages = {

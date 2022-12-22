@@ -60,6 +60,16 @@ function Clan:getNumKits()
 	return num
 end
 
+function Clan:getNumElders()
+	local num = 0
+	for i, cat in pairs (self.cats) do
+		if cat ~= nil then
+			if cat:getRole() == "Elders" then num = num + 1 end
+		end
+	end
+	return num
+end
+
 function Clan:getCats()
 	return self.cats
 end
@@ -114,6 +124,24 @@ function Clan:insertCat(cat)
 		else table.insert(self.cats, found+1, c)
 		end
 	end
+	if role == "Elder" then
+		for i, _cat in pairs(self.cats) do
+			if _cat:getRole() == "Kit" then found = i end
+		end
+		if found == 0 then
+			for i, _cat in pairs(self.cats) do
+				if _cat:getRole() == "Apprentice" then found = i end
+			end
+			if found == 0 then
+				for i, _cat in pairs(self.cats) do
+					if _cat:getRole() == "Warrior" then found = i end
+				end
+			end
+		end
+		if found == 0 then table.insert(self.cats, 4, c)
+		else table.insert(self.cats, found+1, c)
+		end
+	end
 end
 
 --grabs a random cat from the clan
@@ -143,6 +171,7 @@ function Clan:printDetails()
 	print ("There are " .. self:getNumWarriors() .. " warriors")
 	print ("There are " .. self:getNumApprentices() .. " apprentices")
 	print ("There are " .. self:getNumKits() .. " kits")
+	print ("There are " .. self:getNumElders() .. " elders")
 	print (" ")
 end
 

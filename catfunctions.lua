@@ -44,6 +44,9 @@ function genClan(name)
 			clan:insertCat(cat)
 		end
 	end
+	for i = 1, lume.round(lume.random(1, 2)) do
+		clan:insertCat(genRandomCat("Elder"))
+	end
 	return clan
 end
 
@@ -86,16 +89,21 @@ end
 --generates a random age based on the role of the cat
 function randMoons(role)
 	local moons
-	if role == "Warrior" then
-		moons = lume.random(13, 36)
+	if role == "Leader" then
+		moons = lume.random(49, 120)
+	elseif role == "Deputy" then
+		moons = lume.random(49, 120)
+	elseif role == "Medicine Cat" then
+		moons = lume.random(49, 120)
+	elseif role == "Warrior" then
+		moons = lume.random(13, 120)
 	elseif role == "Apprentice" then
 		moons = lume.random(6, 12)
 	elseif role == "Kit" then
 		moons = lume.random(0, 5)
-	else
-		moons = lume.random(36, 180)
+	elseif role == "Elder" then
+		moons = lume.random (121, 180)
 	end
-
 	return lume.round(moons)
 end
 
