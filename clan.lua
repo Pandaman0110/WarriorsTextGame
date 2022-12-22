@@ -64,7 +64,7 @@ function Clan:getNumElders()
 	local num = 0
 	for i, cat in pairs (self.cats) do
 		if cat ~= nil then
-			if cat:getRole() == "Elders" then num = num + 1 end
+			if cat:getRole() == "Elder" then num = num + 1 end
 		end
 	end
 	return num
@@ -177,6 +177,6 @@ end
 
 function Clan:printMemberDetails()
 	for i, cat in pairs(self.cats) do
-		cat:printMemberDetails()
+		cat:printDetails()
 	end
 end

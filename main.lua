@@ -52,7 +52,6 @@ function love.load(args)
 
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
-
 end
 
 function love.keypressed(key)
