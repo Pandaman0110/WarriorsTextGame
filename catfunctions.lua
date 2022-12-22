@@ -22,25 +22,26 @@ function genClan(name)
 	if name then clan:setName(genName("Clan", name)) end
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
-	clan:insertWarrior(clan:getLeader())
-	clan:insertWarrior(clan:getDeputy())
 	clan:setMedecineCat(genRandomCat("Medicine Cat"))
+	clan:insertCat(clan:getLeader())
+	clan:insertCat(clan:getDeputy())
+	clan:insertCat(clan:getMedecineCat())
 	for i = 1, lume.round(lume.random(4, 8)) do
-		clan:insertWarrior(genRandomCat("Warrior"))
+		clan:insertCat(genRandomCat("Warrior"))
 	end
 	for i = 1, lume.round(lume.random(2, 4)) do
 		local apprentice = genRandomCat("Apprentice")
-		apprenticeCat(apprentice, clan:grabRandomCat({2, 4, 5}))
-		clan:insertApprentice(apprentice)
+		apprenticeCat(apprentice, clan:grabRandomCat({"Medicine Cat", "Leader", "Apprentice", "Kit"}))
+		clan:insertCat(apprentice)
 	end
 	for i = 1, lume.round(lume.random(1, 2)) do
-		local mom = clan:grabRandomCat({1, 2, 4, 5})
-		local dad = clan:grabRandomCat({1, 2, 4, 5})
-		while mom:getGender() ~= "Female" or mom:hasKits() do mom = clan:grabRandomCat({1, 2, 4, 5}) end
-		while dad:getGender() ~= "Male" or dad:hasKits() do dad = clan:grabRandomCat({1, 2, 4, 5}) end
+		local mom = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"})
+		local dad = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"})
+		while mom:getGender() ~= "Female" or mom:hasKits() do mom = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"}) end
+		while dad:getGender() ~= "Male" or dad:hasKits() do dad = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"}) end
 		local kits = genKits(mom, dad)
-		for i, v in ipairs (kits) do
-			clan:insertKit(v)
+		for i, cat in ipairs (kits) do
+			clan:insertCat(cat)
 		end
 	end
 	return clan

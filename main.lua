@@ -54,8 +54,9 @@ function love.load(args)
 	gamestate.switch(startup)
 
 	local testClan = genClan()
-
-	saveCat(testClan:getLeader())
+	for i, nigger in pairs (testClan:getCats()) do
+		print(nigger:getRole())
+	end
 end
 
 function love.keypressed(key)
