@@ -52,11 +52,6 @@ function love.load(args)
 
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
-
-	local testClan = genClan()
-	for i, nigger in pairs (testClan:getCats()) do
-		print(nigger:getRole())
-	end
 end
 
 function love.keypressed(key)

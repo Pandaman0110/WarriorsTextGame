@@ -15,6 +15,7 @@ end
 function charactercreate:enter(previous, clan)
 	self.playerClanName = clan
 	self.playerClan = genClan(self.playerClanName)
+	print(self.playerClan:getNumCats())
 	self.playerClan:printDetails()
 
 	self.cat_buttons = {}
