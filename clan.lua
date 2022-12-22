@@ -40,6 +40,16 @@ function Clan:getNumWarriors()
 	return num
 end
 
+function Clan:getWarriors()
+	local warriors = {}
+	for i, cat in pairs (self.cats) do
+		if cat:getRole() == "Warrior" then
+			table.insert(kits, cat)
+		end
+	end
+	return warriors
+end
+
 function Clan:getNumApprentices()
 	local num = 0
 	for i, cat in pairs (self.cats) do
@@ -48,6 +58,16 @@ function Clan:getNumApprentices()
 		end
 	end
 	return num
+end
+
+function Clan:getApprentices()
+	local apprentices = {}
+	for i, cat in pairs (self.cats) do
+		if cat:getRole() == "Warrior" then
+			table.insert(kits, cat)
+		end
+	end
+	return apprentices
 end
 
 function Clan:getNumKits()
@@ -60,6 +80,16 @@ function Clan:getNumKits()
 	return num
 end
 
+function Clan:getKits()
+	local kits = {}
+	for i, cat in pairs (self.cats) do
+		if cat:getRole() == "Kit" then
+			table.insert(kits, cat)
+		end
+	end
+	return kits
+end
+
 function Clan:getNumElders()
 	local num = 0
 	for i, cat in pairs (self.cats) do
@@ -68,6 +98,16 @@ function Clan:getNumElders()
 		end
 	end
 	return num
+end
+
+function Clan:getElders()
+	local elders = {}
+	for i, cat in pairs (self.cats) do
+		if cat:getRole() == "Warrior" then
+			table.insert(kits, cat)
+		end
+	end
+	return elders
 end
 
 function Clan:getCats()
