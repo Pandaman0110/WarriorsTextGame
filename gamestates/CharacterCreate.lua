@@ -19,12 +19,21 @@ function charactercreate:enter(previous, clan)
 
 	self.cat_buttons = {}
 
-	for i, kit in ipairs(self.playerClan:getKits()) do
-		local cat_button = InvisibleButton:new(10, 40 * i, 120, 40, kit)
-		table.insert(self.cat_buttons, cat_button)
+	for i, kit in pairs(self.playerClan:getCats()) do
+		if kit:getRole() == "Kit" then
+			local cat_button = InvisibleButton:new(10, 40 * i, 120, 40, kit)
+			table.insert(self.cat_buttons, cat_button)
+		end
 	end
 
-	self.currentCat = self.playerClan:getKits()[1]
+	self.currentCat = nil
+	for i, kit in pairs(self.playerClan:getCats()) do
+		local foundKit = false
+		if kit:getRole() == "Kit" and foundKit == false then
+			self.currentCat = kit
+			foundKit = true
+		end
+	end
 end
 
 function charactercreate:update(dt)
@@ -57,12 +66,14 @@ function charactercreate:draw()
 		_button:draw()
 	end
 
-	for i, kit in ipairs(self.playerClan:getKits()) do
-		textSettings()
-		love.graphics.setFont(EBG_R_10)
-		love.graphics.print(kit:getName(), 50, 8 + (40 * i), 0, scX())
-		clear()
-		kit:draw(10, 40 * i)
+	for i, kit in ipairs(self.playerClan:getCats()) do
+		if kit:getRole() == "Kit" then
+			textSettings()
+			love.graphics.setFont(EBG_R_10)
+			love.graphics.print(kit:getName(), 50, 8 + (40 * i), 0, scX())
+			clear()
+			kit:draw(10, 40 * i)
+		end
 	end
 
 	local cat = self.currentCat

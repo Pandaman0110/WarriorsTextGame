@@ -103,6 +103,7 @@ function randMoons(role)
 		moons = lume.random(0, 5)
 	elseif role == "Elder" then
 		moons = lume.random (121, 180)
+	else moons = lume.random (49, 120)
 	end
 	return lume.round(moons)
 end
