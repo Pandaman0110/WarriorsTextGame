@@ -8,6 +8,7 @@ function love.load(args)
 	gamestate = require "libraries/gamestate"
 	timer = require "libraries/timer"
 	utf8 = require("utf8")
+	bitser = require "libraries/bitser"
 
 	---misc files
 	require "conf"
@@ -21,12 +22,15 @@ function love.load(args)
 	require "Cats"
 	require "Clan"
 
+	setupBitser()
+
 	--gamestates
 	require "gamestates/mainmenu"
 	require "gamestates/startup"
 	require "gamestates/charactercreate"
 	require "gamestates/chooseclan"
 	require "gamestates/options"
+	require "gamestates/loadgame"
 
 	---------------------
 
@@ -52,6 +56,7 @@ function love.load(args)
 
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
+
 end
 
 function love.keypressed(key)
