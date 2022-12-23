@@ -16,14 +16,19 @@ function chooseclan:init()
 
 	local _next = love.graphics.newImage("Images/next.png")
 	self.next_button = Button:new(480, 300, _next)
+	local _back = love.graphics.newImage("Images/next.png")
+	self.back_button = Button:new(32, 300, _back)
 
 	table.insert(self.buttons, self.thunder_clan)
 	table.insert(self.buttons, self.river_clan)
 	table.insert(self.buttons, self.shadow_clan)
 	table.insert(self.buttons, self.wind_clan)
 	table.insert(self.buttons, self.next_button)
+	table.insert(self.buttons, self.back_button)
 
+end
 
+function chooseclan:enter(previous)
 	self.choice = ""
 end
 
@@ -42,6 +47,7 @@ function chooseclan:mousepressed(x, y, button)
 				if _button == self.shadow_clan then self.choice = "Shadow" end
 				if _button == self.wind_clan then self.choice = "Wind" end
 				if _button == self.next_button and self.choice ~= "" then gamestate.switch(charactercreate, self.choice) end
+				if _button == self.back_button and self.choice ~= "" then gamestate.switch(mainmenu) end
 			end
 		end
 	end
