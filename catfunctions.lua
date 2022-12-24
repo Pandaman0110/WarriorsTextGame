@@ -31,6 +31,7 @@ function genClan(name)
 		clan:setName(genName("Clan", name))
 	end
 
+
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
 	clan:setMedecineCat(genRandomCat("Medicine Cat"))
