@@ -7,7 +7,7 @@ function Clan:initialize()
 	--these should be instances of cats
 	self.leader = leader
 	self.deputy = deputy
-	self.medecine_cat = medecine_cat
+	self.medicine_cat = medicine_cat
 
 	--table of all the cats
 	self.cats = {}
@@ -39,8 +39,8 @@ function Clan:getDeputy()
 	return self.deputy
 end
 
-function Clan:getMedecineCat()
-	return self.medecine_cat
+function Clan:getMedicineCat()
+	return self.medicine_cat
 end
 
 function Clan:getNumWarriors()
@@ -55,9 +55,11 @@ end
 
 function Clan:getWarriors()
 	local warriors = {}
+	table.insert(warriors, self.leader)
+	table.insert(warriors, self.deputy)
 	for i, cat in pairs (self.cats) do
 		if cat:getRole() == "Warrior" then
-			table.insert(kits, cat)
+			table.insert(warriors, cat)
 		end
 	end
 	return warriors
@@ -77,7 +79,7 @@ function Clan:getApprentices()
 	local apprentices = {}
 	for i, cat in pairs (self.cats) do
 		if cat:getRole() == "Warrior" then
-			table.insert(kits, cat)
+			table.insert(apprentices, cat)
 		end
 	end
 	return apprentices
@@ -116,11 +118,19 @@ end
 function Clan:getElders()
 	local elders = {}
 	for i, cat in pairs (self.cats) do
-		if cat:getRole() == "Warrior" then
-			table.insert(kits, cat)
+		if cat:getRole() == "Elder" then
+			table.insert(elders, cat)
 		end
 	end
 	return elders
+end
+
+function Clan:getOther()
+	local other = {}
+	table.insert(other, self.medicine_cat)
+	local elders = self:getElders()
+	for i, cat in pairs (elders) do table.insert(other, cat) end
+	return other 
 end
 
 function Clan:getCats()
@@ -148,8 +158,8 @@ function Clan:setDeputy(deputy)
 	self.deputy = deputy
 end
 
-function Clan:setMedecineCat(medecine_cat)
-	self.medecine_cat = medecine_cat
+function Clan:setMedicineCat(medicine_cat)
+	self.medicine_cat = medicine_cat
 end
 
 function Clan:insertCat(cat)
@@ -224,7 +234,7 @@ function Clan:printDetails()
 	print (self.name)
 	print ("The leader is " .. self.leader:getName())
 	print ("The deputy is " .. self.deputy:getName())
-	print ("The medicine cat is " .. self.medecine_cat:getName())
+	print ("The medicine cat is " .. self.medicine_cat:getName())
 	print ("There are " .. self:getNumWarriors() .. " warriors")
 	print ("There are " .. self:getNumApprentices() .. " apprentices")
 	print ("There are " .. self:getNumKits() .. " kits")

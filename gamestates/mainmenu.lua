@@ -3,6 +3,9 @@ mainmenu = {}
 function mainmenu:init()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
+	self.canContinue = false
+	Timer.after(2, function() self.canContinue = true end)
+
 	self.buttons = {}
 
 	local startImage = love.graphics.newImage("Images/StartGame.png")
@@ -28,8 +31,8 @@ function mainmenu:mousepressed(x, y, button)
 
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
-			if _button:mouseInside(mx, my) == true then
-				if _button == self.start_game then gamestate.switch(chooseclan) end
+			if _button:mouseInside(mx, my) == true and self.canContinue == true then
+				if _button == self.start_game then gamestate.switch(choosecharacter) end
 				if _button == self.load_game then gamestate.switch(loadgame) end
 				if _button == self.options then gamestate.switch(options) end
 			end

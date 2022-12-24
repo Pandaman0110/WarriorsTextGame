@@ -17,6 +17,10 @@ function Button:initialize(x, y, image, w, h)
 		self.width = w
 		self.height = h
 	end
+	if s then 
+		self.width = self.width * s
+		self.width = self.width * s 
+	end
 end
 
 function Button:update(dt)

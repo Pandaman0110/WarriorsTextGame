@@ -14,9 +14,7 @@ function love.conf(t)
 	t.window.display = 1
 	t.window.highdpi = true
 
-
 	t.modules.joystick = false
-	t.modules.physics = false
 
 	t.console = true
 end

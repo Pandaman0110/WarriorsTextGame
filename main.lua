@@ -27,10 +27,9 @@ function love.load(args)
 	--gamestates
 	require "gamestates/mainmenu"
 	require "gamestates/startup"
-	require "gamestates/charactercreate"
-	require "gamestates/chooseclan"
 	require "gamestates/options"
 	require "gamestates/loadgame"
+	require "gamestates/choosecharacter"
 
 	---------------------
 
@@ -57,7 +56,7 @@ function love.load(args)
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
 
-
+	print("here")
 end
 
 function love.keypressed(key)
