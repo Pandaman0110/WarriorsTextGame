@@ -42,13 +42,14 @@ function choosecharacter:init()
 
 	self.playerClan = clan1
 
-	self.catListNum = 1
-	self.catListRoles = {"Kits", "Warriors", "Apprentices", "Other"}
-	self.catListTables = {clan1:getKits(), clan1:getWarriors(), clan1:getApprentices(), clan1:getOther()}
+	self:tableSetup()
 
+	self:catButtons()
+end
+
+function choosecharacter:catButtons()
 	self.cat_buttons = {}
-
-	for i, cat in ipairs(self.catListTables[self.catListNum]) do
+	for i, cat in ipairs(self.catListTables[self.catListPage]) do
 		local cat_button
 		if i > 5 then
 			local k = i - 5
@@ -58,9 +59,27 @@ function choosecharacter:init()
 		end
 		table.insert(self.cat_buttons, cat_button)
 	end
-
-	self.currentCat = clan1:getKits()[1]
+	self.currentCat = self.cat_buttons[1]:getObject()
 end
+
+function choosecharacter:tableSetup()
+	self.catListPage = 1
+	self.catListRoles = {}
+	self.catListTables = {}
+	self.pages = 0
+	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
+	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
+	print(self.pages)
+
+	for i = 1, self.pages do
+		local t = {}
+		table.insert(self.catListTables, t)
+		for k = 1, 10 do
+			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
+		end
+	end
+end
+
 
 function choosecharacter:update(dt)
 end
@@ -76,33 +95,20 @@ function choosecharacter:mousepressed(x, y, button)
 					if _button == self.back_button then gamestate.switch(mainmenu) end
 				else 
 					if _button == self.left_button then 
-						self.catListNum = self.catListNum - 1 
-						if self.catListNum == 0 then self.catListNum = 4 end
+						self.catListPage = self.catListPage - 1 
+						if self.catListPage == 0 then self.catListPage = self.pages  end
 					end
 					if _button == self.right_button then 
-						self.catListNum = self.catListNum + 1
-						if self.catListNum == 5 then self.catListNum = 1 end
+						self.catListPage = self.catListPage + 1
+						if self.catListPage == self.pages + 1 then self.catListPage = 1 end
 					end
 					if i > 4 then 
 						local clan = _button:getObject()
 						self.playerClan = clan
-						self.catListTables = {clan:getKits(), clan:getWarriors(), clan:getApprentices(), clan:getOther()}
+
+						self:tableSetup()
 					end
-
-					self.cat_buttons = {}
-
-					for i, cat in pairs(self.catListTables[self.catListNum]) do
-						local cat_button
-						if i > 5 then
-							local k = i - 5
-							cat_button = InvisibleButton:new(512, 80 + 32 * (k-1), 120, 32, cat)
-						else
-							cat_button = InvisibleButton:new(392, 80 + 32 * (i-1), 120, 32, cat)
-						end
-						table.insert(self.cat_buttons, cat_button)
-					end
-
-					self.currentCat = self.cat_buttons[1]:getObject()
+					self:catButtons()
 				end
 			end
 		end
@@ -121,7 +127,7 @@ function choosecharacter:draw()
 	local cat = self.currentCat
 	local clan = self.playerClan
 	local textX = 232
-	local num = self.catListNum
+	local num = self.catListPage
 
 	love.graphics.draw(self.background, 0, 0)
 
@@ -188,17 +194,18 @@ function choosecharacter:draw()
 
 	love.graphics.setFont(EBG_R_20)
 
-	local str = self.catListRoles[num]
-	local strlen = string.len(str)
-	strlen = 8 - strlen
+	--local str = self.catListRoles[num]
+	--local strlen = string.len(str)
+	--strlen = 8 - strlen
 
-	love.graphics.print(str, 460 + strlen * 4, 32, 0, scX())
+	--love.graphics.print("Page ".."1", 460 + strlen * 4, 32, 0, scX())
+
+	love.graphics.print("Page "..num, 470, 32, 0, scX())
 
 	clear()
 
 	for i, _button in ipairs(self.cat_buttons) do
 		local cat = _button:getObject()
-		print(cat:getName())
 		textSettings()
 		love.graphics.setFont(EBG_R_10)
 		if i > 5 then

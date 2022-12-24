@@ -38,7 +38,7 @@ function genClan(name)
 	clan:insertCat(clan:getLeader())
 	clan:insertCat(clan:getDeputy())
 	clan:insertCat(clan:getMedicineCat())
-	for i = 1, lume.round(lume.random(4, 8)) do
+	for i = 1, lume.round(lume.random(4, 12)) do
 		clan:insertCat(genRandomCat("Warrior"))
 	end
 	for i = 1, lume.round(lume.random(2, 4)) do
