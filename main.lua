@@ -6,9 +6,9 @@ function love.load(args)
 	class = require "libraries/middleclass"
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
-	timer = require "libraries/timer"
 	utf8 = require("utf8")
 	bitser = require "libraries/bitser"
+	Timer = require "libraries/timer"
 
 	---misc files
 	require "conf"
@@ -58,12 +58,6 @@ function love.load(args)
 	gamestate.switch(startup)
 
 
-	--love.filesystem.remove("SaveOne")
-	--t = {}
-	---testClan = genClan("Thunder")
-	--table.insert(t, "Save One")
-	--table.insert(t, testClan)
-	--bitser.dumpLoveFile("SaveOne", t)
 end
 
 function love.keypressed(key)
@@ -82,8 +76,8 @@ function love.mousepressed(x, y, button)
 end
 
 function love.update(dt)
-	timer.update(dt)
 	gamestate.update(dt)
+	Timer.update(dt)
 end
 
 
