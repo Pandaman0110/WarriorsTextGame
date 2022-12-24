@@ -529,3 +529,10 @@ Roles = {
 CatImages = {
 	love.graphics.newImage("catimage/catIdle.png"),
 }
+
+ClanImages = {
+	love.graphics.newImage("Images/ThunderclanSymbol.png"), 
+	love.graphics.newImage("Images/RiverclanSymbol.png"),
+	love.graphics.newImage("Images/WindclanSymbol.png"),
+	love.graphics.newImage("Images/ShadowclanSymbol.png")
+}

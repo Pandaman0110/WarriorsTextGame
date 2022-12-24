@@ -9,18 +9,16 @@ function charactercreate:init()
 	local _next = love.graphics.newImage("Images/next.png")
 	self.next_button = Button:new(480, 300, _next)
 	local _back = love.graphics.newImage("Images/next.png")
-	self.back_button = Button:new(30, 300, _back)
+	self.back_button = Button:new(32, 300, _back)
 
 
 	table.insert(self.buttons, self.next_button)
 	table.insert(self.buttons, self.back_button)
 end
 
-function charactercreate:enter(previous, clan)
-	self.playerClanName = clan
-	self.playerClan = genClan(self.playerClanName)
-	print(self.playerClan:getNumCats())
-	self.playerClan:printDetails()
+function charactercreate:enter(previous, clans, choice)
+	self.clans = clans
+	self.playerClan = choice
 
 	self.cat_buttons = {}
 
@@ -73,7 +71,8 @@ function charactercreate:draw()
 	end
 
 	local cat = self.currentCat
-	love.graphics.draw(cat:getImage(), imageCenterX(cat:getImage()) - 75, 120, 0 , 2, 2)
+
+	cat:draw(imageCenterX(cat:getImage()) -75, 120, 2)
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)

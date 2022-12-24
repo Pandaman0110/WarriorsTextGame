@@ -50,10 +50,13 @@ function loadgame:draw()
 		_button:draw()
 	end
 
-	if next(self.save) ~= nil then
+	if isEmpty(self.save) ~= true then
+		local saveName = self.save[1]
+		local clan = self.save[2]
+		clan:draw(imageCenterX(clan:getImage()), 64)
 		textSettings()
 		love.graphics.setFont(EBG_R_20)
-		love.graphics.print(self.save[1], 283, 32, 0, scX())
+		love.graphics.print(saveName, 285, 32, 0, scX())
 		clear()
 	end
 end

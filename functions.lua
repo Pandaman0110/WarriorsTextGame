@@ -23,6 +23,14 @@ function mouseInside(mouseX, mouseY, rectX, rectY, rectWidth, rectHeight)
 	else return false end
 end
 
+--checks if a table is empty
+function isEmpty(t)
+	local empty = false
+	if next(t) == nil then empty = true end
+	return empty
+end
+
+
 function clear()
 	love.graphics.setColor(255,255,255,1)
 end

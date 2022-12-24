@@ -57,6 +57,13 @@ function love.load(args)
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
 
+
+	--love.filesystem.remove("SaveOne")
+	--t = {}
+	---testClan = genClan("Thunder")
+	--table.insert(t, "Save One")
+	--table.insert(t, testClan)
+	--bitser.dumpLoveFile("SaveOne", t)
 end
 
 function love.keypressed(key)

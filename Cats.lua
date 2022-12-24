@@ -21,8 +21,9 @@ function Cat:initialize()
 	self.apprentice = apprentice
 end
 
-function Cat:draw(x, y)
-	love.graphics.draw(CatImages[self.cat_image], x, y)
+function Cat:draw(x, y, s)
+	if not s then love.graphics.draw(CatImages[self.cat_image], x, y) end
+	if s then love.graphics.draw(CatImages[self.cat_image], x, y, 0, s, s) end
 end
 
 --accessors
@@ -99,6 +100,10 @@ function Cat:getKits()
 end
 
 --mutators
+function Cat:setImage(num)
+	self.cat_image = num
+end
+
 function Cat:setName(name)
 	self.name = name 
 end

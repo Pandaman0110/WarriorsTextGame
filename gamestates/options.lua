@@ -35,4 +35,5 @@ function options:draw()
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
+
 end

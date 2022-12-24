@@ -18,8 +18,19 @@ end
 function genClan(name)
 	local clan = Clan:new()
 	local usedNames = {}
-	if not name then clan:setName(genName("Clan")) end
-	if name then clan:setName(genName("Clan", name)) end
+
+	if not name then 
+		clan:setName(genName("Clan")) 
+		clan:setImage(lume.round(lume.random(1, 4)))
+	end
+	if name then 
+		if name == "Thunder" then clan:setImage(1) end
+		if name == "River" then clan:setImage(2) end
+		if name == "Wind" then clan:setImage(3) end
+		if name == "Shadow" then clan:setImage(4) end
+		clan:setName(genName("Clan", name))
+	end
+
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
 	clan:setMedecineCat(genRandomCat("Medicine Cat"))

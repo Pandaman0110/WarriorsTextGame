@@ -50,6 +50,26 @@ function Button:getImage()
 	return self.image
 end
 
+ObjectButton = class("ObjectButton", Button)
+
+function ObjectButton:initialize(x, y, object)
+	self.object = object
+	self.image = object:getImage()
+	Button.initialize(self, x, y, self.image)
+end
+
+function ObjectButton:getObject()
+	return self.object
+end
+
+function ObjectButton:setObejct(object)
+	self.object = object
+end
+
+function ObjectButton:mouseInside(mx, my)
+	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
+end
+
 --TextBox class, inherited from button
 
 TextBox = class("TextBox", Button)

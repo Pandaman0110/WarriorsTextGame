@@ -2,8 +2,8 @@ Clan = class("Clan") -- creates a classs
 
 
 function Clan:initialize()
+	self.clan_image = num
 	self.name = name
-
 	--these should be instances of cats
 	self.leader = leader
 	self.deputy = deputy
@@ -13,7 +13,20 @@ function Clan:initialize()
 	self.cats = {}
 end
 
+function Clan:draw(x, y, s)
+	if not s then love.graphics.draw(ClanImages[self.clan_image], x, y) end
+	if s then love.graphics.draw(ClanImages[self.clan_image], x, y, 0, s, s) end
+end
+
 --accessors
+function Clan:getImage()
+	return ClanImages[self.clan_image]
+end
+
+function Clan:getImageNum()
+	return self.clan_image
+end
+
 function Clan:getName()
 	return self.name
 end
@@ -119,6 +132,10 @@ function Clan:getNumCats()
 end
 
 --mutators 
+function Clan:setImage(num)
+	self.clan_image = num 
+end
+
 function Clan:setName(name)
 	self.name = name
 end
