@@ -1,5 +1,7 @@
 loadgame = {}
 
+
+--display save details or something
 function loadgame:init()
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
@@ -10,35 +12,45 @@ function loadgame:init()
 	local _back = love.graphics.newImage("Images/next.png")
 	self.back_button = Button:new(32, 300, _back)
 
-	local save_1 = love.graphics.newImage("Images/StartGame.png")
-	self.save_one = Button:new(32, 32, save_1)
+	local _view = love.graphics.newImage("Images/StartGame.png")
+	self.view_button = Button:new(288, 32, _view)
 
 	table.insert(self.buttons, self.next_button)
 	table.insert(self.buttons, self.back_button)
-	table.insert(self.buttons, self.save_one)
+
 end
 
-function loadgame:enter()
-	--firest index is the save name
-	--next index is the clan, for now
-	self.save = {}
+function loadgame:enter(previous)
+	self.save = nil
+	self.save_buttons = {}
+	self.saves = {}
+
+	if love.filesystem.getInfo("SaveOne") ~= nil then 
+		table.insert(self.saves, bitser.loadLoveFile("SaveOne"))
+
+		local save_1 = love.graphics.newImage("Images/StartGame.png")
+		self.save_one = Button:new(32, 32, save_1)
+
+		table.insert(self.save_buttons, self.save_one)
+	end
 end
 
 function loadgame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
 
 	if button == 1 then 
+		if self.view_button:mouseInside(mx, my) == true then
+			local viewing = true
+			gamestate.switch(choosecharacter, self.save, viewing) 
+		end
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then gamestate.switch(mainmenu) end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
-				if _button == self.save_one then
-					info = love.filesystem.getInfo("SaveOne")
-					if info ~= nil then
-						self.save = bitser.loadLoveFile("SaveOne")
-					end
-				end
 			end
+		end
+		for i, _button in ipairs (self.save_buttons) do
+			if _button:mouseInside(mx, my) == true then self.save = self.saves[i] end
 		end
 	end
 end
@@ -50,14 +62,15 @@ function loadgame:draw()
 		_button:draw()
 	end
 
-	if isEmpty(self.save) ~= true then
-		local saveName = self.save[1]
-		local clan = self.save[2]
-		clan:draw(imageCenterX(clan:getImage()), 64)
-		textSettings()
-		love.graphics.setFont(EBG_R_20)
-		love.graphics.print(saveName, 285, 32, 0, scX())
-		clear()
+	for i, _button in ipairs(self.save_buttons) do
+		_button:draw()
 	end
+
+
+	if self.save ~= nil then
+		self.view_button:draw()
+	end
+
+
 end
 

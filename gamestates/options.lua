@@ -6,7 +6,7 @@ function options:init()
 	self.buttons = {}
 
 	local stretched = love.graphics.newImage("Images/StartGame.png")
-	self.stretched_button = Button:new(20, 20, stretched)
+	self.stretched_button = Button:new(32, 32, stretched)
 
 	local _next = love.graphics.newImage("Images/next.png")
 	self.next_button = Button:new(480, 300, _next)

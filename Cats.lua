@@ -172,6 +172,10 @@ function Cat:setKits(kits)
 end
 
 -- other functions
+function Cat:age()
+	self.moons = self.moons + 1
+end
+
 function Cat:hasKits()
 	local hasKits
 	if next(self.kits) == nil then

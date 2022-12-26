@@ -23,12 +23,31 @@ function choosecharacter:init()
 	table.insert(self.buttons, self.left_button)
 	table.insert(self.buttons, self.right_button)
 
+end
+
+function choosecharacter:enter(previous, save, viewing)
+	self.save = nil
+	if save then self.save = save end
+	if viewing then self.viewing = true else self.viewing = false end
+
 	self.clans = {}
 
-	local clan1 = genClan("Thunder")
-	local clan2 = genClan("River")
-	local clan3 = genClan("Wind")
-	local clan4 = genClan("Shadow")
+	local clan1
+	local clan2
+	local clan3
+	local clan4
+
+	if not self.save then 
+		clan1 = genClan("Thunder")
+		clan2 = genClan("River")
+		clan3 = genClan("Wind")
+		clan4 = genClan("Shadow")
+	elseif self.save then
+		clan1 = self.save[2]
+		clan2 = self.save[3]
+		clan3 = self.save[4]
+		clan4 = self.save[5]
+	end
 
 	table.insert(self.clans, clan1)
 	table.insert(self.clans, clan2)
@@ -41,11 +60,10 @@ function choosecharacter:init()
 	end
 
 	self.playerClan = clan1
-
 	self:tableSetup()
-
 	self:catButtons()
 end
+
 
 function choosecharacter:catButtons()
 	self.cat_buttons = {}
@@ -105,7 +123,6 @@ function choosecharacter:mousepressed(x, y, button)
 					if i > 4 then 
 						local clan = _button:getObject()
 						self.playerClan = clan
-
 						self:tableSetup()
 					end
 					self:catButtons()

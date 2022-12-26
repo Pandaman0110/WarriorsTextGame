@@ -33,6 +33,7 @@ function love.load(args)
 
 	---------------------
 
+	osString = love.system.getOS()
 	local gameWidth, gameHeight = 640, 360 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()
 	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true})
@@ -56,7 +57,10 @@ function love.load(args)
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
 
-	print("here")
+end
+
+function love.resize(w, h)
+	push:resize(w, h)
 end
 
 function love.keypressed(key)
