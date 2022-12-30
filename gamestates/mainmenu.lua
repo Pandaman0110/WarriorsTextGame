@@ -4,7 +4,7 @@ function mainmenu:init()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
 	self.canContinue = false
-	Timer.after(2, function() self.canContinue = true end)
+	timer.after(2, function() self.canContinue = true end)
 
 	self.buttons = {}
 

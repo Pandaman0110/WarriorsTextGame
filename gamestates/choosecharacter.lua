@@ -1,6 +1,4 @@
 --put a help button somewhere
---put the selected cat somewhere
---put a scrolling list page thingy so the player can see all the cats
 choosecharacter = {}
 
 function choosecharacter:init()
@@ -65,40 +63,6 @@ function choosecharacter:enter(previous, save, viewing)
 end
 
 
-function choosecharacter:catButtons()
-	self.cat_buttons = {}
-	for i, cat in ipairs(self.catListTables[self.catListPage]) do
-		local cat_button
-		if i > 5 then
-			local k = i - 5
-			cat_button = InvisibleButton:new(512, 80 + 40 * (k-1), 120, 32, cat)
-		else
-			cat_button = InvisibleButton:new(392, 80 + 40 * (i-1), 120, 32, cat)
-		end
-		table.insert(self.cat_buttons, cat_button)
-	end
-	self.currentCat = self.cat_buttons[1]:getObject()
-end
-
-function choosecharacter:tableSetup()
-	self.catListPage = 1
-	self.catListRoles = {}
-	self.catListTables = {}
-	self.pages = 0
-	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
-	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
-	print(self.pages)
-
-	for i = 1, self.pages do
-		local t = {}
-		table.insert(self.catListTables, t)
-		for k = 1, 10 do
-			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
-		end
-	end
-end
-
-
 function choosecharacter:update(dt)
 end
 
@@ -109,7 +73,7 @@ function choosecharacter:mousepressed(x, y, button)
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
 				if i <= 2 then 
-					if _button == self.next_button then gamestate.switch(charactercreate) end
+					if _button == self.next_button then gamestate.switch(maingame) end
 					if _button == self.back_button then gamestate.switch(mainmenu) end
 				else 
 					if _button == self.left_button then 
@@ -234,6 +198,39 @@ function choosecharacter:draw()
 			love.graphics.print(cat:getName(), 440, 88 + 32 * (i-1), 0, scX())
 			clear()
 			cat:draw(392, 80 + 32 * (i-1))
+		end
+	end
+end
+
+function choosecharacter:catButtons()
+	self.cat_buttons = {}
+	for i, cat in ipairs(self.catListTables[self.catListPage]) do
+		local cat_button
+		if i > 5 then
+			local k = i - 5
+			cat_button = InvisibleButton:new(512, 80 + 40 * (k-1), 120, 32, cat)
+		else
+			cat_button = InvisibleButton:new(392, 80 + 40 * (i-1), 120, 32, cat)
+		end
+		table.insert(self.cat_buttons, cat_button)
+	end
+	self.currentCat = self.cat_buttons[1]:getObject()
+end
+
+function choosecharacter:tableSetup()
+	self.catListPage = 1
+	self.catListRoles = {}
+	self.catListTables = {}
+	self.pages = 0
+	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
+	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
+	print(self.pages)
+
+	for i = 1, self.pages do
+		local t = {}
+		table.insert(self.catListTables, t)
+		for k = 1, 10 do
+			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
 		end
 	end
 end

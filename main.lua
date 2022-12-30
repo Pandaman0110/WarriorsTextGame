@@ -8,7 +8,7 @@ function love.load(args)
 	gamestate = require "libraries/gamestate"
 	utf8 = require("utf8")
 	bitser = require "libraries/bitser"
-	Timer = require "libraries/timer"
+	timer = require "libraries/timer"
 
 	---misc files
 	require "conf"
@@ -21,6 +21,7 @@ function love.load(args)
 	--classes
 	require "Cats"
 	require "Clan"
+	require "Timer"
 
 	setupBitser()
 
@@ -30,6 +31,7 @@ function love.load(args)
 	require "gamestates/options"
 	require "gamestates/loadgame"
 	require "gamestates/choosecharacter"
+	require "gamestates/maingame"
 
 	---------------------
 
@@ -80,7 +82,7 @@ end
 
 function love.update(dt)
 	gamestate.update(dt)
-	Timer.update(dt)
+	timer.update(dt)
 end
 
 

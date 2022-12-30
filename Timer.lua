@@ -51,13 +51,6 @@ function Timer:drawSeconds(x, y)
 	love.graphics.print(self.seconds, x, y, 0, scX())
 end
 
-function Timer:drawTime(x, y)
-	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
-	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
-	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
-	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
-end
-
 --time is seconds
 function Timer:isBefore(time)
 	return time < self.seconds
@@ -65,4 +58,8 @@ end
 
 function Timer:isAfter(time)
 	return time > self.seconds
+end
+
+function Timer:isAt(time)
+
 end

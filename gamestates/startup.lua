@@ -2,7 +2,7 @@ startup = {}
 
 function startup:init()
 	self.canContinue = false
-	Timer.after(2, function() self.canContinue = true end)
+	timer.after(2, function() self.canContinue = true end)
 end
 
 function startup:update(dt)
