@@ -6,10 +6,10 @@ function choosecharacter:init()
 
 	self.buttons = {}
 
+	local _back = love.graphics.newImage("Images/back.png")
+	self.back_button = Button:new(32, 312, _back)
 	local _next = love.graphics.newImage("Images/next.png")
-	self.next_button = Button:new(480, 300, _next)
-	local _back = love.graphics.newImage("Images/next.png")
-	self.back_button = Button:new(32, 300, _back)
+	self.next_button = Button:new(544, 312, _next)
 
 	local _left = love.graphics.newImage("Images/ArrowLeft.png")
 	self.left_button = Button:new(392, 32, _left)

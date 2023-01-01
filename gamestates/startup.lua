@@ -2,10 +2,11 @@ startup = {}
 
 function startup:init()
 	self.canContinue = false
-	timer.after(2, function() self.canContinue = true end)
+	self.c1 = cron.after(2, function() self.canContinue = true end)
 end
 
 function startup:update(dt)
+	self.c1:update(dt)
 end
 
 function startup:keypressed(key)

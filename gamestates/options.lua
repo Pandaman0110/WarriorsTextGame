@@ -9,7 +9,7 @@ function options:init()
 	self.stretched_button = Button:new(32, 32, stretched)
 
 	local _next = love.graphics.newImage("Images/next.png")
-	self.next_button = Button:new(480, 300, _next)
+	self.next_button = Button:new(544, 312, _next)
 
 	table.insert(self.buttons, self.stretched_button)
 	table.insert(self.buttons, self.next_button)

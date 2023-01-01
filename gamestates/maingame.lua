@@ -2,10 +2,15 @@ maingame = {}
 
 function maingame:init()
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
-	self.timer = Timer:new()
+
+	--clock
+	self.seconds = 0
+	self.secondsAfter = 0
+	self.minutes = 0
+
+	self.c1 = cron.every(1, function() self.seconds = self.seconds + 1 end)
 
 	self.buttons = {}
-
 end
 
 function maingame:enter()
@@ -13,7 +18,11 @@ function maingame:enter()
 end
 
 function maingame:update(dt)
-	self.timer:update(dt)
+	--clock
+	self.secondsAfter = math.floor(self.seconds % 60)
+	self.minutes = math.floor(self.seconds / 60)
+
+	self.c1:update(dt)
 end
 
 function maingame:mousepressed(x, y, button)
@@ -30,7 +39,14 @@ function maingame:draw()
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
 
-	self.timer:drawTime(10, 10)
+	self:drawTime(10, 10)
 
 	clear()
+end
+
+function maingame:drawTime(x, y)
+	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
+	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
+	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
+	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
 end

@@ -4,7 +4,7 @@ function mainmenu:init()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
 	self.canContinue = false
-	timer.after(2, function() self.canContinue = true end)
+	self.c1 = cron.after(2, function() self.canContinue = true end)
 
 	self.buttons = {}
 
@@ -22,7 +22,7 @@ function mainmenu:init()
 end
 
 function mainmenu:update(dt)
-	
+	self.c1:update(dt)
 end
 
 function mainmenu:mousepressed(x, y, button)
