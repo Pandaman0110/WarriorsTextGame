@@ -208,9 +208,9 @@ function choosecharacter:catButtons()
 		local cat_button
 		if i > 5 then
 			local k = i - 5
-			cat_button = InvisibleButton:new(512, 80 + 40 * (k-1), 120, 32, cat)
+			cat_button = InvisibleButton:new(512, 80 + 32 * (k-1), 120, 32, cat)
 		else
-			cat_button = InvisibleButton:new(392, 80 + 40 * (i-1), 120, 32, cat)
+			cat_button = InvisibleButton:new(392, 80 + 32 * (i-1), 120, 32, cat)
 		end
 		table.insert(self.cat_buttons, cat_button)
 	end
