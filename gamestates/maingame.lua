@@ -1,7 +1,14 @@
 maingame = {}
 
 function maingame:init()
-	self.background = love.graphics.newImage("Images/BrownBackground.png")
+	self.buttons = {}
+end
+
+function maingame:enter(previous, clans, playerclan, playerCat)
+	self.clans = clans
+	self.player = Player:new()
+	self.player:setCat(playerCat)
+	self.playerclan = playerclan
 
 	--clock
 	self.seconds = 0
@@ -10,11 +17,8 @@ function maingame:init()
 
 	self.c1 = cron.every(1, function() self.seconds = self.seconds + 1 end)
 
-	self.buttons = {}
-end
-
-function maingame:enter()
-
+	self.map = Map:new(self.player)
+	
 end
 
 function maingame:update(dt)
@@ -23,14 +27,19 @@ function maingame:update(dt)
 	self.minutes = math.floor(self.seconds / 60)
 
 	self.c1:update(dt)
+
+	self.map:update(dt)
+
+	--print(self.player:getCat():getTileX() .. self.player:getCat():getTileY())
+	
 end
 
 function maingame:mousepressed(x, y, button)
-
 end
 
 function maingame:draw()
-	love.graphics.draw(self.background, 0, 0)
+	self.map:draw()
+
 
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
@@ -38,9 +47,7 @@ function maingame:draw()
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-
 	self:drawTime(10, 10)
-
 	clear()
 end
 

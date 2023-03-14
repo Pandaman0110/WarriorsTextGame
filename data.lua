@@ -498,9 +498,10 @@ Suffixes = {
 "wish"
 }
 
+--order this with the images by index
 Pelts = {
-"Ginger",
-"Blue",
+"Grey",
+"Brown",
 "White"
 }
 
@@ -527,7 +528,9 @@ Roles = {
 }
 
 CatImages = {
-	love.graphics.newImage("catimage/catIdle.png"),
+	love.graphics.newImage("catimage/catgreyidle.png"),
+	love.graphics.newImage("catimage/catbrownidle.png"), 
+	love.graphics.newImage("catimage/catwhiteidle.png")
 }
 
 ClanImages = {
@@ -535,4 +538,15 @@ ClanImages = {
 	love.graphics.newImage("Images/RiverclanSymbol.png"),
 	love.graphics.newImage("Images/WindclanSymbol.png"),
 	love.graphics.newImage("Images/ShadowclanSymbol.png")
+}
+
+GroundTiles = {
+	love.graphics.newImage("Images/grass.png"),
+	love.graphics.newImage("Images/wall.png")
+}
+
+Bleeding = {
+	love.graphics.newImage("decals/blood_floor_small_1.png"), 
+	love.graphics.newImage("decals/blood_floor_small_2.png"), 
+	love.graphics.newImage("decals/blood_floor_small_3.png"), 
 }

@@ -9,6 +9,9 @@ function love.load(args)
 	utf8 = require("utf8")
 	bitser = require "libraries/bitser"
 	cron = require "libraries/cron"
+	sti = require "libraries/sti"
+	grid = require "libraries/jumper.grid"
+	pathfinder = require "libraries/jumper.pathfinder"
 
 	---misc files
 	require "conf"
@@ -21,6 +24,8 @@ function love.load(args)
 	--classes
 	require "Cats"
 	require "Clan"
+	require "Tiles"
+	require "Controller"
 
 	setupBitser()
 
@@ -56,7 +61,7 @@ function love.load(args)
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(startup)
+	gamestate.switch(choosecharacter)
 
 end
 

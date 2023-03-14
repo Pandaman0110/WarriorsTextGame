@@ -72,8 +72,11 @@ function choosecharacter:mousepressed(x, y, button)
 	if button == 1 then 
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
-				if i <= 2 then 
-					if _button == self.next_button then gamestate.switch(maingame) end
+				if i <= 2 then
+					if _button == self.next_button then 
+						self.currentCat:setIsPlayer(true) 
+						gamestate.switch(maingame, self.clans, self.playerClan, self.currentCat) 
+					end
 					if _button == self.back_button then gamestate.switch(mainmenu) end
 				else 
 					if _button == self.left_button then 
@@ -118,7 +121,7 @@ function choosecharacter:draw()
 
 	--all the images right here
 	clan:draw(112, 32, 2)
-	cat:draw(126, 176, 2)
+	cat:drawImage(126, 176, 2)
 
 	--printing current clan text
 	textSettings()
@@ -193,11 +196,11 @@ function choosecharacter:draw()
 			local k = i - 5
 			love.graphics.print(cat:getName(), 560, 88 + 32 * (k-1), 0, scX())
 			clear()
-			cat:draw(512, 80 + 32 * (k-1))
+			cat:drawImage(512, 80 + 32 * (k-1))
 		else  
 			love.graphics.print(cat:getName(), 440, 88 + 32 * (i-1), 0, scX())
 			clear()
-			cat:draw(392, 80 + 32 * (i-1))
+			cat:drawImage(392, 80 + 32 * (i-1))
 		end
 	end
 end
@@ -224,7 +227,6 @@ function choosecharacter:tableSetup()
 	self.pages = 0
 	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
 	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
-	print(self.pages)
 
 	for i = 1, self.pages do
 		local t = {}

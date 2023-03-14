@@ -9,7 +9,11 @@ function genRandomCat(role, rec)
 	cat:setMoons(randMoons(cat:getRole()))
 	cat:setHealth(genHealth(cat:getMoons()))
 	cat:setGender(randGender())
-	cat:setAppearence(randPelt(cat:getGender()), randEyecolor(), randFurlength())
+	cat:setPelt(randPelt(cat:getGender()))
+	cat:setEyecolor(randEyecolor())
+	cat:setFurlength(randFurlength())
+	cat:setImage(cat:getPeltNum())
+
 	if not rec then cat:setParents(genParent(), genParent()) end
 	return cat
 end
@@ -145,26 +149,21 @@ end
 --generates a random pelt
 --gender is required if u want correct pelts
 function randPelt(gender)
-	local pelt = lume.randomchoice(Pelts)
-	if gender == "male" then
-		while pelt == "White tortieshell" do
-			pelt = lume.randomchoice(Pelts)
-		end
-	end
+	local pelt = math.floor(lume.random(1,3.99))
 	return pelt
 end
 
 --generates a random eyecolor
 --refernece Eyecolors table in data.lua
 function randEyecolor()
-	local eyecolor = lume.randomchoice(Eyecolors)
+	local eyecolor = math.floor(lume.random(1,3.99))
 	return eyecolor
 end
 
 --generates a random furlength
 --reference Furlengths table in data.lua
 function randFurlength()
-	local fur_length = lume.randomchoice(Furlengths)
+	local fur_length = math.floor(lume.random(1,3.99))
 	return fur_length
 end
 
@@ -206,7 +205,7 @@ end
 function genKits(mom, dad)
 	local kits = {}
 	local moons = randMoons("Kit")
-	for i = 1, lume.round(lume.weightedchoice({[1] = 1, [2] = 2, [3] = 2})) do
+	for i = 1, lume.weightedchoice({[1] = 1, [2] = 2, [3] = 2}) do
 		local cat = genRandomCat("Kit")
 		cat:setParents(mom, dad)
 		cat:setMoons(moons)
@@ -217,5 +216,4 @@ function genKits(mom, dad)
 	if mom:getMate() ~= dad then mateCats(mom, dad) end
 	return kits
 end
-
 
