@@ -1,13 +1,14 @@
 maingame = {}
 
 function maingame:init()
-	self.buttons = {}
 end
 
 function maingame:enter(previous, clans, playerclan, playerCat)
+	self.buttons = {}
+
 	self.clans = clans
-	self.player = Player:new()
-	self.player:setCat(playerCat)
+	self.player = Player:new(playerCat, clans)
+
 	self.playerclan = playerclan
 
 	--clock
@@ -15,26 +16,45 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	self.secondsAfter = 0
 	self.minutes = 0
 
-	self.c1 = cron.every(1, function() self.seconds = self.seconds + 1 end)
-
-	self.map = Map:new(self.player)
+	self.map = Map:new(self.player, self.clans)
 	
 end
 
 function maingame:update(dt)
 	--clock
+	self.seconds = self.seconds + dt
 	self.secondsAfter = math.floor(self.seconds % 60)
 	self.minutes = math.floor(self.seconds / 60)
 
-	self.c1:update(dt)
-
 	self.map:update(dt)
-
-	--print(self.player:getCat():getTileX() .. self.player:getCat():getTileY())
-	
 end
 
 function maingame:mousepressed(x, y, button)
+	local mx, my = push:toGame(x, y)
+	local tx, ty = math.floor((mx+self.player:getCat():getX()+16)/32 - 9), math.floor((my+self.player:getCat():getY()-8)/32 - 4)
+	local button_pressed = false
+	local cat = "empty"
+
+	--this returns what tile you clicked
+	--print(math.floor((mx+self.player:getCat():getX()+16)/32 - 9).. "  " .. math.floor((my+self.player:getCat():getY()-8)/32 - 4))
+
+	if button == 1 then
+		for i, _button in ipairs(self.buttons) do
+			if _button:mouseInside(mx, my) == true then
+				button_pressed = true
+			end
+		end
+		if button_pressed ~= true then
+			for i, clan in ipairs(self.clans) do
+				for i, _cat in ipairs(clan:getCats()) do
+					if _cat:getTileX() == tx and _cat:getTileY() == ty then cat = _cat end
+				end
+			end
+		end
+	end
+
+	if cat ~= "empty" then print(cat:getName()) else print(cat) end
+
 end
 
 function maingame:draw()

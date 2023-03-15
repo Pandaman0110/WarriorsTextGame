@@ -1,6 +1,8 @@
 Map = class("Map")
 
-function Map:initialize(player)
+--most of the drawing and shit happens here
+
+function Map:initialize(player, clans)
 	self.tilemap = {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
 		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -31,6 +33,8 @@ function Map:initialize(player)
 	}
 
 	self.player = player
+	self.clans = clans
+
 	self.player:setMap(self.tilemap)
 	self.testcat = genRandomCat()
 	self.catAi = CatAi:new(self.testcat, self.tilemap)
@@ -49,8 +53,10 @@ function Map:initialize(player)
 
 	self.catAi:moveCat(15, 6, self.tilemap)
 	local x, y = self.catAi:getCat():getPos()
+
+	print(self.catAi:getMap()[1][1] .."  " .. self.tilemap[1][1])
 	
-	randomBlood("light", self.player:getCat()):add(self.decals)
+	--randomBlood("light", self.player:getCat()):add(self.decals)
 end
 
 function Map:draw()
@@ -68,11 +74,19 @@ function Map:draw()
 		end
 	end
 
+	--someone can come in and fix all this to only draw shit in range
+
 	for i, decal in ipairs(self.decals) do 
 		love.graphics.draw(decal:getImage(), ((decal:getX()-1)*self.tileSize-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, ((decal:getY()-1)* self.tileSize-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	end
 
-	self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
+	for i, clan in ipairs(self.clans) do
+		for i, cat in ipairs(clan:getCats()) do
+			cat:drawImage((cat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (cat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
+		end
+	end
+
+	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	self.player:getCat():drawImage(640 / 2 - 16, 360 / 2 - 12)
 end
 
@@ -125,8 +139,6 @@ end
 
 function Decal:update(dt)
 	self.timer = self.timer - dt
-
-	print(self.timer)
 
 	if self.timer < 0 then
 		self:delete()

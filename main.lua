@@ -1,3 +1,5 @@
+local drawDetails = false
+
 function love.load(args)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -63,6 +65,7 @@ function love.load(args)
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(choosecharacter)
 
+	
 end
 
 function love.resize(w, h)
@@ -73,6 +76,10 @@ function love.keypressed(key)
 	gamestate.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
+	end
+	if key == "`" then
+		if drawDetails == false then drawDetails = true
+		elseif drawDetails == true then drawDetails = false end
 	end
 end
 
@@ -93,6 +100,14 @@ function love.draw()
 	push:start()
 		love.graphics.setDefaultFilter("nearest", "nearest")
 		gamestate.draw()
+
+		love.graphics.setFont(EBG_R_10)
+		textSettings()
+
+   		if drawDetails == true then love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 560, 10, 0, scX()) end
+
+		clear()
+
 	push:finish()
 end
 

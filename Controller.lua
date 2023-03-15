@@ -1,7 +1,8 @@
 Player = class("Player")
 
-function Player:initialize(cat, map)
+function Player:initialize(cat, clans, map)
 	self.cat = cat
+	self.clans = clans
 	self.map = map
 end
 
@@ -19,7 +20,14 @@ end
 
 function Player:checkCollision(x, y, map)
 	local collide = false
-	if map[y][x] == 1 then collide = true end 
+	if map[y][x] == 1 then collide = true end
+
+	for i, clan in ipairs(self.clans) do
+		for i, _cat in ipairs(clan:getCats()) do
+			if _cat:getTileX() == x and _cat:getTileY() == y then collide = true end
+		end
+	end
+
 	return collide
 end
 
@@ -96,6 +104,10 @@ end
 
 function CatAi:getCat()
 	return self.cat 
+end
+
+function CatAi:getMap()
+	return self.map 
 end
 
 function CatAi:moveCat(x, y, map)
