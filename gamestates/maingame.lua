@@ -7,8 +7,15 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	self.buttons = {}
 
 	self.clans = clans
-	self.player = Player:new(playerCat, clans)
+	self.cats = {}
 
+	for i, clan in ipairs(self.clans) do
+		for i, cat in ipairs(clan:getCats()) do
+			table.insert(self.cats, cat)
+		end
+	end
+
+	self.player = Player:new(playerCat, self.cats)
 	self.playerclan = playerclan
 
 	--clock
@@ -16,8 +23,7 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	self.secondsAfter = 0
 	self.minutes = 0
 
-	self.map = Map:new(self.player, self.clans)
-	
+	self.map = Map:new(self.player, self.cats)
 end
 
 function maingame:update(dt)

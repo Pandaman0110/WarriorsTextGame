@@ -138,7 +138,8 @@ end
 
 
 function lume.randomchoice(t, limit)
-  return t[love.math.random(#t)]
+  local num = love.math.random(#t)
+  return t[num], num
 end
 
 

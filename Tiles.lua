@@ -2,7 +2,7 @@ Map = class("Map")
 
 --most of the drawing and shit happens here
 
-function Map:initialize(player, clans)
+function Map:initialize(player, cats)
 	self.tilemap = {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
 		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -33,11 +33,12 @@ function Map:initialize(player, clans)
 	}
 
 	self.player = player
-	self.clans = clans
+	self.cats = cats
 
 	self.player:setMap(self.tilemap)
 	self.testcat = genRandomCat()
-	self.catAi = CatAi:new(self.testcat, self.tilemap)
+	table.insert(self.cats, self.testcat)
+	self.catAi = CatAi:new(self.testcat, self.cats, self.tilemap)
 	self.testtimer = 0
 
 	self.decals = {}
@@ -51,10 +52,8 @@ function Map:initialize(player, clans)
 	self.displayY = 12
 	self.tileSize = 32
 
-	self.catAi:moveCat(15, 6, self.tilemap)
+	self.catAi:setPath(15, 6, self.tilemap)
 	local x, y = self.catAi:getCat():getPos()
-
-	print(self.catAi:getMap()[1][1] .."  " .. self.tilemap[1][1])
 	
 	--randomBlood("light", self.player:getCat()):add(self.decals)
 end
@@ -80,19 +79,19 @@ function Map:draw()
 		love.graphics.draw(decal:getImage(), ((decal:getX()-1)*self.tileSize-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, ((decal:getY()-1)* self.tileSize-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	end
 
-	for i, clan in ipairs(self.clans) do
-		for i, cat in ipairs(clan:getCats()) do
-			cat:drawImage((cat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (cat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
-		end
+	for i, cat in ipairs(self.cats) do
+		cat:drawImage((cat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (cat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	end
 
-	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
+
+	self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	self.player:getCat():drawImage(640 / 2 - 16, 360 / 2 - 12)
 end
 
 function Map:update(dt)
 	self.player:update(dt)
 	self.catAi:update(dt)
+	print(self.catAi:getCat():getX())
 
 	for i, decal in ipairs(self.decals) do 
 		decal:update(dt)

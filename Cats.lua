@@ -36,6 +36,7 @@ function Cat:initialize()
 	self._isPlayer = false
 
 	--medical shit
+	self.dead = false
 	self.blood = 100
 	--check if bleeding light == .2 , medium = .4, heavy = .5
 
@@ -58,6 +59,10 @@ or getPos(). i know this doesnt make sense someone else can go in an fix it
 
 
 --accessors
+function Cat:getIsDead()
+	return self.dead 
+end
+
 function Cat:getBlood()
 	return self.blood 
 end
@@ -195,6 +200,10 @@ function Cat:getDirection()
 end
 
 --mutators
+function Cat:kill()
+	self.dead = true 
+end
+
 function Cat:setBlood(blood)
 	self.blood = blood 
 end
