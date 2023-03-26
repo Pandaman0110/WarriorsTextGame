@@ -18,6 +18,8 @@ function Cat:initialize()
 	self.ismoving = false --self explanatory
 	self.direction = "south" --not sure what the fuck im gonna use this for yet
 
+	self.intent = "help" -- help/combat for now
+
 	self.cat_image = cat_image
 	self.name = name
 	self.role = role
@@ -35,12 +37,18 @@ function Cat:initialize()
 	self.apprentice = apprentice
 	self._isPlayer = false
 
+	--combat shit
+	self.combatSpeed = 1
+	self.attacking = false
+	self.attackTimer = 1
+	self.claws = true -- sheathed / unsheated
+
 	--medical shit
 	self.dead = false
 	self.blood = 100
 	--check if bleeding light == .2 , medium = .4, heavy = .5
 
-	self.bleeding = .2
+	self.bleeding = 0
 end
 
 function Cat:drawImage(x, y, s)
@@ -59,6 +67,18 @@ or getPos(). i know this doesnt make sense someone else can go in an fix it
 
 
 --accessors
+function Cat:getIntent()
+	return self.intent 
+end
+
+function Cat:getClaws()
+	return self.claws 
+end
+
+function Cat:getIsAttacking()
+	return self.attacking 
+end
+
 function Cat:getIsDead()
 	return self.dead 
 end
@@ -229,9 +249,19 @@ function Cat:setY(y)
 end
 
 --put the tile positon here
+function Cat:setIntent(intent)
+	self.intent = intent
+end
+
+function Cat:setClaws(claws)
+	self.claws = claws
+end
+
 function Cat:setPos(x, y)
 	self.tileX = x 
-	self.tileY = y 
+	self.tileY = y
+	self.x = self.tileX * 32 - 32
+	self.y = self.tileY * 32 - 32
 end
 
 function Cat:setPixelPos(x, y)
@@ -347,7 +377,7 @@ function Cat:hasKits()
 	else hasKits = true end
 	return hasKits
 end
-
+ 
 function Cat:printDetails()
 	print("Name: " .. self.name)
 	print("Role: " .. self.role)
@@ -400,6 +430,14 @@ function Cat:update(dt)  --just make sure to update the cats
 			self.ismoving = false
 			self.movetimer = 0
 			self.t = 0
+		end
+	end
+
+	if self.attacking == true then 
+		self.attackTimer = self.attackTimer - dt
+		if self.attackTimer < 0 then 
+			self.attackTimer = 1 / self.combatSpeed
+			self.attacking = false 
 		end
 	end
 

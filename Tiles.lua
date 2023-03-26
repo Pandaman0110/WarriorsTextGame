@@ -33,6 +33,7 @@ function Map:initialize(player, cats)
 	}
 
 	self.player = player
+	self.player:getCat():setPos(10, 6)
 	self.cats = cats
 
 	self.player:setMap(self.tilemap)
@@ -91,7 +92,6 @@ end
 function Map:update(dt)
 	self.player:update(dt)
 	self.catAi:update(dt)
-	print(self.catAi:getCat():getX())
 
 	for i, decal in ipairs(self.decals) do 
 		decal:update(dt)

@@ -1,24 +1,12 @@
-Player = class("Player")
+Controller = class("Controller")
 
-function Player:initialize(cat, cats, map)
-	self.cat = cat
-	self.cats = cats
-	self.map = map
-end
-
-function Player:getCat() 
-	return self.cat 
-end 
-
-function Player:setCat(cat) 
-	self.cat = cat
-end
-
-function Player:setMap(map)
+function Controller:initialize(cat, cats, map)
+	self.cat = cat 
+	self.cats = cats 
 	self.map = map 
 end
 
-function Player:checkCollision(x, y, map)
+function Controller:checkCollision(x, y, map)
 	local collide = false
 	if map[y][x] == 1 then collide = true end
 
@@ -27,6 +15,33 @@ function Player:checkCollision(x, y, map)
 	end
 
 	return collide
+end
+
+function Controller:checkIntent(cat)
+	if self.cat:getIntent() == "help" then end
+	if self.cat:getIntent() == "combat" then end
+end
+
+function Controller:getCat() 
+	return self.cat 
+end
+
+function Controller:getMap()
+	return self.map 
+end
+
+function Controller:setMap(map)
+	self.map = map 
+end
+
+function Controller:setCat(cat)
+	self.cat = cat 
+end
+
+Player = class("Player", Controller)
+
+function Player:initialize(cat, cats, map)
+	Controller.initialize(self, cat, cats, map)
 end
 
 function Player:update(dt)
@@ -62,15 +77,12 @@ function Player:update(dt)
 	end
 
 	self.cat:update(dt)
-
 end
 
-CatAi = class("CatAi")
+CatAi = class("CatAi", Controller)
 
 function CatAi:initialize(cat, cats, map)
-	self.cat = cat
-	self.cats = cats
-	self.map = map
+	Controller.initialize(self, cat, cats, map)
 	self.path = {}
 	self.moves = 0
 	self.moveCounter = 0
@@ -84,12 +96,14 @@ function CatAi:update(dt)
 		if self.moveCounter < self.moves then 
 			if self.cat:isMoving() == false then
 				nextMove = self.path[self.currentMove]
-				destX = nextMove[1] - self.cat:getTileX()
-				destY = nextMove[2] - self.cat:getTileY()
 
-				self.cat:moveCat(destX, destY)
-				self.currentMove = self.currentMove + 1
-				self.moveCounter = self.moveCounter + 1
+				if self:checkCollision(nextMove[1], nextMove[2], self.map) == false then 
+					destX = nextMove[1] - self.cat:getTileX()
+					destY = nextMove[2] - self.cat:getTileY()
+					self.cat:moveCat(destX, destY)
+					self.currentMove = self.currentMove + 1
+					self.moveCounter = self.moveCounter + 1
+				end
 			end
 		elseif self.moveCounter > self.moves then 
 			self.currentMove = 2
@@ -100,14 +114,6 @@ function CatAi:update(dt)
 	end
 
 	self.cat:update(dt)
-end
-
-function CatAi:getCat()
-	return self.cat 
-end
-
-function CatAi:getMap()
-	return self.map 
 end
 
 function CatAi:setPath(x, y, map)

@@ -541,8 +541,8 @@ ClanImages = {
 }
 
 GroundTiles = {
-	love.graphics.newImage("Images/grass.png"),
-	love.graphics.newImage("Images/wall.png")
+	love.graphics.newImage("map/grass.png"),
+	love.graphics.newImage("map/wall.png")
 }
 
 Bleeding = {
