@@ -10,6 +10,8 @@ function choosecharacter:init()
 	self.back_button = Button:new(32, 312, _back)
 	local _next = love.graphics.newImage("Images/next.png")
 	self.next_button = Button:new(544, 312, _next)
+	local save = love.graphics.newImage("Images/save.png")
+	self.save_button = Button:new(112, 312, save)
 
 	local _left = love.graphics.newImage("Images/ArrowLeft.png")
 	self.left_button = Button:new(392, 32, _left)
@@ -18,12 +20,17 @@ function choosecharacter:init()
 
 	table.insert(self.buttons, self.next_button)
 	table.insert(self.buttons, self.back_button)
+	table.insert(self.buttons, self.save_button)
 	table.insert(self.buttons, self.left_button)
 	table.insert(self.buttons, self.right_button)
-
 end
 
 function choosecharacter:enter(previous, save, viewing)
+	--saving stuff
+	self.saving = false
+	self.save_name_button = TextBox:new(192, 312, 20)
+
+	--loading saves and shit
 	self.save = nil
 	if save then self.save = save end
 	if viewing then self.viewing = true else self.viewing = false end
@@ -66,18 +73,32 @@ end
 function choosecharacter:update(dt)
 end
 
+function choosecharacter:keypressed(key)
+	self.save_name_button:keypressed(key)
+end
+
 function choosecharacter:mousepressed(x, y, button) 
 	local mx, my = push:toGame(x, y)
 
 	if button == 1 then 
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
-				if i <= 2 then
+				if i <= 3 then
 					if _button == self.next_button then 
 						self.currentCat:setIsPlayer(true) 
 						gamestate.switch(maingame, self.clans, self.playerClan, self.currentCat) 
 					end
 					if _button == self.back_button then gamestate.switch(mainmenu) end
+					if _button == self.save_button then 
+						self.saving = not(self.saving)
+						if self.saving == true then self.save_name_button:activate() end
+						if self.saving == false and not(self.save_name_button:isEmpty()) then 
+							local saveName = self.save_name_button:getText()
+							local saveData = 
+							createSave(_saveName, self.clans)
+							self.save_name_button:deactivate() 
+						end
+					end
 				else 
 					if _button == self.left_button then 
 						self.catListPage = self.catListPage - 1 
@@ -87,7 +108,7 @@ function choosecharacter:mousepressed(x, y, button)
 						self.catListPage = self.catListPage + 1
 						if self.catListPage == self.pages + 1 then self.catListPage = 1 end
 					end
-					if i > 4 then 
+					if i > 5 then 
 						local clan = _button:getObject()
 						self.playerClan = clan
 						self:tableSetup()
@@ -107,7 +128,7 @@ end
 function choosecharacter:update(dt)
 end
 	
-function choosecharacter:draw()	
+function choosecharacter:draw()
 	local cat = self.currentCat
 	local clan = self.playerClan
 	local textX = 232
@@ -117,6 +138,18 @@ function choosecharacter:draw()
 
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
+	end
+
+	--all the saving shit right here
+	if self.saving == true then 
+
+		textSettings()
+		love.graphics.setFont(EBG_R_10)
+
+		self.save_name_button:draw()
+		love.graphics.print("Enter save name, and press save button again to save", 192, 296, 0, scX())
+
+		clear()
 	end
 
 	--all the images right here
@@ -146,8 +179,7 @@ function choosecharacter:draw()
 	love.graphics.print(cat:getRole(), textX, 184, 0, scX())
 	love.graphics.print(cat:getMoons().." moons old", textX, 200, 0, scX())
 	love.graphics.print(cat:getGender(), textX, 216, 0, scX())
-	love.graphics.print(cat:getHealth().." health", textX, 232, 0, scX())
-	love.graphics.print("Mom and dad... "..cat:getMom():getName().." and "..cat:getDad():getName(), textX, 248, 0, scX())
+	love.graphics.print("Mom and dad... "..cat:getMom():getName().." and "..cat:getDad():getName(), textX, 232, 0, scX())
 
 	if cat:getRole() == "Kit" then
 		local str = ""
@@ -156,13 +188,13 @@ function choosecharacter:draw()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Littermates... ".. str, textX, 264, 0, scX())
+		love.graphics.print("Littermates... ".. str, textX, 248, 0, scX())
 	end
 
 	local k = 0
-	if cat:getMate() then love.graphics.print("Mate... " .. cat:getMate():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
-	if cat:getMentor() then love.graphics.print("Mentor... " .. cat:getMentor():getName(), textX, 264 + k * 16 , 0, scX()) k = k + 1 end
-	if cat:getApprentice() then love.graphics.print("Apprentice... " .. cat:getMentor():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
+	if cat:getMate() then love.graphics.print("Mate... " .. cat:getMate():getName(), textX, 248 + k * 16, 0, scX()) k = k + 1 end
+	if cat:getMentor() then love.graphics.print("Mentor... " .. cat:getMentor():getName(), textX, 248 + k * 16 , 0, scX()) k = k + 1 end
+	if cat:getApprentice() then love.graphics.print("Apprentice... " .. cat:getMentor():getName(), textX, 248 + k * 16, 0, scX()) k = k + 1 end
 	if cat:hasKits() then 
 		local str = ""
 		for i, kit in ipairs (cat:getKits()) do 
@@ -170,7 +202,7 @@ function choosecharacter:draw()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0, scX())
+		love.graphics.print("Kits... ".. str, textX, 248 + k * 16, 0, scX())
 		k = k + 1
 	end
 

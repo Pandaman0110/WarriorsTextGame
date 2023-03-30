@@ -1,8 +1,8 @@
 Controller = class("Controller")
 
-function Controller:initialize(cat, cats, map)
-	self.cat = cat 
-	self.cats = cats 
+function Controller:initialize(animal, animals, map)
+	self.animal = animal 
+	self.animals = animals 
 	self.map = map 
 end
 
@@ -10,20 +10,15 @@ function Controller:checkCollision(x, y, map)
 	local collide = false
 	if map[y][x] == 1 then collide = true end
 
-	for i, cat in ipairs(self.cats) do
-		if cat:getTileX() == x and cat:getTileY() == y then collide = true end
+	for i, animal in ipairs(self.animals) do
+		if animal:getTileX() == x and animal:getTileY() == y then collide = true end
 	end
 
 	return collide
 end
 
-function Controller:checkIntent(cat)
-	if self.cat:getIntent() == "help" then end
-	if self.cat:getIntent() == "combat" then end
-end
-
-function Controller:getCat() 
-	return self.cat 
+function Controller:getAnimal() 
+	return self.animal 
 end
 
 function Controller:getMap()
@@ -34,14 +29,22 @@ function Controller:setMap(map)
 	self.map = map 
 end
 
-function Controller:setCat(cat)
-	self.cat = cat 
+function Controller:setAnimal(animal)
+	self.animal = animal 
 end
+
+function Controller:checkTile(x, y)
+	for i, animal in ipairs(self.animals) do
+		if animal:getTileX() == tx and animal:getTileY() == ty then end
+	end
+end
+
+
 
 Player = class("Player", Controller)
 
-function Player:initialize(cat, cats, map)
-	Controller.initialize(self, cat, cats, map)
+function Player:initialize(cat, animals, map)
+	Controller.initialize(self, cat, animals, map)
 end
 
 function Player:update(dt)
@@ -50,7 +53,7 @@ function Player:update(dt)
 	local direction = ""
 	local map = self.map
 
-	if self.cat:isMoving() == false then
+	if self.animal:isMoving() == false then
 		if love.keyboard.isDown("d") or love.keyboard.isDown("a") or love.keyboard.isDown("w") or love.keyboard.isDown("s") then
 			if love.keyboard.isDown("d") then
 				inputX = inputX + 1
@@ -66,41 +69,40 @@ function Player:update(dt)
 				direction = "south"
 			end
 
-			local destTileX = inputX + self.cat:getTileX()
-			local destTileY = inputY + self.cat:getTileY()
+			local destTileX = inputX + self.animal:getTileX()
+			local destTileY = inputY + self.animal:getTileY()
 
 			if self:checkCollision(destTileX, destTileY, self.map) == false then
-				self.cat:setIsMoving(true)
-				self.cat:getInput(inputX, inputY, direction)
+				self.animal:setIsMoving(true)
+				self.animal:getInput(inputX, inputY, direction)
 			end
 		end
 	end
-
-	self.cat:update(dt)
 end
 
-CatAi = class("CatAi", Controller)
+Ai = class("Ai", Controller)
 
-function CatAi:initialize(cat, cats, map)
-	Controller.initialize(self, cat, cats, map)
+function Ai:initialize(animal, animals, map)
+	Controller.initialize(self, animal, animals, map)
+
 	self.path = {}
 	self.moves = 0
 	self.moveCounter = 0
 	self.currentMove = 2
 end
 
-function CatAi:update(dt)
+function Ai:update(dt)
 	local nextMove = {}
 	local destX, destY = 0, 0
 	if self.path ~= nil then 
 		if self.moveCounter < self.moves then 
-			if self.cat:isMoving() == false then
+			if self.animal:isMoving() == false then
 				nextMove = self.path[self.currentMove]
 
 				if self:checkCollision(nextMove[1], nextMove[2], self.map) == false then 
-					destX = nextMove[1] - self.cat:getTileX()
-					destY = nextMove[2] - self.cat:getTileY()
-					self.cat:moveCat(destX, destY)
+					destX = nextMove[1] - self.animal:getTileX()
+					destY = nextMove[2] - self.animal:getTileY()
+					self.animal:move(destX, destY)
 					self.currentMove = self.currentMove + 1
 					self.moveCounter = self.moveCounter + 1
 				end
@@ -112,17 +114,15 @@ function CatAi:update(dt)
 			self.path = nil
 		end
 	end
-
-	self.cat:update(dt)
 end
 
-function CatAi:setPath(x, y, map)
+function Ai:setPath(x, y, map)
 	local walkable = 0 
 	local map = map 
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'JPS', walkable)
 	finder:setMode("ORTHOGONAL")
-	local startx, starty = self.cat:getPos()
+	local startx, starty = self.animal:getPos()
 	local endx = x
 	local endy = y
 	local path = finder:getPath(startx, starty, endx, endy)

@@ -7,7 +7,6 @@ function genRandomCat(role, rec)
 	if role then cat:setRole(role) end
 	cat:setName(genName(cat:getRole()))
 	cat:setMoons(randMoons(cat:getRole()))
-	cat:setHealth(genHealth(cat:getMoons()))
 	cat:setGender(randGender())
 	cat:setPelt(randPelt(cat:getGender()))
 	cat:setEyecolor(randEyecolor())
@@ -68,12 +67,12 @@ end
 
 
 --generates a random name
---suffix is optional, if passed it will give the appropriate suffix
 --reference the Prefixes and Suffixes tables in data.lua
 function genName(role, name)
 	local prefix
 	if not name then prefix = lume.randomchoice(Prefixes) end
 	if name then prefix = name end
+
 	local suffix
 	if role == "Leader" then
 		suffix  = "star"
@@ -86,20 +85,15 @@ function genName(role, name)
 	else 
 		suffix = lume.randomchoice(Suffixes)
 	end
-	local _name = prefix .. suffix
-	return _name
-end
 
---moon is required, generates a random health value based on the age of the cat
-function genHealth(moons)
-	local health
-	if moons >= 0 and moons < 6 then
-		health = lume.random(1, 5)
+	local _name
+	if prefix[#prefix] == suffix[1] then
+		_name = prefix .. "-" .. suffix
+	else
+		_name = prefix .. suffix
 	end
-	if moons >= 6 then
-		health = lume.random(10, 20)
-	end
-	return lume.round(health)
+
+	return _name
 end
 
 --generates a random age based on the role of the cat

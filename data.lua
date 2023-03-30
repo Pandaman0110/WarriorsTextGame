@@ -551,6 +551,11 @@ Bleeding = {
 	love.graphics.newImage("decals/blood_floor_small_3.png"), 
 }
 
+Claws = {
+	love.graphics.newImage("Images/mouthbox_paw.png"),
+	love.graphics.newImage("Images/mouthbox_paw_unsheathed.png")
+}
+
 Quotes = {
 	'"The only true borders lie between day and night, life and death." \n- Brambleberry',
 	'"Strength doesn\'t have to be proved." \n- Firestar',

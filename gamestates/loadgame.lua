@@ -17,7 +17,6 @@ function loadgame:init()
 
 	table.insert(self.buttons, self.next_button)
 	table.insert(self.buttons, self.back_button)
-
 end
 
 function loadgame:enter(previous)
@@ -33,6 +32,29 @@ function loadgame:enter(previous)
 
 		table.insert(self.save_buttons, self.save_one)
 	end
+	--[[
+	local one = love.grahics.newImage("Images/numbers/one.png")
+	local two = love.grahics.newImage("Images/numbers/two.png")
+	local three = love.grahics.newImage("Images/numbers/three.png")
+	local four = love.grahics.newImage("Images/numbers/four.png")
+	local five = love.grahics.newImage("Images/numbers/five.png")
+	local six = love.grahics.newImage("Images/numbers/six.png")
+	local seven = love.grahics.newImage("Images/numbers/seven.png")
+	local eight = love.grahics.newImage("Images/numbers/eight.png")
+	local nine = love.grahics.newImage("Images/numbers/nine.png")
+	local ten = love.grahics.newImage("Images/numbers/ten.png")
+
+	self.one_button
+	self.two_button
+	self.three_button
+	self.four_button
+	self.five_button
+	self.six_button
+	self.seven_button
+	self.eight_button
+	self.nine_button
+	self.ten_button
+	--]]
 end
 
 function loadgame:mousepressed(x, y, button)

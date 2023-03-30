@@ -2,12 +2,10 @@ startup = {}
 
 function startup:init()
 	self.canContinue = false
-	self.c1 = cron.after(2, function() self.canContinue = true end)
 	self.quote = math.floor(lume.random(1, #Quotes + 1))
 end
 
 function startup:update(dt)
-	self.c1:update(dt)
 end
 
 function startup:keypressed(key)
@@ -29,7 +27,7 @@ function startup:draw()
 
 	love.graphics.printf(Quotes[self.quote], 0, 160, 1920, "center", 0, scX())
 
-	if self.canContinue == true then love.graphics.printf("Press space to continue", 0, 260, 1920, "center", 0, scX()) end
+	love.graphics.printf("Press space to continue", 0, 260, 1920, "center", 0, scX())
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)

@@ -17,10 +17,6 @@ function Button:initialize(x, y, image, w, h)
 		self.width = w
 		self.height = h
 	end
-	if s then 
-		self.width = self.width * s
-		self.width = self.width * s 
-	end
 end
 
 function Button:update(dt)
@@ -54,6 +50,10 @@ function Button:getImage()
 	return self.image
 end
 
+function Button:setImage(image)
+	self.image = image
+end
+
 ObjectButton = class("ObjectButton", Button)
 
 function ObjectButton:initialize(x, y, object)
@@ -78,26 +78,32 @@ end
 
 TextBox = class("TextBox", Button)
 
-function TextBox:initialize(x, y, image)
-	Button.initialize(self, x, y, image) --calls parents constructor, : operator Button.initialize(self, x, y, image)
+function TextBox:initialize(x, y, limit)
+	Button.initialize(self, x, y) --calls parents constructor, : operator Button.initialize(self, x, y, image)
 	self.active = false
 	self.text = ""
+	self.limit = limit
 end
 
 function TextBox:draw()
-	love.graphics.draw(self.image, self.x, self.y)
-	love.graphics.printf(self.text, (self.x + self.width * .10), (self.y + self.height * .10), self.width * .90, "left")
+	if self.active == true then 
+		love.graphics.print(self.text, self.x, self.y, 0, scX())
+	end
 end
 
 -- handles some basic text functions
 function TextBox:keypressed(key)
-	if key == "backspace" then
-        local byteoffset = utf8.offset(self.text, -1)
-        self.text = (string.sub(self.text, 1, byteoffset - 1))
-    end
-    if key == "enter" then
-    	self.active = false
-    end
+	if self.active == true then
+		if key == "backspace" and self.text ~= "" then
+      	 	local byteoffset = utf8.offset(self.text, -1)
+      	 	self.text = (string.sub(self.text, 1, byteoffset - 1))
+      	elseif key == "space" then
+      		self.text = self.text .. "_"
+      	elseif key == "return" or key == "lshift" or key == "rshift" or key == "lalt" or key == "ralt" or key == "backspace" then
+   		elseif #self.text <= self.limit then 
+    		self.text = self.text .. key
+   		end
+   	end
 end
 
 function TextBox:isActive()
@@ -108,11 +114,22 @@ function TextBox:getText()
 	return self.text
 end
 
-function TextBox:setActive(bool)
-	self.active = bool
+function TextBox:isEmpty()
+	local empty = false
+	if self.text == "" then empty = true end
+	return empty
 end
 
---this should be used when typing text, its concatenation
+function TextBox:activate()
+	self.active = true
+end
+
+function TextBox:deactivate()
+	self.active = false
+	self.text = ""
+end
+
+--this should be used when typing text
 function TextBox:addText(text)
 	self.text = self.text .. text
 end

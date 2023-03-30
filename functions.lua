@@ -1,5 +1,16 @@
 -- this file is just for general functions 
+local string_meta = getmetatable('')
 
+function string_meta:__index( key )
+    local val = string[ key ]
+    if ( val ) then
+        return val
+    elseif ( tonumber( key ) ) then
+        return self:sub( key, key )
+    else
+        error( "attempt to index a string value with bad key ('" .. tostring( key ) .. "' is not part of the string library)", 2 )
+    end
+end
 
 --these are for putting buttons in the middle of the screen, not the center coordiantes of the image
 function imageCenterX(image) 

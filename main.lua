@@ -28,6 +28,7 @@ function love.load(args)
 	require "Clan"
 	require "Tiles"
 	require "Controller"
+	require "Timer"
 
 	setupBitser()
 
@@ -38,6 +39,7 @@ function love.load(args)
 	require "gamestates/loadgame"
 	require "gamestates/choosecharacter"
 	require "gamestates/maingame"
+	require "gamestates/play"
 
 	---------------------
 
@@ -63,7 +65,7 @@ function love.load(args)
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(choosecharacter)
+	gamestate.switch(mainmenu)
 
 	
 end

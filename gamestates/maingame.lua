@@ -6,18 +6,6 @@ end
 function maingame:enter(previous, clans, playerclan, playerCat)
 	self.buttons = {}
 
-	-- buttons
-	local _help = love.graphics.newImage("Images/help.png")
-	self.help_button = Button:new(480, 320, _help)
-	local _combat = love.graphics.newImage("Images/combat.png")
-	self.combat_button = Button:new(480, 340, _combat)
-	local _mouthbox = love.graphics.newImage("Images/mouthbox.png")
-	self.mouth_button = Button:new(440, 322, _mouthbox)
-
-	table.insert(self.buttons, self.help_button)
-	table.insert(self.buttons, self.combat_button)
-	table.insert(self.buttons, self.mouth_button)
-
 	self.clans = clans
 	self.cats = {}
 
@@ -36,6 +24,20 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	self.minutes = 0
 
 	self.map = Map:new(self.player, self.cats)
+
+	print(self.player:getAnimal():getClaws())
+
+	-- buttons
+	local _help = love.graphics.newImage("Images/help.png")
+	self.help_button = Button:new(480, 320, _help)
+	local _combat = love.graphics.newImage("Images/combat.png")
+	self.combat_button = Button:new(480, 340, _combat)
+	self.mouth_button = Button:new(440, 322, Claws[self.player:getAnimal():getClaws()])
+
+	table.insert(self.buttons, self.help_button)
+	table.insert(self.buttons, self.combat_button)
+	table.insert(self.buttons, self.mouth_button)
+
 end
 
 function maingame:update(dt)
@@ -47,9 +49,19 @@ function maingame:update(dt)
 	self.map:update(dt)
 end
 
+function maingame:keypressed(key)
+	local player_cat = self.player:getAnimal()
+	if key == 'c' then 
+		player_cat:switchClaws(Claws[self.player:getAnimal():getClaws()])
+		self.mouth_button:setImage(Claws[self.player:getAnimal():getClaws()])
+	end
+
+end
+
+
 function maingame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
-	local tx, ty = math.floor((mx+self.player:getCat():getX()+16)/32 - 9), math.floor((my+self.player:getCat():getY()-8)/32 - 4)
+	local tx, ty = math.floor((mx+self.player:getAnimal():getX()+16)/32 - 9), math.floor((my+self.player:getAnimal():getY()-8)/32 - 4)
 	local button_pressed = false --buttons
 
 	--this returns what tile you clicked
@@ -59,18 +71,17 @@ function maingame:mousepressed(x, y, button)
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
 				button_pressed = true
-				if _button == self.help_button then self.player:getCat():setIntent("help") end
-				if _button == self.combat_button then self.player:getCat():setIntent("combat") end
+				if _button == self.help_button then self.player:getAnimal():setIntent("help") end
+				if _button == self.combat_button then self.player:getAnimal():setIntent("combat") end
 			end
 		end
 		if button_pressed ~= true then
 			for i, cat in ipairs(self.cats) do
-				if cat:getTileX() == tx and cat:getTileY() == ty then cat = _cat end
+				if cat:getTileX() == tx and cat:getTileY() == ty then end
 			end
 		end
 	end
 
-	print(self.player:getCat():getIntent())
 end
 
 function maingame:draw()

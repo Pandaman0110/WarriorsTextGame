@@ -1,8 +1,8 @@
 --This file contains the base class for all cats, "Cat"
 
-Cat = class("Cat")
+Animal = class("Animal")
 
-function Cat:initialize()
+function Animal:initialize()
 	-- all this shit has to do with movement and stuff
 	self.tileX = 2
 	self.tileY = 2
@@ -18,14 +18,256 @@ function Cat:initialize()
 	self.ismoving = false --self explanatory
 	self.direction = "south" --not sure what the fuck im gonna use this for yet
 
+	self.image = image
+	self.name = name
+	self.gender = gender
+
+	self.combatStrength = 1
+	self.combatSpeed = 1
+	self.attacking = false
+	self.attackTimer = 1
+	self.claws = 1 -- sheathed / unsheated
+
+	--medical shit
+	self.dead = false
+	self.blood = 100
+	--check if bleeding light == .2 , medium = .4, heavy = .5
+
+	self.bleeding = 0
+end
+
+function Animal:getX()
+	return self.x 
+end
+
+function Animal:getY()
+	return self.y 
+end
+
+function Animal:getTileX()
+	return self.tileX 
+end
+
+function Animal:getTileY()
+	return self.tileY 
+end
+
+function Animal:getDestX()
+	return self.destX
+end
+
+function Animal:getDestY()
+	return self.destX
+end
+
+function Animal:getPos()
+	return self.tileX, self.tileY 
+end
+
+function Animal:getPixelPos()
+	return self.x, self.y
+end
+
+function Animal:getMoveTimer()
+	return self.movetimer
+end
+
+function Animal:isMoving()
+	return self.ismoving
+end
+
+function Animal:getDest()
+	return self.destX, self.destY 
+end
+
+function Animal:getImage()
+	return CatImages[self.image]
+end
+
+function Animal:getImageNum()
+	return self.image
+end
+
+function Animal:getDirection()
+	return self.direction 
+end
+
+function Animal:getIsDead()
+	return self.dead 
+end
+
+function Animal:getBlood()
+	return self.blood 
+end
+
+function Animal:getBleeding()
+	return self.bleeding 
+end
+
+function Animal:getSpeed() 
+	return self.speed
+end
+
+function Animal:getClaws()
+	return self.claws 
+end
+
+function Animal:getIsAttacking()
+	return self.attacking 
+end
+
+function Animal:getName()
+	return self.name 
+end
+
+function Animal:getGender()
+	return self.gender 
+end
+
+function Animal:setPos(x, y)
+	self.tileX = x 
+	self.tileY = y
+	self.x = self.tileX * 32 - 32
+	self.y = self.tileY * 32 - 32
+end
+
+function Animal:setPixelPos(x, y)
+	self.x = x 
+	self.y = y 
+end
+
+function Animal:setDest(x, y)
+	self.destX = x
+	self.destY = y
+end
+
+function Animal:setIsMoving(bool)
+	self.ismoving = bool
+end
+
+function Animal:setMoveTimer(movetimer)
+	self.movetimer = self.movetimer
+end
+
+function Animal:setX(x)
+	self.x = x 
+end
+
+function Animal:setY(y)
+	self.y = y 
+end
+
+function Animal:setTileX(x)
+	self.tileX = x
+end
+
+function Animal:setTileY(y)
+	self.tileY = y
+end
+
+function Animal:setImage(num)
+	self.image = num
+end
+
+function Animal:setDirection(direction)
+	self.direction = direction 
+end
+
+function Animal:kill()
+	self.dead = true 
+end
+
+function Animal:setBlood(blood)
+	self.blood = blood 
+end
+
+function Animal:setBleeding(speed)
+	self.bleeding = speed 
+end
+
+function Animal:setSpeed(speed) 
+	self.speed = speed 
+end
+
+function Animal:switchClaws(claws)
+	if self.claws == 1 then self.claws = 2
+	elseif self.claws == 2 then self.claws = 1 end
+end
+
+function Animal:setName(name)
+	self.name = name
+end
+
+function Animal:setGender(gender)
+	self.gender = gender 
+end
+
+function Animal:drawImage(x, y, s)
+	if not s then love.graphics.draw(CatImages[self.image], x + 2, y + 4) end
+	if s then love.graphics.draw(CatImages[self.image], x, y, 0, s, s) end
+end
+
+function Animal:update(dt)  --just make sure to update the cats
+	local direction = self.direction
+	local rate_of_change = 32 / (16 * self.speed)  --all this shit is just dealing with the animations and stuff like that.
+
+	if self.ismoving == true then
+		self.movetimer = self.movetimer + dt
+
+		self.t = self.t + (rate_of_change * dt)
+		if self.t >= 1 then self.t = 1 end
+
+		self.x = self.prevX + (self.destX - self.prevX) * self.t
+		self.y = self.prevY + (self.destY - self.prevY) * self.t
+
+		if self.movetimer > 1 * self.speed then
+			self.ismoving = false
+			self.movetimer = 0
+			self.t = 0
+		end
+	end
+
+	if self.attacking == true then 
+		self.attackTimer = self.attackTimer - dt
+		if self.attackTimer < 0 then 
+			self.attackTimer = 1 / self.combatSpeed
+			self.attacking = false 
+		end
+	end
+
+	self.blood = self.blood - self.bleeding * dt
+end
+
+function Animal:draw()
+	love.graphics.draw(CatImages[self.image], self.x + 2, self.y + 4)
+end
+
+function Animal:move(x, y, heading)  -- you probably have no reason to use this 
+	if self.ismoving == false then
+		self.ismoving = true 
+		self:getInput(x, y, heading)
+	end
+end
+
+function Animal:getInput(x, y, heading) -- or this
+	self.prevX = self.tileX * 32 - 32
+	self.prevY = self.tileY * 32 - 32
+	self.tileX = self.tileX + x 
+	self.tileY = self.tileY + y
+	self.destX = self.tileX * 32 - 32
+	self.destY = self.tileY * 32 - 32
+	self.direction = heading
+end
+
+Cat = class("Cat", Animal)
+
+function Cat:initialize()
+	Animal.initialize(self)
+
 	self.intent = "help" -- help/combat for now
 
-	self.cat_image = cat_image
-	self.name = name
 	self.role = role
-	self.gender = gender
 	self.moons = moons
-	self.health = health
 	self.eyecolor = eyecolor
 	self.pelt = pelt
 	self.fur_length = fur_length
@@ -36,28 +278,6 @@ function Cat:initialize()
 	self.mentor = mentor 
 	self.apprentice = apprentice
 	self._isPlayer = false
-
-	--combat shit
-	self.combatSpeed = 1
-	self.attacking = false
-	self.attackTimer = 1
-	self.claws = true -- sheathed / unsheated
-
-	--medical shit
-	self.dead = false
-	self.blood = 100
-	--check if bleeding light == .2 , medium = .4, heavy = .5
-
-	self.bleeding = 0
-end
-
-function Cat:drawImage(x, y, s)
-	if not s then love.graphics.draw(CatImages[self.cat_image], x + 2, y + 4) end
-	if s then love.graphics.draw(CatImages[self.cat_image], x, y, 0, s, s) end
-end
-
-function Cat:draw()
-	love.graphics.draw(CatImages[self.cat_image], self.x + 2, self.y + 4)
 end
 
 --[[
@@ -71,100 +291,12 @@ function Cat:getIntent()
 	return self.intent 
 end
 
-function Cat:getClaws()
-	return self.claws 
-end
-
-function Cat:getIsAttacking()
-	return self.attacking 
-end
-
-function Cat:getIsDead()
-	return self.dead 
-end
-
-function Cat:getBlood()
-	return self.blood 
-end
-
-function Cat:getBleeding()
-	return self.bleeding 
-end
-
-function Cat:getSpeed() 
-	return self.speed
-end
-
 function Cat:isPlayer()
 	return self._isPlayer
 end
 
-function Cat:getX()
-	return self.x 
-end
-
-function Cat:getY()
-	return self.y 
-end
-
-function Cat:getTileX()
-	return self.tileX 
-end
-
-function Cat:getTileY()
-	return self.tileY 
-end
-
-function Cat:getDestX()
-	return self.destX
-end
-
-function Cat:getDestY()
-	return self.destX
-end
-
-function Cat:getPos()
-	return self.tileX, self.tileY 
-end
-
-function Cat:getPixelPos()
-	return self.x, self.y
-end
-
-function Cat:getMoveTimer()
-	return self.movetimer
-end
-
-function Cat:isMoving()
-	return self.ismoving
-end
-
-function Cat:getDest()
-	return self.destX, self.destY 
-end
-
-function Cat:getImage()
-	return CatImages[self.cat_image]
-end
-
-function Cat:getImageNum()
-	return self.cat_image
-end
-
-function Cat:getName()
-	return self.name
-end
-
 function Cat:getRole()
 	return self.role
-end
-
-function Cat:getHealth()
-	return self.health
-end
-
-function Cat:getGender()
-	return self.gender 
 end
 
 function Cat:getMoons()
@@ -215,37 +347,9 @@ function Cat:getKits()
 	return self.kits
 end
 
-function Cat:getDirection()
-	return self.direction 
-end
-
 --mutators
-function Cat:kill()
-	self.dead = true 
-end
-
-function Cat:setBlood(blood)
-	self.blood = blood 
-end
-
-function Cat:setBleeding(speed)
-	self.bleeding = speed 
-end
-
-function Cat:setSpeed(speed) 
-	self.speed = speed 
-end
-
 function Cat:setIsPlayer(isplayer) 
 	self._isPlayer = isplayer
-end
-
-function Cat:setX(x)
-	self.x = x 
-end
-
-function Cat:setY(y)
-	self.y = y 
 end
 
 --put the tile positon here
@@ -253,61 +357,8 @@ function Cat:setIntent(intent)
 	self.intent = intent
 end
 
-function Cat:setClaws(claws)
-	self.claws = claws
-end
-
-function Cat:setPos(x, y)
-	self.tileX = x 
-	self.tileY = y
-	self.x = self.tileX * 32 - 32
-	self.y = self.tileY * 32 - 32
-end
-
-function Cat:setPixelPos(x, y)
-	self.x = x 
-	self.y = y 
-end
-
-function Cat:setDest(x, y)
-	self.destX = x
-	self.destY = y
-end
-
-function Cat:setIsMoving(bool)
-	self.ismoving = bool
-end
-
-function Cat:setMoveTimer(movetimer)
-	self.movetimer = self.movetimer
-end
-
-function Cat:setTileX(x)
-	self.tileX = x
-end
-
-function Cat:setTileY(y)
-	self.tileY = y
-end
-
-function Cat:setImage(num)
-	self.cat_image = num
-end
-
-function Cat:setName(name)
-	self.name = name 
-end
-
 function Cat:setRole(role)
 	self.role = role
-end
-
-function Cat:setHealth(health)
-	self.health = health
-end
-
-function Cat:setGender(gender)
-	self.gender = gender 
 end
 
 function Cat:setMoons(moons)
@@ -361,10 +412,6 @@ function Cat:setKits(kits)
 	self.kits = kits
 end
 
-function Cat:setDirection(direction)
-	self.direction = direction 
-end
-
 -- other functions
 function Cat:age()
 	self.moons = self.moons + 1
@@ -383,7 +430,6 @@ function Cat:printDetails()
 	print("Role: " .. self.role)
 	print("Gender: " .. self.gender)
 	print("Moons: " .. self.moons)
-	print("Health: " .. self.health)
 	print("Eyecolor: " .. self.eyecolor)
 	print("Pelt: " .. self.pelt)
 	print("Fur Length: " .. self.fur_length)
@@ -396,50 +442,6 @@ function Cat:printDetails()
 	print(" ")
 end
 
-function Cat:moveCat(x, y, heading)  -- you probably have no reason to use this 
-	if self.ismoving == false then
-		self.ismoving = true 
-		self:getInput(x, y, heading)
-	end
-end
-
-function Cat:getInput(x, y, heading) -- or this
-	self.prevX = self.tileX * 32 - 32
-	self.prevY = self.tileY * 32 - 32
-	self.tileX = self.tileX + x 
-	self.tileY = self.tileY + y
-	self.destX = self.tileX * 32 - 32
-	self.destY = self.tileY * 32 - 32
-	self.direction = heading
-end
-
-function Cat:update(dt)  --just make sure to update the cats
-	local direction = self.direction
-	local rate_of_change = 32 / (16 * self.speed)  --all this shit is just dealing with the animations and stuff like that.
-
-	if self.ismoving == true then
-		self.movetimer = self.movetimer + dt
-
-		self.t = self.t + (rate_of_change * dt)
-		if self.t >= 1 then self.t = 1 end
-
-		self.x = self.prevX + (self.destX - self.prevX) * self.t
-		self.y = self.prevY + (self.destY - self.prevY) * self.t
-
-		if self.movetimer > 1 * self.speed then
-			self.ismoving = false
-			self.movetimer = 0
-			self.t = 0
-		end
-	end
-
-	if self.attacking == true then 
-		self.attackTimer = self.attackTimer - dt
-		if self.attackTimer < 0 then 
-			self.attackTimer = 1 / self.combatSpeed
-			self.attacking = false 
-		end
-	end
-
-	self.blood = self.blood - self.bleeding * dt
+function Cat:printName()
+	print(self.name)
 end

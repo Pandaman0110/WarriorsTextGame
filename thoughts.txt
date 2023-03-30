@@ -1,0 +1,6 @@
+to-do 
+
+1. fix family generation and what not, everyone needs to have a litter and shit
+2. saving and loading
+3. attack system
+4. make the buttoins cleaner, maybe abstract some gamestate stuff

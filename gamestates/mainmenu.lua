@@ -3,26 +3,21 @@ mainmenu = {}
 function mainmenu:init()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
-	self.canContinue = false
-	self.c1 = cron.after(2, function() self.canContinue = true end)
-
 	self.buttons = {}
 
-	local startImage = love.graphics.newImage("Images/StartGame.png")
-	self.start_game = Button:new(imageCenterX(startImage), imageCenterY(startImage) - 40, startImage)
+	local play = love.graphics.newImage("Images/playbutton.png")
+	self.play_button = Button:new(32, 128, play)
 	local loadImage = love.graphics.newImage("Images/StartGame.png")
 	self.load_game = Button:new(imageCenterX(loadImage), imageCenterY(loadImage), loadImage)
-	local optionsImage = love.graphics.newImage("Images/StartGame.png")
-	self.options = Button:new(imageCenterX(optionsImage), imageCenterY(optionsImage) + 40, optionsImage)
+	local options = love.graphics.newImage("Images/optionsbutton.png")
+	self.options_button = Button:new(32, 192 + 16, options)
 
-	table.insert(self.buttons, self.start_game)
+	table.insert(self.buttons, self.play_button)
 	table.insert(self.buttons, self.load_game)
-	table.insert(self.buttons, self.options)
-
+	table.insert(self.buttons, self.options_button)
 end
 
 function mainmenu:update(dt)
-	self.c1:update(dt)
 end
 
 function mainmenu:mousepressed(x, y, button)
@@ -31,10 +26,10 @@ function mainmenu:mousepressed(x, y, button)
 
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
-			if _button:mouseInside(mx, my) == true and self.canContinue == true then
-				if _button == self.start_game then gamestate.switch(choosecharacter) end
+			if _button:mouseInside(mx, my) == true then
+				if _button == self.play_button then gamestate.switch(play) end
 				if _button == self.load_game then gamestate.switch(loadgame) end
-				if _button == self.options then gamestate.switch(options) end
+				if _button == self.options_button then gamestate.switch(options) end
 			end
 		end
 	end
@@ -42,7 +37,6 @@ end
 
 
 function mainmenu:draw()
-
 	love.graphics.draw(self.background, 0, 0, 0, 640 / self.background:getWidth(), 360 / self.background:getHeight())
 
 	for i, _button in ipairs(self.buttons) do
