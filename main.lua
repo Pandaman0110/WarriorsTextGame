@@ -1,6 +1,12 @@
 local drawDetails = false
 
 function love.load(args)
+	if love.filesystem.getInfo("save_names") == nil then
+		love.filesystem.write("save_names", "example_save\n")
+	elseif love.filesystem.read(saves_names:isEOF()) then
+		love.filesystem.write("save_names", "example_save\n")
+	end
+
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	--third party libraries

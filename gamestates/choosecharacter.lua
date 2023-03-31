@@ -28,6 +28,8 @@ end
 function choosecharacter:enter(previous, save, viewing)
 	--saving stuff
 	self.saving = false
+	self.savingText = ""
+	self.savingTextTimer = 0
 	self.save_name_button = TextBox:new(192, 312, 20)
 
 	--loading saves and shit
@@ -71,6 +73,13 @@ end
 
 
 function choosecharacter:update(dt)
+	if self.savingText == "Duplicate name, save not created" then
+		self.savingTextTimer = self.savingTextTimer + dt
+		if self.savingTextTimer > 3 then 
+			self.savingTextTimer = 0
+			self.savingText = ""
+		end
+	end
 end
 
 function choosecharacter:keypressed(key)
@@ -91,12 +100,20 @@ function choosecharacter:mousepressed(x, y, button)
 					if _button == self.back_button then gamestate.switch(mainmenu) end
 					if _button == self.save_button then 
 						self.saving = not(self.saving)
-						if self.saving == true then self.save_name_button:activate() end
+						if self.saving == true then 
+							self.save_name_button:activate()
+							self.savingText = "Enter save name, and press save button again to save"
+						end
 						if self.saving == false and not(self.save_name_button:isEmpty()) then 
 							local saveName = self.save_name_button:getText()
-							local saveData = 
-							createSave(_saveName, self.clans)
-							self.save_name_button:deactivate() 
+							local success = createSave(saveName, self.clans)
+							if success == false then
+								self.savingText = "Duplicate name, save not created"
+								self.save_name_button:deactivate()
+							elseif success == true then
+								self.savingText = ""
+								self.save_name_button:deactivate()
+							end
 						end
 					end
 				else 
@@ -141,16 +158,14 @@ function choosecharacter:draw()
 	end
 
 	--all the saving shit right here
-	if self.saving == true then 
 
-		textSettings()
-		love.graphics.setFont(EBG_R_10)
+	textSettings()
+	love.graphics.setFont(EBG_R_10)	
 
-		self.save_name_button:draw()
-		love.graphics.print("Enter save name, and press save button again to save", 192, 296, 0, scX())
+	love.graphics.print(self.savingText, 192, 296, 0, scX())
+	self.save_name_button:draw()
 
-		clear()
-	end
+	clear()
 
 	--all the images right here
 	clan:draw(112, 32, 2)

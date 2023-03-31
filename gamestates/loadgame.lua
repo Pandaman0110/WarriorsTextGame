@@ -23,7 +23,13 @@ function loadgame:enter(previous)
 	self.save = nil
 	self.save_buttons = {}
 	self.saves = {}
+	self.userdirectory = love.filesystem.getSaveDirectory()
+	
+	for i, save in ipairs (self.directoryFiles) do
+		print(save)
+	end
 
+	--[[
 	if love.filesystem.getInfo("SaveOne") ~= nil then 
 		table.insert(self.saves, bitser.loadLoveFile("SaveOne"))
 
