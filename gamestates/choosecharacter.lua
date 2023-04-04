@@ -2,6 +2,9 @@
 choosecharacter = {}
 
 function choosecharacter:init()
+end
+
+function choosecharacter:enter(previous, save)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
 	self.buttons = {}
@@ -10,8 +13,10 @@ function choosecharacter:init()
 	self.back_button = Button:new(32, 312, _back)
 	local _next = love.graphics.newImage("Images/next.png")
 	self.next_button = Button:new(544, 312, _next)
-	local save = love.graphics.newImage("Images/save.png")
-	self.save_button = Button:new(112, 312, save)
+	local _save = love.graphics.newImage("Images/save.png")
+	self.save_button = Button:new(112, 312, _save)
+	local _regen = love.graphics.newImage("Images/regen.png")
+	self.regen_button = Button:new(144, 256, _regen)
 
 	local _left = love.graphics.newImage("Images/ArrowLeft.png")
 	self.left_button = Button:new(392, 32, _left)
@@ -21,11 +26,10 @@ function choosecharacter:init()
 	table.insert(self.buttons, self.next_button)
 	table.insert(self.buttons, self.back_button)
 	table.insert(self.buttons, self.save_button)
+	table.insert(self.buttons, self.regen_button)
 	table.insert(self.buttons, self.left_button)
 	table.insert(self.buttons, self.right_button)
-end
 
-function choosecharacter:enter(previous, save, viewing)
 	--saving stuff
 	self.saving = false
 	self.savingText = ""
@@ -35,40 +39,18 @@ function choosecharacter:enter(previous, save, viewing)
 	--loading saves and shit
 	self.save = nil
 	if save then self.save = save end
-	if viewing then self.viewing = true else self.viewing = false end
 
-	self.clans = {}
+	self:clanButtons(true)
 
-	local clan1
-	local clan2
-	local clan3
-	local clan4
+	if self.save ~= nil then self.playerClan = self.save[3]:getClan()
+	else self.playerClan = self.clans[1] end
 
-	if not self.save then 
-		clan1 = genClan("Thunder")
-		clan2 = genClan("River")
-		clan3 = genClan("Wind")
-		clan4 = genClan("Shadow")
-	elseif self.save then
-		clan1 = self.save[2]
-		clan2 = self.save[3]
-		clan3 = self.save[4]
-		clan4 = self.save[5]
-	end
-
-	table.insert(self.clans, clan1)
-	table.insert(self.clans, clan2)
-	table.insert(self.clans, clan3)
-	table.insert(self.clans, clan4)
-
-	for i, clan in pairs(self.clans) do
-		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan)
-		table.insert(self.buttons, _button)
-	end
-
-	self.playerClan = clan1
 	self:tableSetup()
 	self:catButtons()
+
+	if self.save ~= nil then self.currentCat = self.save[3]
+	else self.currentCat = self.cat_buttons[1]:getObject() end
+
 end
 
 
@@ -92,51 +74,61 @@ function choosecharacter:mousepressed(x, y, button)
 	if button == 1 then 
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
-				if i <= 3 then
-					if _button == self.next_button then 
-						self.currentCat:setIsPlayer(true) 
-						gamestate.switch(maingame, self.clans, self.playerClan, self.currentCat) 
-					end
-					if _button == self.back_button then gamestate.switch(mainmenu) end
-					if _button == self.save_button then 
-						self.saving = not(self.saving)
-						if self.saving == true then 
-							self.save_name_button:activate()
-							self.savingText = "Enter save name, and press save button again to save"
-						end
-						if self.saving == false and not(self.save_name_button:isEmpty()) then 
-							local saveName = self.save_name_button:getText()
-							local success = createSave(saveName, self.clans)
-							if success == false then
-								self.savingText = "Duplicate name, save not created"
-								self.save_name_button:deactivate()
-							elseif success == true then
-								self.savingText = ""
-								self.save_name_button:deactivate()
-							end
-						end
-					end
-				else 
-					if _button == self.left_button then 
-						self.catListPage = self.catListPage - 1 
-						if self.catListPage == 0 then self.catListPage = self.pages  end
-					end
-					if _button == self.right_button then 
-						self.catListPage = self.catListPage + 1
-						if self.catListPage == self.pages + 1 then self.catListPage = 1 end
-					end
-					if i > 5 then 
-						local clan = _button:getObject()
-						self.playerClan = clan
-						self:tableSetup()
-					end
-					self:catButtons()
+				if _button == self.next_button then 
+					self.currentCat:setIsPlayer(true) 
+					gamestate.switch(maingame, self.clans, self.playerClan, self.currentCat) 
 				end
+				if _button == self.back_button then gamestate.switch(mainmenu) end
+				if _button == self.save_button then 
+					self.saving = not(self.saving)
+					if self.saving == true then 
+						self.save_name_button:activate()
+						self.savingText = "Enter save name, and press save button again to save"
+					end
+					if self.saving == false and not(self.save_name_button:isEmpty()) then 
+						local saveName = self.save_name_button:getText()
+						self.currentCat:setIsPlayer("true")
+						local success = createSave(saveName, 1, self.currentCat,  self.clans)
+						self.currentCat:setIsPlayer("false")
+
+						if success == false then
+							self.savingText = "Duplicate name, save not created"
+							self.save_name_button:deactivate()
+						elseif success == true then
+							self.savingText = ""
+							self.save_name_button:deactivate()
+						end
+					end
+				end
+				if _button == self.regen_button then
+					self:clanButtons()
+					self.playerClan = self.clans[1]
+					self:tableSetup()
+				end
+				if _button == self.left_button then 
+					self.catListPage = self.catListPage - 1 
+					if self.catListPage == 0 then self.catListPage = self.pages  end
+				end
+				if _button == self.right_button then 
+					self.catListPage = self.catListPage + 1
+					if self.catListPage == self.pages + 1 then self.catListPage = 1 end
+				end
+				self:catButtons()
+				self.currentCat = self.cat_buttons[1]:getObject()
 			end
 		end
 		for i, _button in ipairs (self.cat_buttons) do
 			if _button:mouseInside(mx, my) == true then
 				self.currentCat = _button:getObject()
+			end
+		end
+		for i, _button in ipairs (self.clan_buttons) do 
+			if _button:mouseInside(mx, my) == true then 
+				local clan = _button:getObject()
+				self.playerClan = clan
+				self:tableSetup()
+				self:catButtons()
+				self.currentCat = self.cat_buttons[1]:getObject()
 			end
 		end
 	end
@@ -154,6 +146,10 @@ function choosecharacter:draw()
 	love.graphics.draw(self.background, 0, 0)
 
 	for i, _button in ipairs(self.buttons) do
+		_button:draw()
+	end
+
+	for i, _button in ipairs(self.clan_buttons) do
 		_button:draw()
 	end
 
@@ -264,7 +260,7 @@ function choosecharacter:catButtons()
 		end
 		table.insert(self.cat_buttons, cat_button)
 	end
-	self.currentCat = self.cat_buttons[1]:getObject()
+	--self.currentCat = self.cat_buttons[1]:getObject()
 end
 
 function choosecharacter:tableSetup()
@@ -281,5 +277,44 @@ function choosecharacter:tableSetup()
 		for k = 1, 10 do
 			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
 		end
+	end
+end
+
+function choosecharacter:clanButtons(first)
+	self.clans = {}
+	self.clan_buttons = {}
+
+	local clan1
+	local clan2
+	local clan3
+	local clan4
+
+	if first then 
+		if not self.save then 
+			clan1 = genClan("Thunder")
+			clan2 = genClan("River")
+			clan3 = genClan("Wind")
+			clan4 = genClan("Shadow")
+		elseif self.save then
+			clan1 = self.save[4][1]
+			clan2 = self.save[4][2]
+			clan3 = self.save[4][3]
+			clan4 = self.save[4][4]
+		end
+	else
+		clan1 = genClan("Thunder")
+		clan2 = genClan("River")
+		clan3 = genClan("Wind")
+		clan4 = genClan("Shadow")
+	end
+
+	table.insert(self.clans, clan1)
+	table.insert(self.clans, clan2)
+	table.insert(self.clans, clan3)
+	table.insert(self.clans, clan4)
+
+	for i, clan in pairs(self.clans) do
+		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan)
+		table.insert(self.clan_buttons, _button)
 	end
 end

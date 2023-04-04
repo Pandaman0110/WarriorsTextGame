@@ -1,11 +1,12 @@
 local drawDetails = false
 
 function love.load(args)
-	if love.filesystem.getInfo("save_names") == nil then
-		love.filesystem.write("save_names", "example_save\n")
-	elseif love.filesystem.read(saves_names:isEOF()) then
-		love.filesystem.write("save_names", "example_save\n")
-	end
+	--this makes sure the person has a save folder
+	--if love.filesystem.getInfo("save_names") == nil then
+	--	love.filesystem.write("save_names", "example_save\n")
+	--elseif love.filesystem.read("saves_names") == nil then
+	--	love.filesystem.write("save_names", "example_save\n")
+	--end
 
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -62,8 +63,14 @@ function love.load(args)
 	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale)
 	EBG_R_10:setFilter("nearest", "nearest")
 
+	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale)
+	EBG_R_8:setFilter("nearest", "nearest")
+
 	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale)
 	EBG_R_20:setFilter("nearest", "nearest")
+
+	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale)
+	EBG_R_25:setFilter("nearest", "nearest")
 
 	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale)
 	EBG_I_Large:setFilter("nearest", "nearest")
@@ -71,7 +78,7 @@ function love.load(args)
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(mainmenu)
+	gamestate.switch(startup)
 
 	
 end

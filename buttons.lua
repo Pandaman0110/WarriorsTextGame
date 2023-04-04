@@ -26,6 +26,7 @@ function Button:mouseInside(mx, my)
 	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
 end
 
+
 function Button:draw()
 	love.graphics.draw(self.image, self.x, self.y)
 end 
@@ -56,9 +57,10 @@ end
 
 ObjectButton = class("ObjectButton", Button)
 
-function ObjectButton:initialize(x, y, object)
+function ObjectButton:initialize(x, y, object, image)
 	self.object = object
-	self.image = object:getImage()
+	if image then self.image = image 
+	elseif not image then self.image = object:getImage() end 
 	Button.initialize(self, x, y, self.image)
 end
 
@@ -66,7 +68,7 @@ function ObjectButton:getObject()
 	return self.object
 end
 
-function ObjectButton:setObejct(object)
+function ObjectButton:setObject(object)
 	self.object = object
 end
 
@@ -148,7 +150,7 @@ end
 
 function TextButton:draw()
 	love.graphics.draw(self.image, self.x, self.y)
-	love.graphics.print(self.text)
+	love.graphics.print(self.text, self.x + self.x * .9, self.y + self.y * .9)
 end
 
 function TextButton:getText()

@@ -62,6 +62,11 @@ function genClan(name)
 	for i = 1, lume.round(lume.random(1, 2)) do
 		clan:insertCat(genRandomCat("Elder"))
 	end
+
+	for i, cat in ipairs(clan:getCats()) do
+		cat:setClan(clan)
+	end
+
 	return clan
 end
 

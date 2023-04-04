@@ -9,7 +9,7 @@ function startup:update(dt)
 end
 
 function startup:keypressed(key)
-	if key == "space" and self.canContinue == true then
+	if key == "space" then
 		gamestate.switch(mainmenu)
 	end
 	if key == "left" then 

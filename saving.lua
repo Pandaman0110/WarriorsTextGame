@@ -11,13 +11,24 @@ function setupBitser()
 	bitser.registerClass(Ai)
 end
 
---pass a table in
---[1 should be all the game data, 2-5 should be the clans]
-function createSave(slot, t, misc)
-	local name = slot
-	local saveNames = loadSaveNames()
+    -- Save Instructions --
 
-	for i, _name in ipairs (saveNames) do
+--[[ 
+
+[1] slot is the name of the save. t is a table
+[2] is game phase. for now 1 will be character select and 2 can be game in progress
+[3] should be the player cat
+[4] should be the clans in a table
+
+
+
+
+]]--
+
+function createSave(name, phase, player, clans, misc)
+	local save_names = loadSaveNames()
+
+	for i, _name in ipairs (save_names) do
 		if name == _name then
 			return false
 		end
@@ -26,12 +37,14 @@ function createSave(slot, t, misc)
 	love.filesystem.append("save_names", name .. "\n")
 
 	local saveData = {}
-	table.insert(saveData, slot)
-	for i, clan in ipairs (t) do
-		table.insert(saveData, clan)
-	end
-	love.filesystem.remove(name)
+
+	table.insert(saveData, name)
+	table.insert(saveData, phase) 
+	table.insert(saveData, player) 
+	table.insert(saveData, clans)
+
 	bitser.dumpLoveFile(name, saveData)
+
 	return true
 end
 
@@ -41,13 +54,13 @@ function loadSave(slot)
 end
 
 function loadSaveNames()
-	local saveNames = {}
+	local save_names = {}
 	local directory = love.filesystem.getSaveDirectory()
 	--C:\Users\chanc\AppData\Roaming\LOVE\WTG
 	
 	for line in love.filesystem.lines("save_names") do 
-		table.insert(saveNames, line)
+		table.insert(save_names, line)
 	end
 
-	return saveNames
+	return save_names
 end

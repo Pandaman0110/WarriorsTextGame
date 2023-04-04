@@ -556,6 +556,19 @@ Claws = {
 	love.graphics.newImage("Images/mouthbox_paw_unsheathed.png")
 }
 
+SaveNumbers = {
+	love.graphics.newImage("Images/numbers/one.png"),
+	love.graphics.newImage("Images/numbers/two.png"),
+	love.graphics.newImage("Images/numbers/three.png"),
+	love.graphics.newImage("Images/numbers/four.png"),
+	love.graphics.newImage("Images/numbers/five.png"),
+	love.graphics.newImage("Images/numbers/six.png"),
+	love.graphics.newImage("Images/numbers/seven.png"),
+	love.graphics.newImage("Images/numbers/eight.png"),
+	love.graphics.newImage("Images/numbers/nine.png"),
+	love.graphics.newImage("Images/numbers/ten.png"),
+}
+
 Quotes = {
 	'"The only true borders lie between day and night, life and death." \n- Brambleberry',
 	'"Strength doesn\'t have to be proved." \n- Firestar',

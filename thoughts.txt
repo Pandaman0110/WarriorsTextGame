@@ -4,3 +4,4 @@ to-do
 2. saving and loading
 3. attack system
 4. make the buttoins cleaner, maybe abstract some gamestate stuff
+5. curate the names list more, weird kittypet and early cats shiots

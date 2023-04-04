@@ -3,6 +3,9 @@ loadgame = {}
 
 --display save details or something
 function loadgame:init()
+end
+
+function loadgame:enter(previous)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
 	self.buttons = {}
@@ -12,93 +15,82 @@ function loadgame:init()
 	local _next = love.graphics.newImage("Images/next.png")
 	self.next_button = Button:new(544, 312, _next)
 
-	local _view = love.graphics.newImage("Images/StartGame.png")
-	self.view_button = Button:new(288, 32, _view)
-
 	table.insert(self.buttons, self.next_button)
 	table.insert(self.buttons, self.back_button)
-end
 
-function loadgame:enter(previous)
 	self.save = nil
 	self.save_buttons = {}
 	self.saves = {}
-	self.userdirectory = love.filesystem.getSaveDirectory()
+	self.save_names = loadSaveNames()
+	self.userDirectory = love.filesystem.getSaveDirectory()
+
+	self.save_pic =  love.graphics.newImage("Images/blank.png")
 	
-	for i, save in ipairs (self.directoryFiles) do
-		print(save)
+	for i, name in ipairs (self.save_names) do
+		local save_button
+		local save = loadSave(name)
+		table.insert(self.saves, save)
+
+		if i > 5 then
+			local k  = i - 5
+			save_button = ObjectButton:new(96, 32 + 32 * (k - 1), self.saves[i], SaveNumbers[i])
+		else 
+			save_button = ObjectButton:new(32, 32 + 32 * (i - 1), self.saves[i], SaveNumbers[i])
+		end
+		table.insert(self.buttons, save_button)
 	end
-
-	--[[
-	if love.filesystem.getInfo("SaveOne") ~= nil then 
-		table.insert(self.saves, bitser.loadLoveFile("SaveOne"))
-
-		local save_1 = love.graphics.newImage("Images/StartGame.png")
-		self.save_one = Button:new(32, 32, save_1)
-
-		table.insert(self.save_buttons, self.save_one)
-	end
-	--[[
-	local one = love.grahics.newImage("Images/numbers/one.png")
-	local two = love.grahics.newImage("Images/numbers/two.png")
-	local three = love.grahics.newImage("Images/numbers/three.png")
-	local four = love.grahics.newImage("Images/numbers/four.png")
-	local five = love.grahics.newImage("Images/numbers/five.png")
-	local six = love.grahics.newImage("Images/numbers/six.png")
-	local seven = love.grahics.newImage("Images/numbers/seven.png")
-	local eight = love.grahics.newImage("Images/numbers/eight.png")
-	local nine = love.grahics.newImage("Images/numbers/nine.png")
-	local ten = love.grahics.newImage("Images/numbers/ten.png")
-
-	self.one_button
-	self.two_button
-	self.three_button
-	self.four_button
-	self.five_button
-	self.six_button
-	self.seven_button
-	self.eight_button
-	self.nine_button
-	self.ten_button
-	--]]
 end
 
 function loadgame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
 
 	if button == 1 then 
-		if self.view_button:mouseInside(mx, my) == true then
-			local viewing = true
-			gamestate.switch(choosecharacter, self.save, viewing) 
-		end
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
-				if _button == self.next_button then gamestate.switch(mainmenu) end
+				if _button == self.next_button then
+					if self.save == nil then break
+					else 
+						local game_phase = self.save[2]
+						if game_phase == 1 then gamestate.switch(choosecharacter, self.save)
+						elseif game_phase == 2 then gamestate.switch(maingame, self.save)
+						end
+					end
+				end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
+				if i >= 3 then self.save = _button:getObject() end
 			end
-		end
-		for i, _button in ipairs (self.save_buttons) do
-			if _button:mouseInside(mx, my) == true then self.save = self.saves[i] end
 		end
 	end
 end
 
 function loadgame:draw()
+	local name, game_phase, player, clans
+	if self.save ~= nil then
+		name = self.save[1]
+		game_phase = self.save[2]
+		player = self.save[3]
+		clans = self.save[4]
+	end
+
 	love.graphics.draw(self.background, 0, 0)
 
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
 
-	for i, _button in ipairs(self.save_buttons) do
-		_button:draw()
-	end
-
-
 	if self.save ~= nil then
-		self.view_button:draw()
-	end
+		textSettings()
+		love.graphics.setFont(EBG_R_25)
 
+		love.graphics.printf(name, 0, 32, 1920, "center", 0, scX())
+
+		love.graphics.setFont(EBG_R_20)
+
+		love.graphics.print(player:getName(), 160 + 106, 80, 0, scX())
+
+		clear()
+
+		player:drawImage(160, 80, 2)
+	end
 
 end
-

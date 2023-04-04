@@ -169,6 +169,10 @@ function Animal:setImage(num)
 	self.image = num
 end
 
+function Animal:setImageEVIL(image)
+	self.image = image 
+end
+
 function Animal:setDirection(direction)
 	self.direction = direction 
 end
@@ -266,6 +270,7 @@ function Cat:initialize()
 
 	self.intent = "help" -- help/combat for now
 
+	self.clan = clan
 	self.role = role
 	self.moons = moons
 	self.eyecolor = eyecolor
@@ -287,6 +292,10 @@ or getPos(). i know this doesnt make sense someone else can go in an fix it
 
 
 --accessors
+function Cat:getClan()
+	return self.clan 
+end
+
 function Cat:getIntent()
 	return self.intent 
 end
@@ -348,6 +357,10 @@ function Cat:getKits()
 end
 
 --mutators
+function Cat:setClan(clan)
+	self.clan = clan
+end
+
 function Cat:setIsPlayer(isplayer) 
 	self._isPlayer = isplayer
 end
