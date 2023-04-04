@@ -5,16 +5,8 @@ function mainmenu:init()
 
 	self.buttons = {}
 
-	local play = love.graphics.newImage("Images/playbutton.png")
-	self.play_button = Button:new(32, 128, play)
-	local loadImage = love.graphics.newImage("Images/StartGame.png")
-	self.load_game = Button:new(imageCenterX(loadImage), imageCenterY(loadImage), loadImage)
-	local options = love.graphics.newImage("Images/optionsbutton.png")
-	self.options_button = Button:new(32, 192 + 16, options)
-
-	table.insert(self.buttons, self.play_button)
-	table.insert(self.buttons, self.load_game)
-	table.insert(self.buttons, self.options_button)
+	self.play_button = ImageButton:new(32, 128, love.graphics.newImage("Images/playbutton.png"), self.buttons)
+	self.options_button = ImageButton:new(32, 192 + 16, love.graphics.newImage("Images/optionsbutton.png"), self.buttons)
 end
 
 function mainmenu:update(dt)
@@ -28,7 +20,6 @@ function mainmenu:mousepressed(x, y, button)
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.play_button then gamestate.switch(play) end
-				if _button == self.load_game then gamestate.switch(loadgame) end
 				if _button == self.options_button then gamestate.switch(options) end
 			end
 		end

@@ -9,32 +9,18 @@ function choosecharacter:enter(previous, save)
 
 	self.buttons = {}
 
-	local _back = love.graphics.newImage("Images/back.png")
-	self.back_button = Button:new(32, 312, _back)
-	local _next = love.graphics.newImage("Images/next.png")
-	self.next_button = Button:new(544, 312, _next)
-	local _save = love.graphics.newImage("Images/save.png")
-	self.save_button = Button:new(112, 312, _save)
-	local _regen = love.graphics.newImage("Images/regen.png")
-	self.regen_button = Button:new(144, 256, _regen)
-
-	local _left = love.graphics.newImage("Images/ArrowLeft.png")
-	self.left_button = Button:new(392, 32, _left)
-	local _right = love.graphics.newImage("Images/ArrowRight.png")
-	self.right_button = Button:new(576, 32, _right)
-
-	table.insert(self.buttons, self.next_button)
-	table.insert(self.buttons, self.back_button)
-	table.insert(self.buttons, self.save_button)
-	table.insert(self.buttons, self.regen_button)
-	table.insert(self.buttons, self.left_button)
-	table.insert(self.buttons, self.right_button)
+	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
+	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
+	self.save_button = ImageButton:new(112, 312, love.graphics.newImage("Images/save.png"), self.buttons)
+	self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
+	self.left_button = ImageButton:new(392, 32, love.graphics.newImage("Images/ArrowLeft.png"), self.buttons)
+	self.right_button = ImageButton:new(576, 32, love.graphics.newImage("Images/ArrowRight.png"), self.buttons)
 
 	--saving stuff
 	self.saving = false
 	self.savingText = ""
 	self.savingTextTimer = 0
-	self.save_name_button = TextBox:new(192, 312, 20)
+	self.save_name_button = TextBox:new(192, 312, 20, nil)
 
 	--loading saves and shit
 	self.save = nil
@@ -52,7 +38,6 @@ function choosecharacter:enter(previous, save)
 	else self.currentCat = self.cat_buttons[1]:getObject() end
 
 end
-
 
 function choosecharacter:update(dt)
 	if self.savingText == "Duplicate name, save not created" then
@@ -254,13 +239,15 @@ function choosecharacter:catButtons()
 		local cat_button
 		if i > 5 then
 			local k = i - 5
-			cat_button = InvisibleButton:new(512, 80 + 32 * (k-1), 120, 32, cat)
+			cat_button = ObjectButton:new(512, 80 + 32 * (k-1), cat, cat:getImage(), self.cat_buttons)
+			cat_button:setWidth(120)
+			cat_button:setHeight(32)
 		else
-			cat_button = InvisibleButton:new(392, 80 + 32 * (i-1), 120, 32, cat)
+			cat_button = ObjectButton:new(392, 80 + 32 * (i-1), cat, cat:getImage(), self.cat_buttons)
+			cat_button:setWidth(120)
+			cat_button:setHeight(32)
 		end
-		table.insert(self.cat_buttons, cat_button)
 	end
-	--self.currentCat = self.cat_buttons[1]:getObject()
 end
 
 function choosecharacter:tableSetup()
@@ -308,13 +295,13 @@ function choosecharacter:clanButtons(first)
 		clan4 = genClan("Shadow")
 	end
 
+
 	table.insert(self.clans, clan1)
 	table.insert(self.clans, clan2)
 	table.insert(self.clans, clan3)
 	table.insert(self.clans, clan4)
 
 	for i, clan in pairs(self.clans) do
-		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan)
-		table.insert(self.clan_buttons, _button)
+		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan, clan:getImage(), self.clan_buttons)
 	end
 end

@@ -79,8 +79,6 @@ function love.load(args)
 
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
-
-	
 end
 
 function love.resize(w, h)
@@ -95,6 +93,12 @@ function love.keypressed(key)
 	if key == "`" then
 		if drawDetails == false then drawDetails = true
 		elseif drawDetails == true then drawDetails = false end
+	end
+
+	if key == "g" then 
+		for i = 1, 1 do 
+			local clan = genClan("Thunder")
+		end
 	end
 end
 

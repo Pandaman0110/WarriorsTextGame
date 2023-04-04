@@ -5,19 +5,9 @@ function play:init()
 
 	self.buttons = {}
 
-	local new = love.graphics.newImage("Images/newbutton.png")
-	self.new_button = Button:new(32, 128, new)
-	local load = love.graphics.newImage("Images/loadbutton.png")
-	self.load_button = Button:new(32, 192+16, load)
-	local _back = love.graphics.newImage("Images/back.png")
-	self.back_button = Button:new(32, 312, _back)
-
-	table.insert(self.buttons, self.new_button)
-	table.insert(self.buttons, self.load_button)
-	table.insert(self.buttons, self.back_button)
-end 
-
-function play:enter(previous)
+	self.new_button = ImageButton:new(32, 128, love.graphics.newImage("Images/newbutton.png"), self.buttons)
+	self.load_button = ImageButton:new(32, 192+16, love.graphics.newImage("Images/loadbutton.png"), self.buttons)
+	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 end
 
 function play:mousepressed(x, y, button)

@@ -5,15 +5,8 @@ function options:init()
 
 	self.buttons = {}
 
-	local stretched = love.graphics.newImage("Images/StartGame.png")
-	self.stretched_button = Button:new(32, 32, stretched)
-
-	local _next = love.graphics.newImage("Images/next.png")
-	self.next_button = Button:new(544, 312, _next)
-
-	table.insert(self.buttons, self.stretched_button)
-	table.insert(self.buttons, self.next_button)
-
+	self.stretched_button = Button:new(32, 32, love.graphics.newImage("Images/StartGame.png"), self.buttons)
+	self.next_button = Button:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
 end
 
 function options:mousepressed(x, y, button)
@@ -35,5 +28,4 @@ function options:draw()
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
-
 end

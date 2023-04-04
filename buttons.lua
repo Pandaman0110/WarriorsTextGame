@@ -1,38 +1,19 @@
---contains button and textbox classes
-
---Button class
-
 Button = class("Button")
 
-function Button:initialize(x, y, image, w, h)
-	self.image = image
+function Button:initialize(x, y, w, h, t)
 	self.x = x
-	self.y = y
-	self.width = 0
-	self.height = 0
-	if image then 
-		self.width = self.image:getWidth()
-		self.height = self.image:getHeight()
-	elseif not image then
-		self.width = w
-		self.height = h
-	end
-end
-
-function Button:update(dt)
+	self.y = y 
+	self.w = w 
+	self.h = h
+	table.insert(t, self)
 end
 
 function Button:mouseInside(mx, my)
-	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
+	return mouseInside(mx, my, self.x, self.y, self.w, self.h)
 end
 
-
-function Button:draw()
-	love.graphics.draw(self.image, self.x, self.y)
-end 
-
 function Button:getX()
-	return self.x 
+	return self.x
 end
 
 function Button:getY()
@@ -40,48 +21,72 @@ function Button:getY()
 end
 
 function Button:getWidth()
-	return self.width
-end
+	return self.w 
+end 
 
 function Button:getHeight()
-	return self.height
+	return self.h 
 end
 
-function Button:getImage()
-	return self.image
+function Button:setX(x)
+	self.x = x 
 end
 
-function Button:setImage(image)
+function Button:setY(y)
+	self.y = y 
+end
+
+function Button:setWidth(w)
+	self.w = w 
+end
+
+function Button:setHeight(h)
+	self.h = h  
+end
+
+function Button:draw()
+
+end
+
+ImageButton = class("ImageButton", Button)
+
+function ImageButton:initialize(x, y, image, t)
+	self.image = image
+	Button.initialize(self, x, y, self.image:getWidth(), self.image:getHeight(), t)
+end
+
+function ImageButton:getImage()
+	return self.image 
+end 
+
+function ImageButton:setImage(image)
 	self.image = image
 end
 
-ObjectButton = class("ObjectButton", Button)
+function ImageButton:draw()
+	love.graphics.draw(self.image, self.x, self.y)
+end
 
-function ObjectButton:initialize(x, y, object, image)
+ObjectButton = class("ObjectButton", ImageButton)
+
+function ObjectButton:initialize(x, y, object, image, t)
 	self.object = object
-	if image then self.image = image 
-	elseif not image then self.image = object:getImage() end 
-	Button.initialize(self, x, y, self.image)
+	ImageButton.initialize(self, x, y, image, t)
 end
 
 function ObjectButton:getObject()
-	return self.object
+	return self.object 
 end
 
 function ObjectButton:setObject(object)
-	self.object = object
+	self.object = object 
 end
 
-function ObjectButton:mouseInside(mx, my)
-	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
-end
-
---TextBox class, inherited from button
-
-TextBox = class("TextBox", Button)
+TextBox = class("TextBox")
 
 function TextBox:initialize(x, y, limit)
-	Button.initialize(self, x, y) --calls parents constructor, : operator Button.initialize(self, x, y, image)
+	self.x = x 
+	self.y = y
 	self.active = false
 	self.text = ""
 	self.limit = limit
@@ -139,43 +144,4 @@ end
 --when u just wanna set the text
 function TextBox:setText(text)
 	self.text = text
-end
-
-TextButton = class("TextButton", button)
-
-function TextButton:initialize(x, y, image)
-	Button.initialize(self, x, y, image)
-	self.text = ""
-end
-
-function TextButton:draw()
-	love.graphics.draw(self.image, self.x, self.y)
-	love.graphics.print(self.text, self.x + self.x * .9, self.y + self.y * .9)
-end
-
-function TextButton:getText()
-	return self.text
-end
-
-function TextButton:setText(text)
-	self.text = text
-end
-
-InvisibleButton = class("InvisibleButton", button)
-
-function InvisibleButton:initialize(x, y, w, h, object)
-	Button.initialize(self, x, y, nil, w, h)
-	self.object = object
-end
-
-function InvisibleButton:getObject()
-	return self.object
-end
-
-function InvisibleButton:setObejct(object)
-	self.object = object
-end
-
-function InvisibleButton:mouseInside(mx, my)
-	return mouseInside(mx, my, self.x, self.y, self.width, self.height)
 end

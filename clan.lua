@@ -211,23 +211,66 @@ function Clan:insertCat(cat)
 	end
 end
 
---grabs a random cat from the clan
---t is a table that contains the roles you dont want
---for example if u only want to choose from warriors you should pass {5}
-function Clan:grabRandomCat(t)
-	local cat
-	local isRole
-	if not t then cat = lume.randomchoice(self.cats) end
-	if t then
-		repeat
-			cat = lume.randomchoice(self.cats)
-			isRole = false
-			for i, role in ipairs(t) do
-				if cat:getRole() == role then isRole = true end
-			end
-		until (isRole == false)
-	end
+function Clan:getCatsRandom()
+	local cat = lume.randomchoice(self.cats)
 	return cat
+end
+
+--false return basically means no suitable parents
+
+function Clan:findParents()
+	local females = checkDuplicateCats(self:getCatsGender("Female"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
+	local males = checkDuplicateCats(self:getCatsGender("Male"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
+	females = removeDuplicateCats(females, self:getCatsHasKits())
+	males = removeDuplicateCats(males, self:getCatsHasKits())
+
+	if isEmpty(females) or isEmpty(males) then return false end
+
+	local mom = lume.randomchoice(females)
+	local dad = lume.randomchoice(males)
+
+	return mom, dad
+end
+
+--returns all the cats of a certain gender in the clan
+
+function Clan:getCatsGender(gender)
+	local cats = {}
+	for i, cat in ipairs(self.cats) do
+		if cat:getGender() == gender then table.insert(cats, cat) end
+	end
+	return cats
+end
+
+--returns all the cats with the given roles
+
+function Clan:getCatsRole(t)
+	local cats = {}
+	local roles = t
+	for i, cat in ipairs(self.cats) do 
+		for i, role in ipairs(roles) do
+			if cat:getRole() == role then table.insert(cats, cat) end
+		end
+	end
+	return cats
+end
+
+function Clan:getRandomRole(t)
+	local cat = lume.randomchoice(self:getCatsRole(t))
+	return cat
+end
+
+function Clan:getRandomGender(gender)
+	local cat = lume.randomchoice(self:getCatsGender(genderg))
+	return cat
+end
+
+function Clan:getCatsHasKits()
+	local cats = {}
+	for i, cat in ipairs(self.cats) do
+		if cat:hasKits() then table.insert(cats, cat) end
+	end
+	return cats
 end
 
 function Clan:printDetails()

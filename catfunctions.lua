@@ -1,6 +1,6 @@
 --generates a random cat
---role is optional, if set it will set the role to whatever
---rec is stop stack overflow from infinite recursion, dont touch it unless you know what that means
+--role is optional
+--rec is stop stack overflow
 function genRandomCat(role, rec)
 	local cat = Cat:new()
 	if not role then cat:setRole(randExRole()) end
@@ -19,6 +19,7 @@ end
 
 --generates a random clan
 function genClan(name)
+	love.filesystem.write("consolelog", "here")
 	local clan = Clan:new()
 	local usedNames = {}
 
@@ -34,31 +35,33 @@ function genClan(name)
 		clan:setName(genName("Clan", name))
 	end
 
-
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
 	clan:setMedicineCat(genRandomCat("Medicine Cat"))
 	clan:insertCat(clan:getLeader())
 	clan:insertCat(clan:getDeputy())
 	clan:insertCat(clan:getMedicineCat())
+
 	for i = 1, lume.round(lume.random(4, 12)) do
 		clan:insertCat(genRandomCat("Warrior"))
 	end
+
 	for i = 1, lume.round(lume.random(2, 4)) do
 		local apprentice = genRandomCat("Apprentice")
-		apprenticeCat(apprentice, clan:grabRandomCat({"Medicine Cat", "Leader", "Apprentice", "Kit"}))
+		apprenticeCat(apprentice, clan:getRandomRole({"Warrior", "Deputy"}))
 		clan:insertCat(apprentice)
 	end
+
 	for i = 1, lume.round(lume.random(1, 2)) do
-		local mom = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"})
-		local dad = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"})
-		while mom:getGender() ~= "Female" or mom:hasKits() do mom = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"}) end
-		while dad:getGender() ~= "Male" or dad:hasKits() do dad = clan:grabRandomCat({"Medicine Cat", "Apprentice", "Kit"}) end
+		if clan:findParents() == false then break end
+		local mom, dad = clan:findParents()
+
 		local kits = genKits(mom, dad)
 		for i, cat in ipairs (kits) do
 			clan:insertCat(cat)
 		end
 	end
+
 	for i = 1, lume.round(lume.random(1, 2)) do
 		clan:insertCat(genRandomCat("Elder"))
 	end
@@ -182,10 +185,15 @@ function genParent()
 end
 
 --prints the table of cats passed in
-function printTableCats(table, names)
-	for i, v in ipairs(table) do
-		if not names then v:printDetails() end
-		if names then print(v:getName()) end
+function printTableCats(table)
+	for i, cat in ipairs(table) do
+		cat:printDetails()
+	end
+end
+
+function printTableCatsNames(table)
+	for i, cat in ipairs(table) do
+		cat:printName()
 	end
 end
 
@@ -216,3 +224,37 @@ function genKits(mom, dad)
 	return kits
 end
 
+--t1 is a table of cats
+--t2 is a table of tables of cat
+--creates a new table between the two with only cats in both tables
+function checkDuplicateCats(t1, t2)
+	local dupe = false
+	local cats = {}
+
+	for i, cat1 in ipairs(t1) do
+		for k, cat2 in ipairs(t2) do
+			if cat1 == cat2 then dupe = true end
+		end
+		if dupe == true then table.insert(cats, cat1) end
+		dupe = false
+	end
+
+	return cats 
+end
+
+--removes any cats in the second table from the first, returns a new table
+
+function removeDuplicateCats(t1, t2)
+	local dupe = false
+	local cats = {}
+
+	for i, cat1 in ipairs(t1) do
+		for k, cat2 in ipairs(t2) do
+			if cat1 == cat2 then dupe = true end 
+		end
+		if dupe ~= true then table.insert(cats, cat1) end
+		dupe = false
+	end
+
+	return cats
+end

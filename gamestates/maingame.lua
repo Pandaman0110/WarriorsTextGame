@@ -28,16 +28,9 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	print(self.player:getAnimal():getClaws())
 
 	-- buttons
-	local _help = love.graphics.newImage("Images/help.png")
-	self.help_button = Button:new(480, 320, _help)
-	local _combat = love.graphics.newImage("Images/combat.png")
-	self.combat_button = Button:new(480, 340, _combat)
-	self.mouth_button = Button:new(440, 322, Claws[self.player:getAnimal():getClaws()])
-
-	table.insert(self.buttons, self.help_button)
-	table.insert(self.buttons, self.combat_button)
-	table.insert(self.buttons, self.mouth_button)
-
+	self.help_button = ImageButton:new(480, 320, love.graphics.newImage("Images/help.png"), self.buttons)
+	self.combat_button = ImageButton:new(480, 340, love.graphics.newImage("Images/combat.png"), self.buttons)
+	self.mouth_button = ImageButton:new(440, 322, Claws[self.player:getAnimal():getClaws()], self.buttons)
 end
 
 function maingame:update(dt)

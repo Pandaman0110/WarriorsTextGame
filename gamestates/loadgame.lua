@@ -10,21 +10,13 @@ function loadgame:enter(previous)
 
 	self.buttons = {}
 
-	local _back = love.graphics.newImage("Images/back.png")
-	self.back_button = Button:new(32, 312, _back)
-	local _next = love.graphics.newImage("Images/next.png")
-	self.next_button = Button:new(544, 312, _next)
-
-	table.insert(self.buttons, self.next_button)
-	table.insert(self.buttons, self.back_button)
+	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
+	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
 
 	self.save = nil
 	self.save_buttons = {}
 	self.saves = {}
 	self.save_names = loadSaveNames()
-	self.userDirectory = love.filesystem.getSaveDirectory()
-
-	self.save_pic =  love.graphics.newImage("Images/blank.png")
 	
 	for i, name in ipairs (self.save_names) do
 		local save_button
@@ -33,11 +25,10 @@ function loadgame:enter(previous)
 
 		if i > 5 then
 			local k  = i - 5
-			save_button = ObjectButton:new(96, 32 + 32 * (k - 1), self.saves[i], SaveNumbers[i])
+			save_button = ObjectButton:new(96, 32 + 32 * (k - 1), self.saves[i], SaveNumbers[i], self.save_buttons)
 		else 
-			save_button = ObjectButton:new(32, 32 + 32 * (i - 1), self.saves[i], SaveNumbers[i])
+			save_button = ObjectButton:new(32, 32 + 32 * (i - 1), self.saves[i], SaveNumbers[i], self.save_buttons)
 		end
-		table.insert(self.buttons, save_button)
 	end
 end
 
@@ -57,7 +48,11 @@ function loadgame:mousepressed(x, y, button)
 					end
 				end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
-				if i >= 3 then self.save = _button:getObject() end
+			end
+		end
+		for i, _button in ipairs (self.save_buttons) do
+			if _button:mouseInside(mx, my) == true then
+				self.save = _button:getObject() 
 			end
 		end
 	end
@@ -75,6 +70,10 @@ function loadgame:draw()
 	love.graphics.draw(self.background, 0, 0)
 
 	for i, _button in ipairs(self.buttons) do
+		_button:draw()
+	end
+
+	for i, _button in ipairs(self.save_buttons) do 
 		_button:draw()
 	end
 

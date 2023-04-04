@@ -34,7 +34,7 @@ function mouseInside(mouseX, mouseY, rectX, rectY, rectWidth, rectHeight)
 	else return false end
 end
 
---checks if a table is empty
+--returns true if the table t is empty
 function isEmpty(t)
 	local empty = false
 	if next(t) == nil then empty = true end

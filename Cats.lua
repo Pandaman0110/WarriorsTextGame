@@ -325,7 +325,7 @@ function Cat:getPeltNum()
 end
 
 function Cat:getFurlength()
-	return FurLengths[self.fur_length]
+	return Furlengths[self.fur_length]
 end
 
 function Cat:getDad()
@@ -443,15 +443,15 @@ function Cat:printDetails()
 	print("Role: " .. self.role)
 	print("Gender: " .. self.gender)
 	print("Moons: " .. self.moons)
-	print("Eyecolor: " .. self.eyecolor)
-	print("Pelt: " .. self.pelt)
-	print("Fur Length: " .. self.fur_length)
+	print("Eyecolor: " .. self:getEyecolor())
+	print("Pelt: " .. self:getPelt())
+	print("Fur Length: " .. self:getFurlength())
 	if self.mate then print("Mate: " .. self.mate:getName()) end
 	if self.mentor then print("Mentor: " .. self.mentor:getName()) end
 	if self.apprentice then print("Apprentice: " .. self.apprentice:getName()) end
 	if self.dad then print("Dad: " .. self.dad:getName()) end
 	if self.mom then print("Mom: " .. self.mom:getName()) end
-	if lume.isarray(self.kits) then print("Kits") printTableCats(self.kits, "names") end
+	if lume.isarray(self.kits) then print("Kits: ") printTableCatsNames(self.kits) end
 	print(" ")
 end
 
