@@ -588,6 +588,8 @@ Quotes = {
 	'"Embrace what you find in the shadows, for only they can clear the sky."' , 
 	'"This one will see into the shadows."' , 
 	'"We are all born in blood. But it marks the beginning, not the end."' , 
-	'"We came to tell you only one thing. Unite or die."'
+	'"We came to tell you only one thing. Unite or die."', 
+	'"Redtail was a brave warrior. His loyalty to ThunderClan could never be doubted. \nI always relied on his judgement, for it bore witness to the needs of the Clan, \n and was never swayed by self-interest or pride. He would have made a fine leader."\n - Bluestar',
+	'"Thank you. You were right. I had to tell the Clan myself. You have a good spirit, young one. \n When it is time for you to receive your warrior name, tell Sunfall I would have named you Lionheart."\n - Pinestar'
 
 }

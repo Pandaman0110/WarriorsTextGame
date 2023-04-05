@@ -45,6 +45,8 @@ end
 
 function Clan:getNumWarriors()
 	local num = 0
+	if self.leader then num = num + 1 end
+	if self.deputy then num = num + 1 end
 	for i, cat in pairs (self.cats) do
 		if cat ~= nil then
 			if cat:getRole() == "Warrior" then num = num + 1 end
@@ -218,7 +220,7 @@ end
 
 --false return basically means no suitable parents
 
-function Clan:findParents()
+function Clan:findParentsKits()
 	local females = checkDuplicateCats(self:getCatsGender("Female"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
 	local males = checkDuplicateCats(self:getCatsGender("Male"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
 	females = removeDuplicateCats(females, self:getCatsHasKits())
@@ -230,6 +232,10 @@ function Clan:findParents()
 	local dad = lume.randomchoice(males)
 
 	return mom, dad
+end
+
+function Clan:findParents()
+
 end
 
 --returns all the cats of a certain gender in the clan
@@ -282,11 +288,12 @@ function Clan:printDetails()
 	print ("There are " .. self:getNumApprentices() .. " apprentices")
 	print ("There are " .. self:getNumKits() .. " kits")
 	print ("There are " .. self:getNumElders() .. " elders")
-	print (" ")
+	print("-------------------------")
 end
 
 function Clan:printMemberDetails()
 	for i, cat in pairs(self.cats) do
 		cat:printDetails()
 	end
+	print("-------------------------")
 end

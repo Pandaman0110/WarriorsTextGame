@@ -1,6 +1,13 @@
+--choose a whole number from a to b inclusive
+local function random(a, b)
+	local num = math.floor(lume.random(a, b+.9999))
+	return num
+end
+
 --generates a random cat
 --role is optional
 --rec is stop stack overflow
+
 function genRandomCat(role, rec)
 	local cat = Cat:new()
 	if not role then cat:setRole(randExRole()) end
@@ -19,15 +26,13 @@ end
 
 --generates a random clan
 function genClan(name)
-	love.filesystem.write("consolelog", "here")
 	local clan = Clan:new()
 	local usedNames = {}
 
 	if not name then 
 		clan:setName(genName("Clan")) 
 		clan:setImage(lume.round(lume.random(1, 4)))
-	end
-	if name then 
+	else 
 		if name == "Thunder" then clan:setImage(1) end
 		if name == "River" then clan:setImage(2) end
 		if name == "Wind" then clan:setImage(3) end
@@ -38,23 +43,24 @@ function genClan(name)
 	clan:setLeader(genRandomCat("Leader"))
 	clan:setDeputy(genRandomCat("Deputy"))
 	clan:setMedicineCat(genRandomCat("Medicine Cat"))
+
 	clan:insertCat(clan:getLeader())
 	clan:insertCat(clan:getDeputy())
 	clan:insertCat(clan:getMedicineCat())
 
-	for i = 1, lume.round(lume.random(4, 12)) do
+	for i = 1, random(4, 8) do
 		clan:insertCat(genRandomCat("Warrior"))
 	end
 
-	for i = 1, lume.round(lume.random(2, 4)) do
+	for i = 1, random(2, 4) do
 		local apprentice = genRandomCat("Apprentice")
 		apprenticeCat(apprentice, clan:getRandomRole({"Warrior", "Deputy"}))
 		clan:insertCat(apprentice)
 	end
 
-	for i = 1, lume.round(lume.random(1, 2)) do
-		if clan:findParents() == false then break end
-		local mom, dad = clan:findParents()
+	for i = 1, lume.random(1, 2) do
+		if clan:findParentsKits() == false then break end
+		local mom, dad = clan:findParentsKits()
 
 		local kits = genKits(mom, dad)
 		for i, cat in ipairs (kits) do
@@ -62,7 +68,7 @@ function genClan(name)
 		end
 	end
 
-	for i = 1, lume.round(lume.random(1, 2)) do
+	for i = 1, random(1, 3) do
 		clan:insertCat(genRandomCat("Elder"))
 	end
 
@@ -108,22 +114,22 @@ end
 function randMoons(role)
 	local moons
 	if role == "Leader" then
-		moons = lume.random(49, 120)
+		moons = random(36, 96)
 	elseif role == "Deputy" then
-		moons = lume.random(49, 120)
+		moons = random(36, 96)
 	elseif role == "Medicine Cat" then
-		moons = lume.random(49, 120)
+		moons = random(24, 96)
 	elseif role == "Warrior" then
-		moons = lume.random(13, 120)
+		moons = random(12, 96)
 	elseif role == "Apprentice" then
-		moons = lume.random(6, 12)
+		moons = random(6, 12)
 	elseif role == "Kit" then
-		moons = lume.random(0, 5)
+		moons = random(0, 5)
 	elseif role == "Elder" then
-		moons = lume.random (121, 180)
-	else moons = lume.random (49, 120)
+		moons = random(88, 120)
+	else moons = random(36, 120)
 	end
-	return lume.round(moons)
+	return moons
 end
 
 --generates a random role, reference the Roles table in data.lua
@@ -151,21 +157,21 @@ end
 --generates a random pelt
 --gender is required if u want correct pelts
 function randPelt(gender)
-	local pelt = math.floor(lume.random(1,3.99))
+	local pelt = random(1, 3)
 	return pelt
 end
 
 --generates a random eyecolor
 --refernece Eyecolors table in data.lua
 function randEyecolor()
-	local eyecolor = math.floor(lume.random(1,3.99))
+	local eyecolor = random(1, 3)
 	return eyecolor
 end
 
 --generates a random furlength
 --reference Furlengths table in data.lua
 function randFurlength()
-	local fur_length = math.floor(lume.random(1,3.99))
+	local fur_length = random(1, 3)
 	return fur_length
 end
 
@@ -173,7 +179,7 @@ end
 --between Unknown and a random name
 function genParent()
 	local parent
-	local unknown = lume.round(lume.random(0, 1))
+	local unknown = random(0, 1)
 	if unknown == 1 then
 		parent = genRandomCat("cum", true)
 		parent:setName("Unknown")
@@ -212,17 +218,33 @@ end
 function genKits(mom, dad)
 	local kits = {}
 	local moons = randMoons("Kit")
-	for i = 1, lume.weightedchoice({[1] = 1, [2] = 2, [3] = 2}) do
+	for i = 1, lume.weightedchoice({[1] = 1, [2] = 2, [3] = 1}) do
 		local cat = genRandomCat("Kit")
 		cat:setParents(mom, dad)
 		cat:setMoons(moons)
 		table.insert(kits, cat)
 	end
 	mom:setKits(kits)
+	mom:setNursing(true)
 	dad:setKits(kits)
 	if mom:getMate() ~= dad then mateCats(mom, dad) end
 	return kits
 end
+
+function genWarriors(mom, dad)
+	local warriors = {}
+	local moons = randMoons("Warrior")
+	for i = 1, lume.weightedchoice({[1] = 1, [2] = 2, [3] = 1}) do
+		local cat = genRandomCat("Warrior")
+		cat:setParents(mom, dad)
+		cat:setMoons(moons)
+		table.insert(warriors, cat)
+	end
+	mom:setKits(warriors)
+	dad:setKits(warriors)
+	if mom:getMate() ~= dad then mateCats(mom, dad) end
+	return warriors
+end 
 
 --t1 is a table of cats
 --t2 is a table of tables of cat

@@ -96,9 +96,9 @@ function love.keypressed(key)
 	end
 
 	if key == "g" then 
-		for i = 1, 1 do 
-			local clan = genClan("Thunder")
-		end
+		local cat1, cat2 = genRandomCat("Elder"), genRandomCat("Warrior")
+		cat1:setGender("Female")
+		cat2:setGender("Male")
 	end
 end
 

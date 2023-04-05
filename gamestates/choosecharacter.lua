@@ -11,11 +11,14 @@ function choosecharacter:enter(previous, save)
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
-	self.save_button = ImageButton:new(112, 312, love.graphics.newImage("Images/save.png"), self.buttons)
-	self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
 	self.left_button = ImageButton:new(392, 32, love.graphics.newImage("Images/ArrowLeft.png"), self.buttons)
 	self.right_button = ImageButton:new(576, 32, love.graphics.newImage("Images/ArrowRight.png"), self.buttons)
 
+	if not save then  
+		self.save_button = ImageButton:new(112, 312, love.graphics.newImage("Images/save.png"), self.buttons)
+		self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
+	end
+	
 	--saving stuff
 	self.saving = false
 	self.savingText = ""

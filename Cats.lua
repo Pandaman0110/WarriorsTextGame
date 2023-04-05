@@ -272,16 +272,21 @@ function Cat:initialize()
 
 	self.clan = clan
 	self.role = role
+
 	self.moons = moons
 	self.eyecolor = eyecolor
 	self.pelt = pelt
 	self.fur_length = fur_length
+
 	self.dad = dad
 	self.mom = mom
 	self.kits = {}
 	self.mate = mate
 	self.mentor = mentor 
 	self.apprentice = apprentice
+	self.nursing = false
+
+
 	self._isPlayer = false
 end
 
@@ -292,6 +297,10 @@ or getPos(). i know this doesnt make sense someone else can go in an fix it
 
 
 --accessors
+function Cat:isNursing()
+	return self.nursing 
+end
+
 function Cat:getClan()
 	return self.clan 
 end
@@ -425,6 +434,10 @@ function Cat:setKits(kits)
 	self.kits = kits
 end
 
+function Cat:setNursing(nursing)
+	self.nursing = nursing 
+end
+
 -- other functions
 function Cat:age()
 	self.moons = self.moons + 1
@@ -451,8 +464,8 @@ function Cat:printDetails()
 	if self.apprentice then print("Apprentice: " .. self.apprentice:getName()) end
 	if self.dad then print("Dad: " .. self.dad:getName()) end
 	if self.mom then print("Mom: " .. self.mom:getName()) end
-	if lume.isarray(self.kits) then print("Kits: ") printTableCatsNames(self.kits) end
-	print(" ")
+	if self.nursing == true then print("Current Litter: ") printTableCatsNames(self.kits) end
+	print("-------------------------")
 end
 
 function Cat:printName()

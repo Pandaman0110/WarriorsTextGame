@@ -20,6 +20,7 @@ function mainmenu:mousepressed(x, y, button)
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.play_button then gamestate.switch(play) end
+				if _button == self.load_game then gamestate.switch(loadgame) end
 				if _button == self.options_button then gamestate.switch(options) end
 			end
 		end

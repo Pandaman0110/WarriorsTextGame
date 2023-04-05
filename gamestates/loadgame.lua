@@ -3,16 +3,15 @@ loadgame = {}
 
 --display save details or something
 function loadgame:init()
-end
-
-function loadgame:enter(previous)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
 	self.buttons = {}
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
+end
 
+function loadgame:enter(previous)
 	self.save = nil
 	self.save_buttons = {}
 	self.saves = {}

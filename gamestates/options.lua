@@ -5,8 +5,8 @@ function options:init()
 
 	self.buttons = {}
 
-	self.stretched_button = Button:new(32, 32, love.graphics.newImage("Images/StartGame.png"), self.buttons)
-	self.next_button = Button:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
+	self.stretched_button = ImageButton:new(32, 32, love.graphics.newImage("Images/StartGame.png"), self.buttons)
+	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
 end
 
 function options:mousepressed(x, y, button)
