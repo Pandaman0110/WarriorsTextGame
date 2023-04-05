@@ -63,12 +63,12 @@ end
 
 FileHandler = class("Handler")
 
-function FileHandler:initialize()
+function FileHandler:initialize(file)
 	self.file = file
 	self.data = {}
 end
 
-function FileHandler:checkFile()
+function FileHandler:checkFileExists()
 	if love.filesystem.getInfo(self.file) == nil then return false
 	else return true end
 end
@@ -78,45 +78,62 @@ function FileHandler:saveFile()
 end
 
 function FileHandler:loadFile()
-
+	local data = bitser.loadLoveFile("options")
+	return data
 end
 
-
-OptionsHandler = class("OptionsHandler")
+OptionsHandler = class("OptionsHandler", FileHandler)
 
 function OptionsHandler:initialize()
-	self.options = {}
-	if love.filesystem.getInfo("options") == nil then 
+	FileHandler.initialize(self, "options")
+	if not self:checkFileExists() then 
 		self:switchDefaults()
-		self:saveOptions()
+		self:saveFile()
 	else 
-		self:loadOptions() 
+		self:loadData() 
 	end
 end
 
 function OptionsHandler:switchDefaults()
-	self.options["Stretched"] = true
+	self.data["Stretched"] = true
 end
 
-function OptionsHandler:saveOptions()
-	bitser.dumpLoveFile("options", self.options)
-end
-
-function OptionsHandler:loadOptions()
-	local data = bitser.loadLoveFile("options")
-	self.options["Stretched"] = data["Stretched"]
+function OptionsHandler:loadData()
+	local data = self:loadFile()
+	self.data["Stretched"] = data["Stretched"]
+	self:apply()
 end
 
 function OptionsHandler:isStretched() 
-	return self.options["Stretched"]
+	return self.data["Stretched"]
 end
 
-function OptionsHandler:setStretched(stretched)
-	self.options["Stretched"] = true 
+function OptionsHandler:switchStretched()
+	self.data["Stretched"] = not self.data["Stretched"]
+	self:apply() 
 end
 
 function OptionsHandler:print()
-	for i, option in ipairs(self.options) do
-		print(option)
+	for i, option in pairs(self.data) do
+		print(i .. " = " .. tostring(option))
 	end
 end
+
+function OptionsHandler:apply()
+	push:switchStretched(self.data["Stretched"])
+	self:saveFile()
+end
+
+SaveHandler = class("SaveHandler", FileHandler)
+
+function SaveHandler:initialize()
+	FileHandler.initialize(self, "save_names")
+	if not checkFileExists() then 
+
+
+	else
+
+	end
+end
+
+function SaveHandler

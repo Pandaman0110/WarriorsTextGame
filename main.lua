@@ -45,10 +45,6 @@ function love.load(args)
 
 	if love.filesystem.getInfo("save_names") == nil then love.filesystem.write("save_names", "") end
 
-	optionsHandler = OptionsHandler:new()
-
-	optionsHandler:print()
-
 	---------------------
 
 	osString = love.system.getOS()
@@ -58,6 +54,12 @@ function love.load(args)
 
 	xScale = windowWidth / 640
 	yScale = windowHeight / 360
+
+	---------------------
+
+	optionsHandler = OptionsHandler:new()
+
+	optionsHandler:print()
 
 	---------------------
 	
