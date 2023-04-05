@@ -1,8 +1,4 @@
 --choose a whole number from a to b inclusive
-local function random(a, b)
-	local num = math.floor(lume.random(a, b+.9999))
-	return num
-end
 
 --generates a random cat
 --role is optional

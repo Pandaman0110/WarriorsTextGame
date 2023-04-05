@@ -57,3 +57,50 @@ end
 function scY()
 	return 1/yScale
 end
+
+--implementation of some useful algorithms
+
+--fisher-yates 
+--shuffles a table t
+--remember to use pairs not iparis
+function shuffle(t)
+	local result = copyTable(t)
+	for i = #result, 2, -1 do 
+		local j = random(0, i)
+		result[i], result[j] = result[j], result[i]
+	end
+	return result
+end
+
+function copyTable(t)
+	local newTable = {}
+	for i, item in pairs(t) do
+		table.insert(newTable, item)
+	end
+	return newTable 
+end
+
+function random(a, b)
+	local num = math.floor(lume.random(a, b+.9999))
+	return num
+end
+
+--implmentations of some useful data structures
+
+Stack = class("Stack")
+
+function Stack:initialize()
+	self.stack = {}
+end
+
+function Stack:pop()
+	table.remove(self.stack)
+end
+
+function Stack:push(item)
+	table.insert(self.stack, item)
+end
+
+function Stack:peek()
+	return self.stack[#self.stack]
+end
