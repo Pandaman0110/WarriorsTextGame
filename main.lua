@@ -1,13 +1,6 @@
 local drawDetails = false
 
 function love.load(args)
-	--this makes sure the person has a save folder
-	--if love.filesystem.getInfo("save_names") == nil then
-	--	love.filesystem.write("save_names", "example_save\n")
-	--elseif love.filesystem.read("saves_names") == nil then
-	--	love.filesystem.write("save_names", "example_save\n")
-	--end
-
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	--third party libraries
@@ -47,6 +40,14 @@ function love.load(args)
 	require "gamestates/choosecharacter"
 	require "gamestates/maingame"
 	require "gamestates/play"
+
+	---------------------
+
+	if love.filesystem.getInfo("save_names") == nil then love.filesystem.write("save_names", "") end
+
+	optionsHandler = OptionsHandler:new()
+
+	optionsHandler:print()
 
 	---------------------
 
@@ -107,7 +108,18 @@ function love.textinput(t)
 end
 
 function love.mousepressed(x, y, button)
-	gamestate.mousepressed(x, y, button)
+	-- if the player is in the mode with the black boxes this stuff is important
+	-- it doenst lock the mouse inside of the game area, but if they click outside of it sets the click to the closest area in the game
+	local mx, my = x, y
+
+	local xOff, yOff = push:getOffset()
+
+	if mx > windowWidth - xOff then mx = windowWidth - xOff end
+	if mx < 0 + xOff then mx = 0 + xOff end 
+	if my > windowHeight - yOff then my = windowHeight - yOff end
+	if my < 0 + yOff then my = 0 + yOff end
+
+	gamestate.mousepressed(mx, my, button)
 end
 
 function love.update(dt)

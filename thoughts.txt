@@ -3,3 +3,7 @@ to-do
 1. family gen and shit bruh 
 2. attack system
 3. curate the names list more, weird kittypet and early cats shiots
+4. put a delete button and sht for the saves
+
+
+10. allow the player to map keys 

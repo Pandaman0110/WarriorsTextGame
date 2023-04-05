@@ -19,10 +19,6 @@ end
 [2] is game phase. for now 1 will be character select and 2 can be game in progress
 [3] should be the player cat
 [4] should be the clans in a table
-
-
-
-
 ]]--
 
 function createSave(name, phase, player, clans, misc)
@@ -63,4 +59,64 @@ function loadSaveNames()
 	end
 
 	return save_names
+end
+
+FileHandler = class("Handler")
+
+function FileHandler:initialize()
+	self.file = file
+	self.data = {}
+end
+
+function FileHandler:checkFile()
+	if love.filesystem.getInfo(self.file) == nil then return false
+	else return true end
+end
+
+function FileHandler:saveFile()
+	bitser.dumpLoveFile(self.file, self.data)
+end
+
+function FileHandler:loadFile()
+
+end
+
+
+OptionsHandler = class("OptionsHandler")
+
+function OptionsHandler:initialize()
+	self.options = {}
+	if love.filesystem.getInfo("options") == nil then 
+		self:switchDefaults()
+		self:saveOptions()
+	else 
+		self:loadOptions() 
+	end
+end
+
+function OptionsHandler:switchDefaults()
+	self.options["Stretched"] = true
+end
+
+function OptionsHandler:saveOptions()
+	bitser.dumpLoveFile("options", self.options)
+end
+
+function OptionsHandler:loadOptions()
+	local data = bitser.loadLoveFile("options")
+	self.options["Stretched"] = data["Stretched"]
+end
+
+function OptionsHandler:isStretched() 
+	return self.options["Stretched"]
+end
+
+function OptionsHandler:setStretched(stretched)
+	self.options["Stretched"] = true 
+end
+
+function OptionsHandler:print()
+	for i, option in ipairs(self.options) do
+		print(option)
+	end
 end

@@ -54,9 +54,11 @@ end
 
 function maingame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
+	if mx == nil or my == nil then mx, my = -99, -99 end
 	local tx, ty = math.floor((mx+self.player:getAnimal():getX()+16)/32 - 9), math.floor((my+self.player:getAnimal():getY()-8)/32 - 4)
 	local button_pressed = false --buttons
 
+	print(mx .. "  " .. my)
 	--this returns what tile you clicked
 	--print(math.floor((mx+self.player:getCat():getX()+16)/32 - 9).. "  " .. math.floor((my+self.player:getCat():getY()-8)/32 - 4))
 

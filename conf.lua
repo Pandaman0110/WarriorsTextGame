@@ -13,7 +13,7 @@ function love.conf(t)
 
 
 	t.modules.joystick = false
-	t.modules.physcis = false
+	t.modules.physics = false
 	t.modules.video = false 
 
 	t.console = true

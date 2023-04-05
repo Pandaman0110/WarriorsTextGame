@@ -7,6 +7,8 @@ function options:init()
 
 	self.stretched_button = ImageButton:new(32, 32, love.graphics.newImage("Images/StartGame.png"), self.buttons)
 	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
+
+	self.options = OptionsHandler:new()
 end
 
 function options:mousepressed(x, y, button)
@@ -15,7 +17,9 @@ function options:mousepressed(x, y, button)
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
-				if _button == self.stretched_button then push:switchStretched() end
+				if _button == self.stretched_button then 
+					push:switchStretched(false) 
+				end
 				if _button == self.next_button then gamestate.switch(mainmenu) end
 			end
 		end

@@ -3,7 +3,6 @@ startup = {}
 function startup:init()
 	self.canContinue = false
 	self.randQuotes = shuffle(Quotes)
-	print(#self.randQuotes.. "  ".. #Quotes)
 	self.quote = 1
 end
 

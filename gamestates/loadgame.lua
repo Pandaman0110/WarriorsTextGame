@@ -80,7 +80,7 @@ function loadgame:draw()
 		textSettings()
 		love.graphics.setFont(EBG_R_25)
 
-		love.graphics.printf(name, 0, 32, 1920, "center", 0, scX())
+		love.graphics.printf(name, 0, 32, windowWidth, "center", 0, scX())
 
 		love.graphics.setFont(EBG_R_20)
 

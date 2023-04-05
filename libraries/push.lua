@@ -274,13 +274,14 @@ function push:resize(w, h)
   self:initValues()
 end
 
-function push:switchStretched()
-  self._stretched = not self._stretched
+function push:switchStretched(bool)
+  self._stretched = bool
   self:initValues()
 end
 
 function push:getWidth() return self._WWIDTH end
 function push:getHeight() return self._WHEIGHT end
 function push:getDimensions() return self._WWIDTH, self._WHEIGHT end
+function push:getOffset() return self._OFFSET.x, self._OFFSET.y end
 
 return push
