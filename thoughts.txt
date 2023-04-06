@@ -4,6 +4,7 @@ to-do
 2. attack system
 3. curate the names list more, weird kittypet and early cats shiots
 4. put a delete button and sht for the saves
+5. make sure to have instructions somewheere to load an external save
 
 
 10. allow the player to map keys 

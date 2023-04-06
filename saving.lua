@@ -82,20 +82,26 @@ function FileHandler:loadFile()
 	return data
 end
 
+function FileHandler:print()
+	for i, data in pairs(self.data) do
+		print(i .. " = " .. tostring(data))
+	end
+end
+
 OptionsHandler = class("OptionsHandler", FileHandler)
 
 function OptionsHandler:initialize()
 	FileHandler.initialize(self, "options")
 	if not self:checkFileExists() then 
-		self:switchDefaults()
+		self:applyDefaults()
 		self:saveFile()
 	else 
 		self:loadData() 
 	end
 end
 
-function OptionsHandler:switchDefaults()
-	self.data["Stretched"] = true
+function OptionsHandler:isStretched() 
+	return self.data["Stretched"]
 end
 
 function OptionsHandler:loadData()
@@ -104,19 +110,14 @@ function OptionsHandler:loadData()
 	self:apply()
 end
 
-function OptionsHandler:isStretched() 
-	return self.data["Stretched"]
+function OptionsHandler:applyDefaults()
+	self.data["Stretched"] = true
+	self:apply()
 end
 
 function OptionsHandler:switchStretched()
 	self.data["Stretched"] = not self.data["Stretched"]
 	self:apply() 
-end
-
-function OptionsHandler:print()
-	for i, option in pairs(self.data) do
-		print(i .. " = " .. tostring(option))
-	end
 end
 
 function OptionsHandler:apply()
@@ -129,11 +130,44 @@ SaveHandler = class("SaveHandler", FileHandler)
 function SaveHandler:initialize()
 	FileHandler.initialize(self, "save_names")
 	if not checkFileExists() then 
-
-
+		self:saveFile()
 	else
-
+		self:loadData()
 	end
 end
 
-function SaveHandler
+function SaveHandler:add(name)
+	table.insert(self.data, name)
+end
+
+function SaveHandler:loadData()
+	local data = self:loadFile()
+	for i, saveName in pairs(data) do 
+		table.insert(self.data, saveName)
+	end
+end
+
+--maybe where the names are the keys and the save tables are the values
+--dump the whole son of a bitch 
+
+function SaveHandler:createSave(name, phase, player, clans, misc)
+	if not checkDuplicateSave(name) then return false end
+
+	local saveData = {}
+
+	table.insert(saveData, name)
+	table.insert(saveData, phase) 
+	table.insert(saveData, player) 
+	table.insert(saveData, clans)
+
+	bitser.dumpLoveFile(name, saveData)
+
+	return true
+end
+
+function SaveHandler:checkDuplicateSave(name)
+	for i, save in pairs(self.data) do
+		if name == i then return false end
+	end
+	return true
+end
