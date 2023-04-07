@@ -66,7 +66,7 @@ end
 function shuffle(t)
 	local result = copyTable(t)
 	for i = #result, 2, -1 do 
-		local j = random(0, i)
+		local j = random(1, i)
 		result[i], result[j] = result[j], result[i]
 	end
 	return result

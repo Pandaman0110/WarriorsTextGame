@@ -8,3 +8,7 @@ to-do
 
 
 10. allow the player to map keys 
+
+
+
+check out moonscript and raylib 

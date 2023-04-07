@@ -3,7 +3,9 @@ startup = {}
 function startup:init()
 	self.canContinue = false
 	self.randQuotes = shuffle(Quotes)
-	self.quote = 1
+	self.quote = next(self.randQuotes)
+
+	print(#self.randQuotes)
 end
 
 function startup:update(dt)
