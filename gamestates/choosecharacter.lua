@@ -31,13 +31,13 @@ function choosecharacter:enter(previous, save)
 
 	self:clanButtons(true)
 
-	if self.save ~= nil then self.playerClan = self.save[3]:getClan()
+	if self.save ~= nil then self.playerClan = self.save["Player"]:getClan()
 	else self.playerClan = self.clans[1] end
 
 	self:tableSetup()
 	self:catButtons()
 
-	if self.save ~= nil then self.currentCat = self.save[3]
+	if self.save ~= nil then self.currentCat = self.save["Player"]
 	else self.currentCat = self.cat_buttons[1]:getObject() end
 
 end
@@ -76,7 +76,7 @@ function choosecharacter:mousepressed(x, y, button)
 					if self.saving == false and not(self.save_name_button:isEmpty()) then 
 						local saveName = self.save_name_button:getText()
 						self.currentCat:setIsPlayer("true")
-						local success = createSave(saveName, 1, self.currentCat,  self.clans)
+						local success = saveHandler:createSave(saveName, 1, self.currentCat,  self.clans)
 						self.currentCat:setIsPlayer("false")
 
 						if success == false then
@@ -286,10 +286,10 @@ function choosecharacter:clanButtons(first)
 			clan3 = genClan("Wind")
 			clan4 = genClan("Shadow")
 		elseif self.save then
-			clan1 = self.save[4][1]
-			clan2 = self.save[4][2]
-			clan3 = self.save[4][3]
-			clan4 = self.save[4][4]
+			clan1 = self.save["Clans"][1]
+			clan2 = self.save["Clans"][2]
+			clan3 = self.save["Clans"][3]
+			clan4 = self.save["Clans"][4]
 		end
 	else
 		clan1 = genClan("Thunder")

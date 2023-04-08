@@ -30,8 +30,6 @@ function love.load(args)
 	require "Controller"
 	require "Timer"
 
-	setupBitser()
-
 	--gamestates
 	require "gamestates/mainmenu"
 	require "gamestates/startup"
@@ -40,10 +38,6 @@ function love.load(args)
 	require "gamestates/choosecharacter"
 	require "gamestates/maingame"
 	require "gamestates/play"
-
-	---------------------
-
-	if love.filesystem.getInfo("save_names") == nil then love.filesystem.write("save_names", "") end
 
 	---------------------
 
@@ -56,9 +50,11 @@ function love.load(args)
 	yScale = windowHeight / 360
 
 	---------------------
+	
+	saveHandler = SaveHandler:new()
+	saveHandler:print()
 
 	optionsHandler = OptionsHandler:new()
-
 	optionsHandler:print()
 
 	---------------------
