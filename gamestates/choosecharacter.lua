@@ -129,7 +129,6 @@ function choosecharacter:draw()
 	local cat = self.currentCat
 	local clan = self.playerClan
 	local textX = 232
-	local num = self.catListPage
 
 	love.graphics.draw(self.background, 0, 0)
 
@@ -178,7 +177,8 @@ function choosecharacter:draw()
 	love.graphics.print(cat:getRole(), textX, 184, 0, scX())
 	love.graphics.print(cat:getMoons().." moons old", textX, 200, 0, scX())
 	love.graphics.print(cat:getGender(), textX, 216, 0, scX())
-	love.graphics.print("Mom and dad... "..cat:getMom():getName().." and "..cat:getDad():getName(), textX, 232, 0, scX())
+	love.graphics.print("Mom... "..cat:getMom():getName(), textX, 232, 0, scX())
+	love.graphics.print("Dad... "..cat:getDad():getName(), textX, 248, 0, scX())
 
 	if cat:getRole() == "Kit" then
 		local str = ""
@@ -187,13 +187,13 @@ function choosecharacter:draw()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Littermates... ".. str, textX, 248, 0, scX())
+		love.graphics.print("Littermates... ".. str, textX, 264, 0, scX())
 	end
 
 	local k = 0
-	if cat:getMate() then love.graphics.print("Mate... " .. cat:getMate():getName(), textX, 248 + k * 16, 0, scX()) k = k + 1 end
-	if cat:getMentor() then love.graphics.print("Mentor... " .. cat:getMentor():getName(), textX, 248 + k * 16 , 0, scX()) k = k + 1 end
-	if cat:getApprentice() then love.graphics.print("Apprentice... " .. cat:getMentor():getName(), textX, 248 + k * 16, 0, scX()) k = k + 1 end
+	if cat:getMate() then love.graphics.print("Mate... " .. cat:getMate():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
+	if cat:getMentor() then love.graphics.print("Mentor... " .. cat:getMentor():getName(), textX, 264 + k * 16 , 0, scX()) k = k + 1 end
+	if cat:getApprentice() then love.graphics.print("Apprentice... " .. cat:getMentor():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
 	if cat:hasKits() then 
 		local str = ""
 		for i, kit in ipairs (cat:getKits()) do 
@@ -201,7 +201,7 @@ function choosecharacter:draw()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Kits... ".. str, textX, 248 + k * 16, 0, scX())
+		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0, scX())
 		k = k + 1
 	end
 
@@ -209,13 +209,7 @@ function choosecharacter:draw()
 
 	love.graphics.setFont(EBG_R_20)
 
-	--local str = self.catListRoles[num]
-	--local strlen = string.len(str)
-	--strlen = 8 - strlen
-
-	--love.graphics.print("Page ".."1", 460 + strlen * 4, 32, 0, scX())
-
-	love.graphics.print("Page "..num, 470, 32, 0, scX())
+	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 470, 32, 0, scX())
 
 	clear()
 

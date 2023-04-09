@@ -7,14 +7,14 @@ function Controller:initialize(animal, animals, map)
 end
 
 function Controller:checkCollision(x, y, map)
-	local collide = false
-	if map[y][x] == 1 then collide = true end
+	if map[y][x] == nil then return true end
+	if map[y][x] == 1 then return true end
 
 	for i, animal in ipairs(self.animals) do
-		if animal:getTileX() == x and animal:getTileY() == y then collide = true end
+		if animal:getTileX() == x and animal:getTileY() == y then return true end
 	end
 
-	return collide
+	return false
 end
 
 function Controller:getAnimal() 

@@ -162,10 +162,3 @@ function Decal:getY()
 	return self.y
 end
 
-function randomBlood(speed, cat)
-	local blood
-	if speed == "light" then
-		blood = Decal:new(cat:getTileX(), cat:getTileY(), lume.randomchoice(Bleeding))
-	end
-	return blood
-end
