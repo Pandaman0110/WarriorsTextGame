@@ -5,6 +5,8 @@ to-do
 3. curate the names list more, weird kittypet and early cats shiots
 4. put a delete button and sht for the saves
 5. make sure to have instructions somewheere to load an external save
+look into caching and closures
+6. look into some sort of code generation to fill in parts of map, can be used to create huge map, and edit details over the top
 
 
 10. allow the player to map keys 

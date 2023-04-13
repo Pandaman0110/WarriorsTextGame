@@ -1,9 +1,10 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, animals, map)
+function Controller:initialize(animal, animals, map, controllerTable)
 	self.animal = animal 
 	self.animals = animals 
-	self.map = map 
+	self.map = map
+	table.insert(controllerTable, self)
 end
 
 function Controller:checkCollision(x, y, map)
@@ -43,15 +44,14 @@ end
 
 Player = class("Player", Controller)
 
-function Player:initialize(cat, animals, map)
-	Controller.initialize(self, cat, animals, map)
+function Player:initialize(cat, animals, map, controllerTable)
+	Controller.initialize(self, cat, animals, map, controllerTable)
 end
 
 function Player:update(dt)
 	local inputX = 0
 	local inputY = 0
 	local direction = ""
-	local map = self.map
 
 	if self.animal:isMoving() == false then
 		if love.keyboard.isDown("d") or love.keyboard.isDown("a") or love.keyboard.isDown("w") or love.keyboard.isDown("s") then
@@ -82,8 +82,8 @@ end
 
 Ai = class("Ai", Controller)
 
-function Ai:initialize(animal, animals, map)
-	Controller.initialize(self, animal, animals, map)
+function Ai:initialize(animal, animals, map, controllerTable)
+	Controller.initialize(self, animal, animals, map, controllerTable)
 
 	self.path = {}
 	self.moves = 0

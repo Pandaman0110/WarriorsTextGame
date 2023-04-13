@@ -1,13 +1,16 @@
+local pairs, ipairs = pairs, ipairs
+
 maingame = {}
 
 function maingame:init()
 end
 
 function maingame:enter(previous, clans, playerclan, playerCat)
-	self.buttons = {}
-
+	self.playerclan = playerclan
 	self.clans = clans
 	self.cats = {}
+	self.controllers = {}
+	self.buttons = {}
 
 	for i, clan in ipairs(self.clans) do
 		for i, cat in ipairs(clan:getCats()) do
@@ -15,22 +18,22 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 		end
 	end
 
-	self.player = Player:new(playerCat, self.cats)
-	self.playerclan = playerclan
+	self.player = Player:new(playerCat, self.cats, nil, self.controllers)
 
 	--clock
 	self.seconds = 0
 	self.secondsAfter = 0
 	self.minutes = 0
 
-	self.map = Map:new(self.player, self.cats)
-
-	print(self.player:getAnimal():getClaws())
+	self.buttons = {}
 
 	-- buttons
 	self.help_button = ImageButton:new(480, 320, love.graphics.newImage("Images/help.png"), self.buttons)
 	self.combat_button = ImageButton:new(480, 340, love.graphics.newImage("Images/combat.png"), self.buttons)
 	self.mouth_button = ImageButton:new(440, 322, Claws[self.player:getAnimal():getClaws()], self.buttons)
+
+
+	self.map = Map:new(self.player, self.cats)
 end
 
 function maingame:update(dt)
@@ -38,6 +41,9 @@ function maingame:update(dt)
 	self.seconds = self.seconds + dt
 	self.secondsAfter = math.floor(self.seconds % 60)
 	self.minutes = math.floor(self.seconds / 60)
+
+	self:updateCats(dt)
+	self:updateControllers(dt)
 
 	self.map:update(dt)
 end
@@ -80,11 +86,12 @@ function maingame:mousepressed(x, y, button)
 end
 
 function maingame:draw()
-	self.map:draw()
+	local offset_x, offset_y, firstTile_x, firstTile_y = self.map:draw()
 
-	for i, _button in ipairs(self.buttons) do
-		_button:draw()
-	end
+	self:drawButtons()
+
+	self.player:getAnimal():drawImage(640 / 2 - 16, 360 / 2 - 16)
+	self:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
@@ -92,9 +99,37 @@ function maingame:draw()
 	clear()
 end
 
+----------------------------------------------------------------------------------------------
+
 function maingame:drawTime(x, y)
 	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
 	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
 	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
 	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
+end
+
+function maingame:drawButtons()
+	for i, _button in ipairs(self.buttons) do
+		_button:draw()
+	end
+end
+
+function maingame:updateCats(dt)
+	for i, cat in ipairs(self.cats) do
+		cat:update(dt)
+	end
+end
+
+function maingame:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
+	for i, cat in ipairs(self.cats) do
+		if i == 1 then goto continue end
+		cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+		::continue::
+	end
+end
+
+function maingame:updateControllers(dt)
+	for i, controller in ipairs(self.controllers) do
+		controller:update(dt)
+	end
 end

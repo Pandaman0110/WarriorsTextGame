@@ -1,50 +1,41 @@
+local pairs, ipairs = pairs, ipairs
+
 Map = class("Map")
 
 --most of the drawing and shit happens here
 
-function Map:initialize(player, cats)
+function Map:initialize(player)
 	self.tilemap = {
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}
 	}
 
-	self.tiles = GroundTiles
+	self.tiles = {
+		love.graphics.newImage("map/grass.png"),
+		love.graphics.newImage("map/wall.png")
+	}
 
 	self.player = player
-	self.player:getAnimal():setPos(10, 6)
-	self.cats = cats
-
 	self.player:setMap(self.tilemap)
-	self.testcat = genRandomCat()
-	table.insert(self.cats, self.testcat)
-	self.catAi = Ai:new(self.testcat, self.cats, self.tilemap)
-	self.testtimer = 0
+	self.player:getAnimal():setPos(10, 6)
+	--self.cats = cats
 
-	self.decals = {}
+	--self.player:setMap(self.tilemap)
+	--self.testcat = genRandomCat()
+	--table.insert(self.cats, self.testcat)
+	--self.catAi = Ai:new(self.testcat, self.cats, self.tilemap)
+	--self.testtimer = 0
+
+	--self.decals = {}
 
 	self.width = #self.tilemap[1]
 	self.height = #self.tilemap
@@ -55,8 +46,8 @@ function Map:initialize(player, cats)
 	self.displayY = 12
 	self.tileSize = 32
 
-	self.catAi:setPath(15, 6, self.tilemap)
-	local x, y = self.catAi:getAnimal():getPos()
+	--self.catAi:setPath(15, 6, self.tilemap)
+	--local x, y = self.catAi:getAnimal():getPos()
 	
 	--randomBlood("light", self.player:getAnimal()):add(self.decals)
 end
@@ -75,34 +66,11 @@ function Map:draw()
 			end
 		end
 	end
-
-	--someone can come in and fix all this to only draw shit in range
-
-	for i, decal in ipairs(self.decals) do 
-		love.graphics.draw(decal:getImage(), ((decal:getX()-1)*self.tileSize-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, ((decal:getY()-1)* self.tileSize-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
-	end
-
-	for i, cat in ipairs(self.cats) do
-		cat:drawImage((cat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (cat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
-	end
-
-
-	self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
-	self.player:getAnimal():drawImage(640 / 2 - 16, 360 / 2 - 12)
+	
+	return offset_x, offset_y, firstTile_x, firstTile_y
 end
 
 function Map:update(dt)
-	self.player:update(dt)
-	self.catAi:update(dt)
-
-	for i, cat in ipairs(self.cats) do
-		cat:update(dt) 
-	end
-
-	for i, decal in ipairs(self.decals) do 
-		decal:update(dt)
-	end
-
 	self.mapX = (self.player:getAnimal():getX() - 10 * self.tileSize)
 	self.mapY = (self.player:getAnimal():getY() - 6 * self.tileSize)
 end
@@ -148,6 +116,10 @@ function Decal:update(dt)
 	if self.timer < 0 then
 		self:delete()
 	end
+end
+
+function Decal:draw(offset_x, offset_y, firstTile_x, firstTile_y) 
+	love.graphics.draw(self.image, ((self.x-1) * 32 - firstTile_x * 32) - offset_x - 16, ((self.y - 1) * 32 - firstTile_y * 32) - offset_y - 8)
 end
 
 function Decal:getImage()

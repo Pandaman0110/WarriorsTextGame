@@ -14,11 +14,72 @@ end
 
 function loadgame:enter(previous)
 	self:saveButtons()
+
+	self.name = nil
+	self.game_phase = nil
+	self.player = nil
+	self.clans = nil
+end
+
+function loadgame:update(dt)
+	self:updateCurrentSave(dt)
 end
 
 function loadgame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
 
+	self:checkButtons(mx, my, button)
+end
+
+function loadgame:draw()
+	love.graphics.draw(self.background, 0, 0)
+
+	self:drawButtons()
+	self:drawSaveButtons()
+	self:drawSave()
+end
+
+----------------------------------------------------------------------------------------------
+
+function loadgame:drawButtons()
+	for i, _button in ipairs(self.buttons) do
+		_button:draw()
+	end
+end
+
+function loadgame:drawSaveButtons()
+	for i, _button in ipairs(self.save_buttons) do 
+		_button:draw()
+	end
+end
+
+function loadgame:drawSave()
+	if self.save ~= nil then
+		textSettings()
+		love.graphics.setFont(EBG_R_25)
+
+		love.graphics.printf(saveHandler:getName(self.save), 0, 32, windowWidth, "center", 0, scX())
+
+		love.graphics.setFont(EBG_R_20)
+
+		love.graphics.print(self.player:getName(), 160 + 106, 80, 0, scX())
+
+		clear()
+
+		self.player:drawImage(160, 80, 2)
+	end
+end
+
+function loadgame:updateCurrentSave(dt)
+	if self.save ~= nil then
+		self.name = saveHandler:getName(self.save)
+		self.game_phase = self.save["Phase"]
+		self.player = self.save["Player"]
+		self.clans = self.save["Clans"]
+	end
+end
+
+function loadgame:checkButtons(mx, my, button)
 	if button == 1 then 
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
@@ -43,41 +104,6 @@ function loadgame:mousepressed(x, y, button)
 				self.save = _button:getObject() 
 			end
 		end
-	end
-end
-
-function loadgame:draw()
-	local name, game_phase, player, clans
-	if self.save ~= nil then
-		name = saveHandler:getName(self.save)
-		game_phase = self.save["Phase"]
-		player = self.save["Player"]
-		clans = self.save["Clans"]
-	end
-
-	love.graphics.draw(self.background, 0, 0)
-
-	for i, _button in ipairs(self.buttons) do
-		_button:draw()
-	end
-
-	for i, _button in ipairs(self.save_buttons) do 
-		_button:draw()
-	end
-
-	if self.save ~= nil then
-		textSettings()
-		love.graphics.setFont(EBG_R_25)
-
-		love.graphics.printf(saveHandler:getName(self.save), 0, 32, windowWidth, "center", 0, scX())
-
-		love.graphics.setFont(EBG_R_20)
-
-		love.graphics.print(player:getName(), 160 + 106, 80, 0, scX())
-
-		clear()
-
-		player:drawImage(160, 80, 2)
 	end
 end
 

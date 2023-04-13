@@ -14,6 +14,7 @@ function love.load(args)
 	sti = require "libraries/sti"
 	grid = require "libraries/jumper.grid"
 	pathfinder = require "libraries/jumper.pathfinder"
+	love.profiler = require "libraries/profile"
 
 	---misc files
 	require "conf"
@@ -78,6 +79,9 @@ function love.load(args)
 
 	love.keyboard.setKeyRepeat(true)
 	gamestate.switch(startup)
+
+	love.profiler.start()
+	love.frames = 0
 end
 
 function love.resize(w, h)
@@ -121,6 +125,13 @@ function love.mousepressed(x, y, button)
 end
 
 function love.update(dt)
+	love.frames = love.frames + 1
+	if love.frames % 1000 == 0 then 
+		love.report = love.profiler.report(10)
+		love.profiler.reset()
+		print(love.report or "Please wait...")
+	end
+
 	gamestate.update(dt)
 end
 
@@ -133,7 +144,10 @@ function love.draw()
 		love.graphics.setFont(EBG_R_10)
 		textSettings()
 
-   		if drawDetails == true then love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 560, 10, 0, scX()) end
+   		if drawDetails == true then 
+   			love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 560, 10, 0, scX()) 
+   			--love.graphics.print(love.report or "Please wait...", 10, 10, 0, scX())
+   		end
 
 		clear()
 

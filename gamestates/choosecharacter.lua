@@ -1,12 +1,58 @@
 --put a help button somewhere
+local pairs, ipairs = pairs, ipairs
+
 choosecharacter = {}
 
-function choosecharacter:init()
-end
 
 function choosecharacter:enter(previous, save)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
+	self:createButtons()
+	self:setupSaving()
+
+	self.save = nil
+	if save then self.save = save end
+
+	self:clanButtons(true)
+
+	if self.save ~= nil then self.playerClan = self.save["Player"]:getClan()
+	else self.playerClan = self.clans[1] end
+
+	self:catPagesSetup()
+	self:catButtons()
+
+	if self.save ~= nil then self.currentCat = self.save["Player"]
+	else self.currentCat = self.cat_buttons[1]:getObject() end
+end
+
+function choosecharacter:update(dt)
+	self:updateSaveText(dt)
+end
+
+function choosecharacter:keypressed(key)
+	self.save_name_button:keypressed(key)
+end
+
+function choosecharacter:mousepressed(x, y, button) 
+	local mx, my = push:toGame(x, y)
+
+	self:checkButtons(mx, my, button)
+end
+
+function choosecharacter:draw()
+	love.graphics.draw(self.background, 0, 0)
+
+	self:drawButtons()
+	self:drawClanButtons()
+	self:drawSaveText()
+	self:drawCurrentClan()
+	self:drawCurrentCat()
+	self:drawCatButtons()
+end
+
+----------------------------------------------------------------------------------------------
+
+function choosecharacter:createButtons()
 	self.buttons = {}
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
@@ -18,47 +64,191 @@ function choosecharacter:enter(previous, save)
 		self.save_button = ImageButton:new(112, 312, love.graphics.newImage("Images/save.png"), self.buttons)
 		self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
 	end
-	
-	--saving stuff
-	self.saving = false
-	self.savingText = ""
-	self.savingTextTimer = 0
-	self.save_name_button = TextBox:new(192, 312, 20, nil)
-
-	--loading saves and shit
-	self.save = nil
-	if save then self.save = save end
-
-	self:clanButtons(true)
-
-	if self.save ~= nil then self.playerClan = self.save["Player"]:getClan()
-	else self.playerClan = self.clans[1] end
-
-	self:tableSetup()
-	self:catButtons()
-
-	if self.save ~= nil then self.currentCat = self.save["Player"]
-	else self.currentCat = self.cat_buttons[1]:getObject() end
-
 end
 
-function choosecharacter:update(dt)
-	if self.savingText == "Duplicate name, save not created" then
-		self.savingTextTimer = self.savingTextTimer + dt
-		if self.savingTextTimer > 3 then 
-			self.savingTextTimer = 0
-			self.savingText = ""
+function choosecharacter:catPagesSetup()
+	self.catListPage = 1
+	self.catListRoles = {}
+	self.catListTables = {}
+	self.pages = 0
+	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
+	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
+
+	for i = 1, self.pages do
+		local t = {}
+		table.insert(self.catListTables, t)
+		for k = 1, 10 do
+			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
 		end
 	end
 end
 
-function choosecharacter:keypressed(key)
-	self.save_name_button:keypressed(key)
+function choosecharacter:drawSaveText()
+	textSettings()
+	love.graphics.setFont(EBG_R_10)	
+
+	love.graphics.print(self.savingText, 192, 296, 0, scX())
+	self.save_name_button:draw()
+
+	clear()
 end
 
-function choosecharacter:mousepressed(x, y, button) 
-	local mx, my = push:toGame(x, y)
+function choosecharacter:drawButtons()
+	for i, _button in ipairs(self.buttons) do
+		_button:draw()
+	end
+end
 
+function choosecharacter:drawClanButtons()
+	for i, _button in ipairs(self.clan_buttons) do
+		_button:draw()
+	end
+end
+
+function choosecharacter:drawCurrentClan()
+	local textX = 232
+	self.playerClan:draw(112, 32, 2)
+
+	textSettings()
+	love.graphics.setFont(EBG_R_20)
+
+	love.graphics.print(self.playerClan:getName(), textX, 32, 0, scX()) 
+
+	love.graphics.setFont(EBG_R_10)
+
+	love.graphics.print("The leader is " .. self.playerClan:getLeader():getName(), textX, 64, 0, scX())
+	love.graphics.print("The deputy is " .. self.playerClan:getDeputy():getName(), textX, 80, 0, scX())
+	love.graphics.print("The medicine cat is " .. self.playerClan:getMedicineCat():getName(), textX, 96, 0, scX())
+	love.graphics.print("There are " .. self.playerClan:getNumCats() .. " cats", textX, 112, 0, scX())
+
+	clear()
+end
+
+function choosecharacter:drawCurrentCat()
+	local textX = 232
+	self.currentCat:drawImage(126, 176, 2)
+
+	textSettings()
+
+	love.graphics.setFont(EBG_R_20)
+
+	love.graphics.print(self.currentCat:getName(), textX, 152, 0, scX())
+
+	love.graphics.setFont(EBG_R_10)
+
+	love.graphics.print(self.currentCat:getRole(), textX, 184, 0, scX())
+	love.graphics.print(self.currentCat:getMoons().." moons old", textX, 200, 0, scX())
+	love.graphics.print(self.currentCat:getGender(), textX, 216, 0, scX())
+	love.graphics.print("Mom... "..self.currentCat:getMom():getName(), textX, 232, 0, scX())
+	love.graphics.print("Dad... "..self.currentCat:getDad():getName(), textX, 248, 0, scX())
+
+	if self.currentCat:getRole() == "Kit" then
+		local str = ""
+		for i, kit in ipairs (self.currentCat:getMom():getKits()) do 
+			local kits = self.currentCat:getMom():getKits()
+			if i == #kits then str = str .. kit:getName()
+			else str = str .. kit:getName() .. ", " end
+		end
+		love.graphics.print("Littermates... ".. str, textX, 264, 0, scX())
+	end
+
+	local k = 0
+	if self.currentCat:getMate() then love.graphics.print("Mate... " .. self.currentCat:getMate():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
+	if self.currentCat:getMentor() then love.graphics.print("Mentor... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16 , 0, scX()) k = k + 1 end
+	if self.currentCat:getApprentice() then love.graphics.print("Apprentice... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
+	if self.currentCat:hasKits() then 
+		local str = ""
+		for i, kit in ipairs (self.currentCat:getKits()) do 
+			local kits = self.currentCat:getMom():getKits()
+			if i == #kits then str = str .. kit:getName()
+			else str = str .. kit:getName() .. ", " end
+		end
+		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0, scX())
+		k = k + 1
+	end
+end
+
+function choosecharacter:catButtons()
+	love.graphics.setFont(EBG_R_20)
+
+	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 470, 32, 0, scX())
+
+	clear()
+
+	self.cat_buttons = {}
+	for i, cat in ipairs(self.catListTables[self.catListPage]) do
+		local cat_button
+		if i > 5 then
+			local k = i - 5
+			cat_button = ObjectButton:new(512, 80 + 32 * (k-1), cat, cat:getImage(), self.cat_buttons)
+			cat_button:setWidth(120)
+			cat_button:setHeight(32)
+		else
+			cat_button = ObjectButton:new(392, 80 + 32 * (i-1), cat, cat:getImage(), self.cat_buttons)
+			cat_button:setWidth(120)
+			cat_button:setHeight(32)
+		end
+	end
+end
+
+function choosecharacter:drawCatButtons()
+	for i, _button in ipairs(self.cat_buttons) do
+		local cat = _button:getObject()
+		textSettings()
+		love.graphics.setFont(EBG_R_10)
+		if i > 5 then
+			local k = i - 5
+			love.graphics.print(cat:getName(), 560, 88 + 32 * (k-1), 0, scX())
+			clear()
+			cat:drawImage(512, 80 + 32 * (k-1))
+		else  
+			love.graphics.print(cat:getName(), 440, 88 + 32 * (i-1), 0, scX())
+			clear()
+			cat:drawImage(392, 80 + 32 * (i-1))
+		end
+	end
+end
+
+function choosecharacter:clanButtons(first)
+	self.clans = {}
+	self.clan_buttons = {}
+
+	local clan1
+	local clan2
+	local clan3
+	local clan4
+
+	if first then 
+		if not self.save then 
+			clan1 = genClan("Thunder")
+			clan2 = genClan("River")
+			clan3 = genClan("Wind")
+			clan4 = genClan("Shadow")
+		elseif self.save then
+			clan1 = self.save["Clans"][1]
+			clan2 = self.save["Clans"][2]
+			clan3 = self.save["Clans"][3]
+			clan4 = self.save["Clans"][4]
+		end
+	else
+		clan1 = genClan("Thunder")
+		clan2 = genClan("River")
+		clan3 = genClan("Wind")
+		clan4 = genClan("Shadow")
+	end
+
+
+	table.insert(self.clans, clan1)
+	table.insert(self.clans, clan2)
+	table.insert(self.clans, clan3)
+	table.insert(self.clans, clan4)
+
+	for i, clan in pairs(self.clans) do
+		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan, clan:getImage(), self.clan_buttons)
+	end
+end
+
+function choosecharacter:checkButtons(mx, my, button)
 	if button == 1 then 
 		for i, _button in ipairs (self.buttons) do
 			if _button:mouseInside(mx, my) == true then
@@ -114,7 +304,7 @@ function choosecharacter:mousepressed(x, y, button)
 			if _button:mouseInside(mx, my) == true then 
 				local clan = _button:getObject()
 				self.playerClan = clan
-				self:tableSetup()
+				self:catPagesSetup()
 				self:catButtons()
 				self.currentCat = self.cat_buttons[1]:getObject()
 			end
@@ -122,183 +312,19 @@ function choosecharacter:mousepressed(x, y, button)
 	end
 end
 
-function choosecharacter:update(dt)
-end
-	
-function choosecharacter:draw()
-	local cat = self.currentCat
-	local clan = self.playerClan
-	local textX = 232
-
-	love.graphics.draw(self.background, 0, 0)
-
-	for i, _button in ipairs(self.buttons) do
-		_button:draw()
-	end
-
-	for i, _button in ipairs(self.clan_buttons) do
-		_button:draw()
-	end
-
-	--all the saving shit right here
-
-	textSettings()
-	love.graphics.setFont(EBG_R_10)	
-
-	love.graphics.print(self.savingText, 192, 296, 0, scX())
-	self.save_name_button:draw()
-
-	clear()
-
-	--all the images right here
-	clan:draw(112, 32, 2)
-	cat:drawImage(126, 176, 2)
-
-	--printing current clan text
-	textSettings()
-	love.graphics.setFont(EBG_R_20)
-
-	love.graphics.print(clan:getName(), textX, 32, 0, scX()) 
-
-	love.graphics.setFont(EBG_R_10)
-
-	love.graphics.print("The leader is " .. clan:getLeader():getName(), textX, 64, 0, scX())
-	love.graphics.print("The deputy is " .. clan:getDeputy():getName(), textX, 80, 0, scX())
-	love.graphics.print("The medicine cat is " .. clan:getMedicineCat():getName(), textX, 96, 0, scX())
-	love.graphics.print("There are " .. clan:getNumCats() .. " cats", textX, 112, 0, scX())
-
-	--current cat text
-	love.graphics.setFont(EBG_R_20)
-
-	love.graphics.print(cat:getName(), textX, 152, 0, scX())
-
-	love.graphics.setFont(EBG_R_10)
-
-	love.graphics.print(cat:getRole(), textX, 184, 0, scX())
-	love.graphics.print(cat:getMoons().." moons old", textX, 200, 0, scX())
-	love.graphics.print(cat:getGender(), textX, 216, 0, scX())
-	love.graphics.print("Mom... "..cat:getMom():getName(), textX, 232, 0, scX())
-	love.graphics.print("Dad... "..cat:getDad():getName(), textX, 248, 0, scX())
-
-	if cat:getRole() == "Kit" then
-		local str = ""
-		for i, kit in ipairs (cat:getMom():getKits()) do 
-			local kits = cat:getMom():getKits()
-			if i == #kits then str = str .. kit:getName()
-			else str = str .. kit:getName() .. ", " end
-		end
-		love.graphics.print("Littermates... ".. str, textX, 264, 0, scX())
-	end
-
-	local k = 0
-	if cat:getMate() then love.graphics.print("Mate... " .. cat:getMate():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
-	if cat:getMentor() then love.graphics.print("Mentor... " .. cat:getMentor():getName(), textX, 264 + k * 16 , 0, scX()) k = k + 1 end
-	if cat:getApprentice() then love.graphics.print("Apprentice... " .. cat:getMentor():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
-	if cat:hasKits() then 
-		local str = ""
-		for i, kit in ipairs (cat:getKits()) do 
-			local kits = cat:getMom():getKits()
-			if i == #kits then str = str .. kit:getName()
-			else str = str .. kit:getName() .. ", " end
-		end
-		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0, scX())
-		k = k + 1
-	end
-
-	--catlist text
-
-	love.graphics.setFont(EBG_R_20)
-
-	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 470, 32, 0, scX())
-
-	clear()
-
-	for i, _button in ipairs(self.cat_buttons) do
-		local cat = _button:getObject()
-		textSettings()
-		love.graphics.setFont(EBG_R_10)
-		if i > 5 then
-			local k = i - 5
-			love.graphics.print(cat:getName(), 560, 88 + 32 * (k-1), 0, scX())
-			clear()
-			cat:drawImage(512, 80 + 32 * (k-1))
-		else  
-			love.graphics.print(cat:getName(), 440, 88 + 32 * (i-1), 0, scX())
-			clear()
-			cat:drawImage(392, 80 + 32 * (i-1))
+function choosecharacter:updateSaveText(dt)
+	if self.savingText == "Duplicate name, save not created" then
+		self.savingTextTimer = self.savingTextTimer + dt
+		if self.savingTextTimer > 3 then 
+			self.savingTextTimer = 0
+			self.savingText = ""
 		end
 	end
 end
 
-function choosecharacter:catButtons()
-	self.cat_buttons = {}
-	for i, cat in ipairs(self.catListTables[self.catListPage]) do
-		local cat_button
-		if i > 5 then
-			local k = i - 5
-			cat_button = ObjectButton:new(512, 80 + 32 * (k-1), cat, cat:getImage(), self.cat_buttons)
-			cat_button:setWidth(120)
-			cat_button:setHeight(32)
-		else
-			cat_button = ObjectButton:new(392, 80 + 32 * (i-1), cat, cat:getImage(), self.cat_buttons)
-			cat_button:setWidth(120)
-			cat_button:setHeight(32)
-		end
-	end
-end
-
-function choosecharacter:tableSetup()
-	self.catListPage = 1
-	self.catListRoles = {}
-	self.catListTables = {}
-	self.pages = 0
-	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
-	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
-
-	for i = 1, self.pages do
-		local t = {}
-		table.insert(self.catListTables, t)
-		for k = 1, 10 do
-			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
-		end
-	end
-end
-
-function choosecharacter:clanButtons(first)
-	self.clans = {}
-	self.clan_buttons = {}
-
-	local clan1
-	local clan2
-	local clan3
-	local clan4
-
-	if first then 
-		if not self.save then 
-			clan1 = genClan("Thunder")
-			clan2 = genClan("River")
-			clan3 = genClan("Wind")
-			clan4 = genClan("Shadow")
-		elseif self.save then
-			clan1 = self.save["Clans"][1]
-			clan2 = self.save["Clans"][2]
-			clan3 = self.save["Clans"][3]
-			clan4 = self.save["Clans"][4]
-		end
-	else
-		clan1 = genClan("Thunder")
-		clan2 = genClan("River")
-		clan3 = genClan("Wind")
-		clan4 = genClan("Shadow")
-	end
-
-
-	table.insert(self.clans, clan1)
-	table.insert(self.clans, clan2)
-	table.insert(self.clans, clan3)
-	table.insert(self.clans, clan4)
-
-	for i, clan in pairs(self.clans) do
-		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan, clan:getImage(), self.clan_buttons)
-	end
+function choosecharacter:setupSaving()
+	self.saving = false
+	self.savingText = ""
+	self.savingTextTimer = 0
+	self.save_name_button = TextBox:new(192, 312, 20, nil)
 end

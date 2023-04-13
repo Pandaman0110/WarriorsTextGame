@@ -528,9 +528,9 @@ Roles = {
 }
 
 CatImages = {
-	love.graphics.newImage("catimage/catgreyidle.png"),
-	love.graphics.newImage("catimage/catbrownidle.png"), 
-	love.graphics.newImage("catimage/catwhiteidle.png")
+	love.graphics.newImage("Images/catimage/catgreyidle.png"),
+	love.graphics.newImage("Images/catimage/catbrownidle.png"), 
+	love.graphics.newImage("Images/catimage/catwhiteidle.png")
 }
 
 ClanImages = {
@@ -538,11 +538,6 @@ ClanImages = {
 	love.graphics.newImage("Images/RiverclanSymbol.png"),
 	love.graphics.newImage("Images/WindclanSymbol.png"),
 	love.graphics.newImage("Images/ShadowclanSymbol.png")
-}
-
-GroundTiles = {
-	love.graphics.newImage("map/grass.png"),
-	love.graphics.newImage("map/wall.png")
 }
 
 Bleeding = {

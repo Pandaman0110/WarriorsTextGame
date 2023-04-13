@@ -1,3 +1,5 @@
+local pairs, ipairs = pairs, ipairs
+
 mainmenu = {}
 
 function mainmenu:init()
@@ -9,13 +11,22 @@ function mainmenu:init()
 	self.options_button = ImageButton:new(32, 192 + 16, love.graphics.newImage("Images/optionsbutton.png"), self.buttons)
 end
 
-function mainmenu:update(dt)
-end
-
 function mainmenu:mousepressed(x, y, button)
 	--this is because of push and the resolution handiling
 	local mx, my = push:toGame(x, y)
 
+	self:checkButtons(mx, my, button)
+end
+
+
+function mainmenu:draw()
+	self:drawBackground()
+	self:drawButtons()
+end
+
+----------------------------------------------------------------------------------------------
+
+function mainmenu:checkButtons(mx, my, button)
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
@@ -27,11 +38,12 @@ function mainmenu:mousepressed(x, y, button)
 	end
 end
 
-
-function mainmenu:draw()
-	love.graphics.draw(self.background, 0, 0, 0, 640 / self.background:getWidth(), 360 / self.background:getHeight())
-
+function mainmenu:drawButtons()
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
+end
+
+function mainmenu:drawBackground()
+	love.graphics.draw(self.background, 0, 0, 0, 640 / self.background:getWidth(), 360 / self.background:getHeight())
 end

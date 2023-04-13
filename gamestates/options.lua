@@ -12,6 +12,23 @@ end
 function options:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
 
+	options:checkButtons(mx, my, button)
+end
+
+function options:draw()
+	love.graphics.draw(self.background, 0, 0)
+	self:drawButtons()
+end
+
+----------------------------------------------------------------------------------------------
+
+function options:drawButtons()
+	for i, _button in ipairs(self.buttons) do
+		_button:draw()
+	end
+end
+
+function options:checkButtons(mx, my, button)
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
@@ -20,13 +37,5 @@ function options:mousepressed(x, y, button)
 				if _button == self.next_button then gamestate.switch(mainmenu) end
 			end
 		end
-	end
-end
-
-function options:draw()
-	love.graphics.draw(self.background, 0, 0)
-
-	for i, _button in ipairs(self.buttons) do
-		_button:draw()
 	end
 end

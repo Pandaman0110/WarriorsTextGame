@@ -1,5 +1,7 @@
 --This file contains the base class for all cats, "Cat"
 
+local pairs, ipairs = pairs, ipairs
+
 Animal = class("Animal")
 
 function Animal:initialize()
@@ -243,7 +245,6 @@ function Animal:update(dt)  --just make sure to update the cats
 end
 
 function Animal:draw()
-	love.graphics.draw(CatImages[self.image], self.x + 2, self.y + 4)
 end
 
 function Animal:move(x, y, heading)  -- you probably have no reason to use this 
@@ -470,4 +471,10 @@ end
 
 function Cat:printName()
 	print(self.name)
+end
+
+function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	-- accessing cat images might be slowing this down
+	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
+	love.graphics.draw(CatImages[self.image], (self.x - firstTile_x * 32) - offset_x - 16, (self.y - firstTile_y * 32) - offset_y - 16 - 8)
 end

@@ -5,13 +5,21 @@ function startup:init()
 	self.quote = next(self.randQuotes)
 end
 
-function startup:update(dt)
-end
 
 function startup:keypressed(key)
 	if key == "space" then
 		gamestate.switch(mainmenu)
 	end
+	self:changeQuotes(key)
+end
+
+function startup:draw()
+	self:drawQuotes()
+end
+
+----------------------------------------------------------------------------------------------
+
+function startup:changeQuotes(key)
 	if key == "left" then 
 		if self.quote == 1 then self.quote = #self.randQuotes
 		else self.quote = self.quote - 1 end
@@ -22,7 +30,7 @@ function startup:keypressed(key)
 	end
 end
 
-function startup:draw()
+function startup:drawQuotes()
 	love.graphics.setFont(EBG_I_Large)
 
 	love.graphics.printf(self.randQuotes[self.quote], 0, 160, windowWidth, "center", 0, scX())
@@ -33,4 +41,3 @@ function startup:draw()
 	love.graphics.setFont(EBG_R_20)
 	clear()
 end
-

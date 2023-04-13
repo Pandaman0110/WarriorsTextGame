@@ -13,6 +13,17 @@ end
 function play:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
 
+	self:checkButtons(mx, my, button)
+end
+
+function play:draw()
+	self:drawBackground()
+	self:drawButtons()
+end
+
+----------------------------------------------------------------------------------------------
+
+function play:checkButtons(mx, my, button)
 	if button == 1 then
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
@@ -24,13 +35,11 @@ function play:mousepressed(x, y, button)
 	end
 end
 
-function play:update(dt)
-
+function play:drawBackground()
+	love.graphics.draw(self.background, 0, 0, 0, 640 / self.background:getWidth(), 360 / self.background:getHeight())
 end
 
-function play:draw()
-	love.graphics.draw(self.background, 0, 0, 0, 640 / self.background:getWidth(), 360 / self.background:getHeight())
-
+function play:drawButtons()
 	for i, _button in ipairs(self.buttons) do
 		_button:draw()
 	end
