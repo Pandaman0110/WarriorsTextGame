@@ -7,9 +7,9 @@ function Controller:initialize(animal, animals, map, controllerTable)
 	table.insert(controllerTable, self)
 end
 
-function Controller:checkCollision(x, y, map)
-	if map[y][x] == nil then return true end
-	if map[y][x] == 1 then return true end
+function Controller:checkCollision(x, y)
+	if self.map[y][x] == nil then return true end
+	if self.map[y][x] == 1 then return true end
 
 	for i, animal in ipairs(self.animals) do
 		if animal:getTileX() == x and animal:getTileY() == y then return true end
@@ -48,6 +48,19 @@ function Player:initialize(cat, animals, map, controllerTable)
 	Controller.initialize(self, cat, animals, map, controllerTable)
 end
 
+function Player:mousepressed(tx, ty, button)
+	for i, animal in ipairs(self.animals) do
+		if animal:getTileX() == tx and animal:getTileY() == ty then 
+			print(animal:getName())				
+			if button == 1 then
+
+			elseif button == 2 then
+
+			end
+		end
+	end
+end
+
 function Player:update(dt)
 	local inputX = 0
 	local inputY = 0
@@ -72,7 +85,7 @@ function Player:update(dt)
 			local destTileX = inputX + self.animal:getTileX()
 			local destTileY = inputY + self.animal:getTileY()
 
-			if self:checkCollision(destTileX, destTileY, self.map) == false then
+			if self:checkCollision(destTileX, destTileY) == false then
 				self.animal:setIsMoving(true)
 				self.animal:getInput(inputX, inputY, direction)
 			end
@@ -99,7 +112,7 @@ function Ai:update(dt)
 			if self.animal:isMoving() == false then
 				nextMove = self.path[self.currentMove]
 
-				if self:checkCollision(nextMove[1], nextMove[2], self.map) == false then 
+				if self:checkCollision(nextMove[1], nextMove[2]) == false then 
 					destX = nextMove[1] - self.animal:getTileX()
 					destY = nextMove[2] - self.animal:getTileY()
 					self.animal:move(destX, destY)
@@ -116,9 +129,9 @@ function Ai:update(dt)
 	end
 end
 
-function Ai:setPath(x, y, map)
+function Ai:setPath(x, y)
 	local walkable = 0 
-	local map = map 
+	local map = self.map 
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'JPS', walkable)
 	finder:setMode("ORTHOGONAL")

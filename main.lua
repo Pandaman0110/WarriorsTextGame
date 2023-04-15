@@ -53,10 +53,10 @@ function love.load(args)
 	---------------------
 	
 	saveHandler = SaveHandler:new()
-	saveHandler:print()
+	--saveHandler:print()
 
 	optionsHandler = OptionsHandler:new()
-	optionsHandler:print()
+	--optionsHandler:print()
 
 	---------------------
 	
@@ -97,12 +97,6 @@ function love.keypressed(key)
 		if drawDetails == false then drawDetails = true
 		elseif drawDetails == true then drawDetails = false end
 	end
-
-	if key == "g" then 
-		local cat1, cat2 = genRandomCat("Elder"), genRandomCat("Warrior")
-		cat1:setGender("Female")
-		cat2:setGender("Male")
-	end
 end
 
 function love.textinput(t)
@@ -125,12 +119,7 @@ function love.mousepressed(x, y, button)
 end
 
 function love.update(dt)
-	love.frames = love.frames + 1
-	if love.frames % 1000 == 0 then 
-		love.report = love.profiler.report(10)
-		love.profiler.reset()
-		print(love.report or "Please wait...")
-	end
+	--love.checkPerformance()
 
 	gamestate.update(dt)
 end
@@ -154,3 +143,11 @@ function love.draw()
 	push:finish()
 end
 
+function love.checkPerformance()
+	love.frames = love.frames + 1
+	if love.frames % 1000 == 0 then 
+		love.report = love.profiler.report(10)
+		love.profiler.reset()
+		print(love.report or "Please wait...")
+	end
+end

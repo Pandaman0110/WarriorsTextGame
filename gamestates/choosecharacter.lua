@@ -254,7 +254,7 @@ function choosecharacter:checkButtons(mx, my, button)
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then 
 					self.currentCat:setIsPlayer(true) 
-					gamestate.switch(maingame, self.clans, self.playerClan, self.currentCat) 
+					gamestate.switch(maingame, self.clans, self.currentCat) 
 				end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
 				if _button == self.save_button then 

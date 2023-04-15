@@ -32,7 +32,7 @@ function Animal:initialize()
 
 	--medical shit
 	self.dead = false
-	self.blood = 100
+	self.blood = 500
 	--check if bleeding light == .2 , medium = .4, heavy = .5
 
 	self.bleeding = 0
@@ -477,4 +477,10 @@ function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	-- accessing cat images might be slowing this down
 	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	love.graphics.draw(CatImages[self.image], (self.x - firstTile_x * 32) - offset_x - 16, (self.y - firstTile_y * 32) - offset_y - 16 - 8)
+end
+
+Relationship = class("Relationship")
+
+function Relationship:initialize()
+
 end

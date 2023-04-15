@@ -5,9 +5,9 @@ maingame = {}
 function maingame:init()
 end
 
-function maingame:enter(previous, clans, playerclan, playerCat)
-	self.playerclan = playerclan
+function maingame:enter(previous, clans, playerCat)
 	self.clans = clans
+
 	self.cats = {}
 	self.controllers = {}
 	self.buttons = {}
@@ -21,9 +21,7 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	self.player = Player:new(playerCat, self.cats, nil, self.controllers)
 
 	--clock
-	self.seconds = 0
-	self.secondsAfter = 0
-	self.minutes = 0
+	self.clock = Timer:new()
 
 	self.buttons = {}
 
@@ -33,14 +31,13 @@ function maingame:enter(previous, clans, playerclan, playerCat)
 	self.mouth_button = ImageButton:new(440, 322, Claws[self.player:getAnimal():getClaws()], self.buttons)
 
 
-	self.map = Map:new(self.player, self.cats)
+	self.map = Map:new(self.player)
+
+	
 end
 
 function maingame:update(dt)
-	--clock
-	self.seconds = self.seconds + dt
-	self.secondsAfter = math.floor(self.seconds % 60)
-	self.minutes = math.floor(self.seconds / 60)
+	self.clock:update(dt)
 
 	self:updateCats(dt)
 	self:updateControllers(dt)
@@ -62,27 +59,12 @@ function maingame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
 	if mx == nil or my == nil then mx, my = -99, -99 end
 	local tx, ty = math.floor((mx+self.player:getAnimal():getX()+16)/32 - 9), math.floor((my+self.player:getAnimal():getY()-8)/32 - 4)
-	local button_pressed = false --buttons
 
-	print(mx .. "  " .. my)
 	--this returns what tile you clicked
 	--print(math.floor((mx+self.player:getCat():getX()+16)/32 - 9).. "  " .. math.floor((my+self.player:getCat():getY()-8)/32 - 4))
 
-	if button == 1 then
-		for i, _button in ipairs(self.buttons) do
-			if _button:mouseInside(mx, my) == true then
-				button_pressed = true
-				if _button == self.help_button then self.player:getAnimal():setIntent("help") end
-				if _button == self.combat_button then self.player:getAnimal():setIntent("combat") end
-			end
-		end
-		if button_pressed ~= true then
-			for i, cat in ipairs(self.cats) do
-				if cat:getTileX() == tx and cat:getTileY() == ty then end
-			end
-		end
-	end
-
+	local result = self:checkButtons(mx, my, button)
+	if result == false then self.player:mousepressed(tx, ty, button) end
 end
 
 function maingame:draw()
@@ -90,23 +72,16 @@ function maingame:draw()
 
 	self:drawButtons()
 
-	self.player:getAnimal():drawImage(640 / 2 - 16, 360 / 2 - 16)
+	self.player:getAnimal():drawImage(640 / 2 - 18, 360 / 2 - 16)
 	self:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-	self:drawTime(10, 10)
+	self.clock:drawTime(16, 16)
 	clear()
 end
 
 ----------------------------------------------------------------------------------------------
-
-function maingame:drawTime(x, y)
-	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
-	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
-	if self.minutes < 10 and self.secondsAfter < 10 then love.graphics.print("0"..self.minutes..":0"..self.secondsAfter, x, y, 0, scX()) end
-	if self.minutes < 10 and self.secondsAfter >= 10 then love.graphics.print("0"..self.minutes..":"..self.secondsAfter, x, y, 0, scX()) end
-end
 
 function maingame:drawButtons()
 	for i, _button in ipairs(self.buttons) do
@@ -132,4 +107,19 @@ function maingame:updateControllers(dt)
 	for i, controller in ipairs(self.controllers) do
 		controller:update(dt)
 	end
+end
+
+function maingame:checkButtons(mx, my, button)
+	local button_pressed = false
+
+	if button == 1 then
+		for i, _button in ipairs(self.buttons) do
+			if _button:mouseInside(mx, my) == true then
+				button_pressed = true
+				if _button == self.help_button then self.player:getAnimal():setIntent("help") end
+				if _button == self.combat_button then self.player:getAnimal():setIntent("combat") end
+			end
+		end
+	end
+	return button_pressed
 end
