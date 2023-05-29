@@ -529,8 +529,11 @@ Roles = {
 
 CatImages = {
 	love.graphics.newImage("Images/catimage/catgreyidle.png"),
-	love.graphics.newImage("Images/catimage/catbrownidle.png"), 
-	love.graphics.newImage("Images/catimage/catwhiteidle.png")
+	love.graphics.newImage("Images/catimage/catgreyidle_unconcious.png"),
+	love.graphics.newImage("Images/catimage/catbrownidle.png"),
+	love.graphics.newImage("Images/catimage/catbrownidle_unconcious.png"), 
+	love.graphics.newImage("Images/catimage/catwhiteidle.png"),
+	love.graphics.newImage("Images/catimage/catwhiteidle_unconcious.png")
 }
 
 ClanImages = {

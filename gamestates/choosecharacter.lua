@@ -281,7 +281,7 @@ function choosecharacter:checkButtons(mx, my, button)
 				if _button == self.regen_button then
 					self:clanButtons()
 					self.playerClan = self.clans[1]
-					self:tableSetup()
+					self:catPagesSetup()
 				end
 				if _button == self.left_button then 
 					self.catListPage = self.catListPage - 1 

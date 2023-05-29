@@ -32,7 +32,6 @@ function maingame:enter(previous, clans, playerCat)
 
 
 	self.map = Map:new(self.player)
-
 	
 end
 
@@ -51,7 +50,8 @@ function maingame:keypressed(key)
 		player_cat:switchClaws(Claws[self.player:getAnimal():getClaws()])
 		self.mouth_button:setImage(Claws[self.player:getAnimal():getClaws()])
 	end
-
+	if key == 'n' then
+	end
 end
 
 

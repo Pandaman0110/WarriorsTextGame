@@ -1,4 +1,6 @@
--- this file is just for general functions 
+-- this file is just for general functions
+local ipairs, pairs = ipairs, pairs
+
 local string_meta = getmetatable('')
 
 function string_meta:__index( key )
@@ -84,6 +86,7 @@ function random(a, b)
 	local num = math.floor(lume.random(a, b+.9999))
 	return num
 end
+
 
 --implmentations of some useful data structures
 

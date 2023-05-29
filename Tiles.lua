@@ -5,6 +5,7 @@ Map = class("Map")
 --most of the drawing and shit happens here
 
 function Map:initialize(player)
+	--use this for rendering floor tiles
 	self.tilemap = {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
 		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
@@ -19,13 +20,53 @@ function Map:initialize(player)
 		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}
 	}
 
+	--hashmap to check if a tile is collidable
+	self.collidable = {
+		[0] = 0,
+		[1] = 1
+	}
+
+	
+	self.collisionmap = {}
+
+	--print(self.collisionmap)
+
+
+	function Map:checkCollision(x, y)
+		return self.collidable[self.tilemap[x][y]]
+	end
+
+	for i, row in ipairs (self.tilemap) do
+		self.collisionmap[i] = {}
+		for k, tile in ipairs (row) do
+			local collidable = self:checkCollision(i, k)
+			self.collisionmap[i][k] = collidable
+		end
+	end
+
+	
+	
+
+	--self.testarr = {
+	--	{"a", "b", "c"},
+	--	{"d", "e", "f"}, 
+	--	{"g", "h", "i"}
+	--}
+
+	--for i, row in ipairs(self.testarr) do
+	--	for k, tile in ipairs(row) do
+	--		print(self.testarr[i][k] .. "")
+	--	end
+	--end
+
+
 	self.tiles = {
 		love.graphics.newImage("map/grass.png"),
 		love.graphics.newImage("map/wall.png")
 	}
 
 	self.player = player
-	self.player:setMap(self.tilemap)
+	self.player:setMap(self)
 	self.player:getAnimal():setPos(10, 6)
 	--self.cats = cats
 
@@ -75,8 +116,12 @@ function Map:update(dt)
 	self.mapY = (self.player:getAnimal():getY() - 6 * self.tileSize)
 end
 
-function Map:getTileMap()
+function Map:getRenderMap()
 	return self.tilemap 
+end
+
+function Map:getCollisionMap()
+	return self.collisionmap
 end
 
 function Map:getWidth()

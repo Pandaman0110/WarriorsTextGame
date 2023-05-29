@@ -8,8 +8,7 @@ function Controller:initialize(animal, animals, map, controllerTable)
 end
 
 function Controller:checkCollision(x, y)
-	if self.map[y][x] == nil then return true end
-	if self.map[y][x] == 1 then return true end
+	if self.map:checkCollision(x, y) == true then return true end
 
 	for i, animal in ipairs(self.animals) do
 		if animal:getTileX() == x and animal:getTileY() == y then return true end
@@ -39,7 +38,6 @@ function Controller:checkTile(x, y)
 		if animal:getTileX() == tx and animal:getTileY() == ty then end
 	end
 end
-
 
 
 Player = class("Player", Controller)
@@ -131,7 +129,7 @@ end
 
 function Ai:setPath(x, y)
 	local walkable = 0 
-	local map = self.map 
+	local map = self.map:getCollisionMap()
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'JPS', walkable)
 	finder:setMode("ORTHOGONAL")

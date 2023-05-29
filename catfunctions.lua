@@ -154,6 +154,7 @@ end
 --gender is required if u want correct pelts
 function randPelt(gender)
 	local pelt = random(1, 3)
+	pelt = (pelt * 2) - 1
 	return pelt
 end
 

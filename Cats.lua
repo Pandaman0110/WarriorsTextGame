@@ -28,10 +28,11 @@ function Animal:initialize()
 	self.combatSpeed = 1
 	self.attacking = false
 	self.attackTimer = 1
-	self.claws = 1 -- sheathed / unsheated
+	self.claws = 1 -- sheathed / unsheathed
 
 	--medical shit
 	self.dead = false
+	self.unconcious = false
 	self.blood = 500
 	--check if bleeding light == .2 , medium = .4, heavy = .5
 
@@ -94,8 +95,12 @@ function Animal:getDirection()
 	return self.direction 
 end
 
-function Animal:getIsDead()
+function Animal:isDead()
 	return self.dead 
+end
+
+function Animal:isUnconcious()
+	return self.unconcious
 end
 
 function Animal:getBlood()
@@ -180,7 +185,18 @@ function Animal:setDirection(direction)
 end
 
 function Animal:kill()
-	self.dead = true 
+	self.dead = true
+	self.image = self.image + 1
+end
+
+function Animal:knockout()
+	self.unconcious = true
+	self.image = self.image + 1
+end
+
+function Animal:wake()
+	self.unconcious = false
+	self.image = self.image + 1
 end
 
 function Animal:setBlood(blood)
@@ -242,6 +258,10 @@ function Animal:update(dt)  --just make sure to update the cats
 	end
 
 	self.blood = self.blood - self.bleeding * dt
+	--both of these flags will be true be careful maybe 
+	if self.blood <= 200 then self.unconcious = true end
+	if self.blood <= 0 then self.dead = true end
+
 end
 
 function Animal:draw()
