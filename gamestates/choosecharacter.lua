@@ -169,12 +169,6 @@ function choosecharacter:drawCurrentCat()
 end
 
 function choosecharacter:catButtons()
-	love.graphics.setFont(EBG_R_20)
-
-	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 470, 32, 0, scX())
-
-	clear()
-
 	self.cat_buttons = {}
 	for i, cat in ipairs(self.catListTables[self.catListPage]) do
 		local cat_button
@@ -192,6 +186,12 @@ function choosecharacter:catButtons()
 end
 
 function choosecharacter:drawCatButtons()
+	love.graphics.setFont(EBG_R_20)
+
+	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 460, 32, 0, scX())
+
+	clear()
+
 	for i, _button in ipairs(self.cat_buttons) do
 		local cat = _button:getObject()
 		textSettings()

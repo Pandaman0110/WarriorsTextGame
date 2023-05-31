@@ -33,6 +33,7 @@ function maingame:enter(previous, clans, playerCat)
 
 	self.map = Map:new(self.player)
 	
+	
 end
 
 function maingame:update(dt)

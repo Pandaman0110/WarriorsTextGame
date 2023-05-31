@@ -153,7 +153,7 @@ end
 --generates a random pelt
 --gender is required if u want correct pelts
 function randPelt(gender)
-	local pelt = random(1, 3)
+	local pelt = random(1, #CatImages / 2)
 	pelt = (pelt * 2) - 1
 	return pelt
 end

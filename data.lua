@@ -533,7 +533,11 @@ CatImages = {
 	love.graphics.newImage("Images/catimage/catbrownidle.png"),
 	love.graphics.newImage("Images/catimage/catbrownidle_unconcious.png"), 
 	love.graphics.newImage("Images/catimage/catwhiteidle.png"),
-	love.graphics.newImage("Images/catimage/catwhiteidle_unconcious.png")
+	love.graphics.newImage("Images/catimage/catwhiteidle_unconcious.png"),
+	love.graphics.newImage("Images/catimage/cattortieidle.png"),
+	love.graphics.newImage("Images/catimage/cattortieidle_unconcious.png"), 
+	love.graphics.newImage("Images/catimage/catcalicoidle.png"),
+	love.graphics.newImage("Images/catimage/catcalicoidle_unconcious.png")
 }
 
 ClanImages = {

@@ -4,8 +4,10 @@ local pairs, ipairs = pairs, ipairs
 
 Animal = class("Animal")
 
-function Animal:initialize()
+function Animal:initialize(controller)
 	-- all this shit has to do with movement and stuff
+	self.controller = nil
+
 	self.tileX = 2
 	self.tileY = 2
 	self.x = self.tileX*32 - 32 --this is so it draws in the correct places, lua arrays start at 1 or something
@@ -37,6 +39,10 @@ function Animal:initialize()
 	--check if bleeding light == .2 , medium = .4, heavy = .5
 
 	self.bleeding = 0
+end
+
+function Animal:getController()
+	return self.controller
 end
 
 function Animal:getX()
@@ -129,6 +135,10 @@ end
 
 function Animal:getGender()
 	return self.gender 
+end
+
+function Animal:setController(controller)
+	self.controller = controller
 end
 
 function Animal:setPos(x, y)
@@ -286,7 +296,7 @@ end
 
 Cat = class("Cat", Animal)
 
-function Cat:initialize()
+function Cat:initialize(controller)
 	Animal.initialize(self)
 
 	self.intent = "help" -- help/combat for now

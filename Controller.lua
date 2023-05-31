@@ -8,7 +8,7 @@ function Controller:initialize(animal, animals, map, controllerTable)
 end
 
 function Controller:checkCollision(x, y)
-	if self.map:checkCollision(x, y) == true then return true end
+	if self.map:getCollisionMap()[y][x] == 1 then return true end
 
 	for i, animal in ipairs(self.animals) do
 		if animal:getTileX() == x and animal:getTileY() == y then return true end

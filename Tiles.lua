@@ -7,12 +7,12 @@ Map = class("Map")
 function Map:initialize(player)
 	--use this for rendering floor tiles
 	self.tilemap = {
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-		{1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+		{1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1},
 		{1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+		{1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0},
 		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
 		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
@@ -37,14 +37,17 @@ function Map:initialize(player)
 	end
 
 	for i, row in ipairs (self.tilemap) do
-		self.collisionmap[i] = {}
+		local t = {}
+		table.insert(self.collisionmap, t)
 		for k, tile in ipairs (row) do
 			local collidable = self:checkCollision(i, k)
-			self.collisionmap[i][k] = collidable
+			table.insert(self.collisionmap[i], collidable)
 		end
 	end
 
 	
+
+
 	
 
 	--self.testarr = {
