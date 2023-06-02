@@ -1,14 +1,13 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, animals, map, controllerTable)
+function Controller:initialize(animal, animals, collision_map)
 	self.animal = animal 
 	self.animals = animals 
-	self.map = map
-	table.insert(controllerTable, self)
+	self.collision_map = collision_map
 end
 
 function Controller:checkCollision(x, y)
-	if self.map:getCollisionMap()[y][x] == 1 then return true end
+	if self.collision_map[y][x] == 1 then return true end
 
 	for i, animal in ipairs(self.animals) do
 		if animal:getTileX() == x and animal:getTileY() == y then return true end
@@ -21,12 +20,12 @@ function Controller:getAnimal()
 	return self.animal 
 end
 
-function Controller:getMap()
-	return self.map 
+function Controller:getCollisionMap()
+	return self.collision_map 
 end
 
-function Controller:setMap(map)
-	self.map = map 
+function Controller:setCollisionMap(collision_map)
+	self.collision_map = collision_map 
 end
 
 function Controller:setAnimal(animal)
@@ -39,14 +38,7 @@ function Controller:checkTile(x, y)
 	end
 end
 
-
-Player = class("Player", Controller)
-
-function Player:initialize(cat, animals, map, controllerTable)
-	Controller.initialize(self, cat, animals, map, controllerTable)
-end
-
-function Player:mousepressed(tx, ty, button)
+function Controller:mousepressed(tx, ty, button)
 	for i, animal in ipairs(self.animals) do
 		if animal:getTileX() == tx and animal:getTileY() == ty then 
 			print(animal:getName())				
@@ -59,7 +51,19 @@ function Player:mousepressed(tx, ty, button)
 	end
 end
 
+function Controller:update(dt)
+
+end
+
+
+Player = class("Player", Controller)
+
+function Player:initialize(animal, animals, collision_map)
+	Controller.initialize(self, animal, animals, collision_map)
+end
+
 function Player:update(dt)
+
 	local inputX = 0
 	local inputY = 0
 	local direction = ""
@@ -93,8 +97,8 @@ end
 
 Ai = class("Ai", Controller)
 
-function Ai:initialize(animal, animals, map, controllerTable)
-	Controller.initialize(self, animal, animals, map, controllerTable)
+function Ai:initialize(animal, animals, collision_map)
+	Controller.initialize(self, animal, animals, collision_map)
 
 	self.path = {}
 	self.moves = 0
@@ -129,7 +133,8 @@ end
 
 function Ai:setPath(x, y)
 	local walkable = 0 
-	local map = self.map:getCollisionMap()
+	print(#self.collision_map)
+	local map = self.collision_map
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'JPS', walkable)
 	finder:setMode("ORTHOGONAL")

@@ -6,7 +6,7 @@ Animal = class("Animal")
 
 function Animal:initialize(controller)
 	-- all this shit has to do with movement and stuff
-	self.controller = nil
+	self.controller = controller
 
 	self.tileX = 2
 	self.tileY = 2
@@ -240,9 +240,35 @@ function Animal:drawImage(x, y, s)
 end
 
 function Animal:update(dt)  --just make sure to update the cats
+	self:updatePosition(dt)
+
+
+	if self.attacking == true then 
+		self.attackTimer = self.attackTimer - dt
+		if self.attackTimer < 0 then 
+			self.attackTimer = 1 / self.combatSpeed
+			self.attacking = false 
+		end
+	end
+
+
+	--update medical stuff
+
+	self.blood = self.blood - self.bleeding * dt
+	--both of these flags will be true be careful maybe 
+	if self.blood <= 200 then self.unconcious = true end
+	if self.blood <= 0 then self.dead = true end
+
+
+	--update controllers last
+	self.controller:update(dt)
+
+end
+
+function Animal:updatePosition(dt)
 	local direction = self.direction
 	local rate_of_change = 32 / (16 * self.speed)  --all this shit is just dealing with the animations and stuff like that.
-
+	
 	if self.ismoving == true then
 		self.movetimer = self.movetimer + dt
 
@@ -258,20 +284,6 @@ function Animal:update(dt)  --just make sure to update the cats
 			self.t = 0
 		end
 	end
-
-	if self.attacking == true then 
-		self.attackTimer = self.attackTimer - dt
-		if self.attackTimer < 0 then 
-			self.attackTimer = 1 / self.combatSpeed
-			self.attacking = false 
-		end
-	end
-
-	self.blood = self.blood - self.bleeding * dt
-	--both of these flags will be true be careful maybe 
-	if self.blood <= 200 then self.unconcious = true end
-	if self.blood <= 0 then self.dead = true end
-
 end
 
 function Animal:draw()

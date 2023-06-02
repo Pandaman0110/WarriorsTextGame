@@ -45,11 +45,6 @@ function Map:initialize(player)
 		end
 	end
 
-	
-
-
-	
-
 	--self.testarr = {
 	--	{"a", "b", "c"},
 	--	{"d", "e", "f"}, 
@@ -69,8 +64,8 @@ function Map:initialize(player)
 	}
 
 	self.player = player
-	self.player:setMap(self)
-	self.player:getAnimal():setPos(10, 6)
+	self.player:getController():setCollisionMap(self.collisionmap)
+	self.player:setPos(15, 10)
 	--self.cats = cats
 
 	--self.player:setMap(self.tilemap)
@@ -83,8 +78,8 @@ function Map:initialize(player)
 
 	self.width = #self.tilemap[1]
 	self.height = #self.tilemap
-	self.mapX = self.player:getAnimal():getX()
-	self.mapY = self.player:getAnimal():getY() 
+	self.mapX = self.player:getX()
+	self.mapY = self.player:getY() 
 	self.displayBuffer = 2
 	self.displayX = 20 
 	self.displayY = 12
@@ -115,8 +110,8 @@ function Map:draw()
 end
 
 function Map:update(dt)
-	self.mapX = (self.player:getAnimal():getX() - 10 * self.tileSize)
-	self.mapY = (self.player:getAnimal():getY() - 6 * self.tileSize)
+	self.mapX = (self.player:getX() - 10 * self.tileSize)
+	self.mapY = (self.player:getY() - 6 * self.tileSize)
 end
 
 function Map:getRenderMap()
