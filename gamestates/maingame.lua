@@ -15,7 +15,7 @@ function maingame:enter(previous, clans, player_cat)
 
 	self.player:setController(Player:new(self.player, self.cats, nil))
 
-	table.insert(self.cats, self.player)
+	--table.insert(self.cats, self.player)
 
 	for i, clan in ipairs(self.clans) do
 		for i, cat in ipairs(clan:getCats()) do
@@ -36,20 +36,23 @@ function maingame:enter(previous, clans, player_cat)
 
 	self.map = Map:new(self.player)
 
-
-	for i, cat in ipairs(self.cats) do
-		if i == 1 then goto continue end
+	for i = 2, #self.cats do
+		local cat = self.cats[i]
 		cat:setController(Ai:new(cat, self.cats, self.map:getCollisionMap()))
-		::continue::
 	end
 
-	--self.cats[2]:getController():setPath(10,10)
+	self.decalHandler = DecalHandler:new()
+
+	self.decalHandler:createDecal(3, 2, 1)
+
+	self.cats[2]:move(5, 5)
 end
 
 function maingame:update(dt)
 	self.clock:update(dt)
 
 	self:updateCats(dt)
+	self:updateDecals(dt)
 
 	self.map:update(dt)
 end
@@ -73,7 +76,13 @@ function maingame:mousepressed(x, y, button)
 	--print(math.floor((mx+self.player:getCat():getX()+16)/32 - 9).. "  " .. math.floor((my+self.player:getCat():getY()-8)/32 - 4))
 
 	local result = self:checkButtons(mx, my, button)
-	if result == false then self.player:getController():mousepressed(tx, ty, button) end
+	if result == false then 
+		local attackresult = self.player:getController():mousepressed(tx, ty, button)
+		if attackresult["Bleed"] then
+			if attackresult["Bleed"] == .5 then self.decalHandler:createDecal(tx, ty, random(1, 3)) end
+
+		end
+	end
 end
 
 function maingame:draw()
@@ -83,6 +92,7 @@ function maingame:draw()
 
 	self.player:drawImage(640 / 2 - 18, 360 / 2 - 16)
 	self:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
+	self:drawDecals(offset_x, offset_y, firstTile_x, firstTile_y)
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
@@ -104,11 +114,18 @@ function maingame:updateCats(dt)
 	end
 end
 
+function maingame:updateDecals(dt)
+	self.decalHandler:update(dt)
+end
+
+function maingame:drawDecals(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.decalHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+end
+
 function maingame:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
-	for i, cat in ipairs(self.cats) do
-		if i == 1 then goto continue end
+	for i = 2, #self.cats do
+		local cat = self.cats[i]
 		cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
-		::continue::
 	end
 end
 

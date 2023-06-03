@@ -5,8 +5,8 @@ function play:init()
 
 	self.buttons = {}
 
-	self.new_button = ImageButton:new(32, 128, love.graphics.newImage("Images/newbutton.png"), self.buttons)
-	self.load_button = ImageButton:new(32, 192+16, love.graphics.newImage("Images/loadbutton.png"), self.buttons)
+	self.new_button = ImageButton:new(32, 72, love.graphics.newImage("Images/newbutton.png"), self.buttons)
+	self.load_button = ImageButton:new(32, 152, love.graphics.newImage("Images/loadbutton.png"), self.buttons)
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 end
 

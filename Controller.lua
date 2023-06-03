@@ -38,18 +38,6 @@ function Controller:checkTile(x, y)
 	end
 end
 
-function Controller:mousepressed(tx, ty, button)
-	for i, animal in ipairs(self.animals) do
-		if animal:getTileX() == tx and animal:getTileY() == ty then 
-			print(animal:getName())				
-			if button == 1 then
-
-			elseif button == 2 then
-
-			end
-		end
-	end
-end
 
 function Controller:update(dt)
 
@@ -62,8 +50,20 @@ function Player:initialize(animal, animals, collision_map)
 	Controller.initialize(self, animal, animals, collision_map)
 end
 
-function Player:update(dt)
+function Player:mousepressed(tx, ty, button)
+	for i, animal in ipairs(self.animals) do
+		if animal:getTileX() == tx and animal:getTileY() == ty then 			
+			if button == 1 then
+				local attackresult = self.animal:attack(animal)
+				return attackresult
+			elseif button == 2 then
 
+			end
+		end
+	end
+end
+
+function Player:update(dt)
 	local inputX = 0
 	local inputY = 0
 	local direction = ""
@@ -117,7 +117,7 @@ function Ai:update(dt)
 				if self:checkCollision(nextMove[1], nextMove[2]) == false then 
 					destX = nextMove[1] - self.animal:getTileX()
 					destY = nextMove[2] - self.animal:getTileY()
-					self.animal:move(destX, destY)
+					self.animal:setDirection(destX, destY)
 					self.currentMove = self.currentMove + 1
 					self.moveCounter = self.moveCounter + 1
 				end
@@ -133,7 +133,6 @@ end
 
 function Ai:setPath(x, y)
 	local walkable = 0 
-	print(#self.collision_map)
 	local map = self.collision_map
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'JPS', walkable)
@@ -153,3 +152,4 @@ function Ai:setPath(x, y)
 	end--]]
 	self.moves = path:getLength()
 end
+

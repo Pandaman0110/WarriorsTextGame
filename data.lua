@@ -547,10 +547,10 @@ ClanImages = {
 	love.graphics.newImage("Images/ShadowclanSymbol.png")
 }
 
-Bleeding = {
-	love.graphics.newImage("decals/blood_floor_small_1.png"), 
-	love.graphics.newImage("decals/blood_floor_small_2.png"), 
-	love.graphics.newImage("decals/blood_floor_small_3.png"), 
+Decals = {
+	love.graphics.newImage("Images/decals/blood_floor_small_1.png"), 
+	love.graphics.newImage("Images/decals/blood_floor_small_2.png"), 
+	love.graphics.newImage("Images/decals/blood_floor_small_3.png"), 
 }
 
 Claws = {

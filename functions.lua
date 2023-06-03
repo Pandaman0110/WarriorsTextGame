@@ -90,20 +90,58 @@ end
 
 --implmentations of some useful data structures
 
-Stack = class("Stack")
+DataStructure = class("DataStructure")
+
+function DataStructure:initialize()
+	self.table = {}
+end
+
+function DataStructure:peek()
+	return self.table[#self.table]
+end
+
+function DataStructure:isEmpty()
+	isEmpty(self.table)
+end
+
+function DataStructure:update(dt)
+	for i, item in ipairs(self.table) do
+		item:update(dt)
+	end
+end
+
+function DataStructure:drawOffset(offset_x, offset_y, firstTile_x, firstTile_y)
+	for i, item in ipairs(self.table) do
+		item:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	end
+end
+
+
+Stack = class("Stack", DataStructure)
 
 function Stack:initialize()
-	self.stack = {}
+	DataStructure.initialize(self)
 end
 
 function Stack:pop()
-	table.remove(self.stack)
+	table.remove(#self.table)
 end
 
 function Stack:push(item)
-	table.insert(self.stack, item)
+	table.insert(#self.table, item)
 end
 
-function Stack:peek()
-	return self.stack[#self.stack]
+
+Queue = class("Queue", DataStructure)
+
+function Queue:initialize()
+	DataStructure.initialize(self)
+end
+
+function Queue:pop()
+	table.remove(#self.table)
+end
+
+function Queue:push(item)
+	table.insert(self.table, item)
 end

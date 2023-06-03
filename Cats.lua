@@ -36,6 +36,7 @@ function Animal:initialize(controller)
 	self.dead = false
 	self.unconcious = false
 	self.blood = 500
+	self.bleedpulsetimer = 10
 	--check if bleeding light == .2 , medium = .4, heavy = .5
 
 	self.bleeding = 0
@@ -99,6 +100,10 @@ end
 
 function Animal:getDirection()
 	return self.direction 
+end
+
+function Animal:isSheathed()
+	if self.claws == 1 then return true elseif self.claws == 2 then return false end
 end
 
 function Animal:isDead()
@@ -217,6 +222,14 @@ function Animal:setBleeding(speed)
 	self.bleeding = speed 
 end
 
+function Animal:checkBleeding()
+	return self.bleeding
+end
+
+function Animal:checkBlood()
+	return self.blood
+end
+
 function Animal:setSpeed(speed) 
 	self.speed = speed 
 end
@@ -239,11 +252,13 @@ function Animal:drawImage(x, y, s)
 	if s then love.graphics.draw(CatImages[self.image], x, y, 0, s, s) end
 end
 
+
+
 function Animal:update(dt)  --just make sure to update the cats
 	self:updatePosition(dt)
 
-
-	if self.attacking == true then 
+	if self.attacking == true then
+		self.attackTimer = 1 / self.combatSpeed
 		self.attackTimer = self.attackTimer - dt
 		if self.attackTimer < 0 then 
 			self.attackTimer = 1 / self.combatSpeed
@@ -259,10 +274,17 @@ function Animal:update(dt)  --just make sure to update the cats
 	if self.blood <= 200 then self.unconcious = true end
 	if self.blood <= 0 then self.dead = true end
 
+	if self.bleeding > 0 then
+		self.bleedpulsetimer = 10 * self.bleeding
+		self.bleedpulsetimer = self.bleedpulsetimer - dt
+		if self.bleedpulsetimer < 0 then
+			self.bleedpulsetimer = 10 * self.bleeding
+		end
+	end
+
 
 	--update controllers last
 	self.controller:update(dt)
-
 end
 
 function Animal:updatePosition(dt)
@@ -286,14 +308,15 @@ function Animal:updatePosition(dt)
 	end
 end
 
-function Animal:draw()
-end
-
-function Animal:move(x, y, heading)  -- you probably have no reason to use this 
+function Animal:setDirection(x, y, heading)  -- you probably have no reason to use this 
 	if self.ismoving == false then
 		self.ismoving = true 
 		self:getInput(x, y, heading)
 	end
+end
+
+function Animal:move(x, y)
+	self.controller:setPath(x, y)
 end
 
 function Animal:getInput(x, y, heading) -- or this
@@ -305,6 +328,9 @@ function Animal:getInput(x, y, heading) -- or this
 	self.destY = self.tileY * 32 - 32
 	self.direction = heading
 end
+
+
+
 
 Cat = class("Cat", Animal)
 
@@ -338,6 +364,30 @@ tile position is gotten by getTileX() or getTileY()
 or getPos(). i know this doesnt make sense someone else can go in an fix it
 ]]--
 
+--combat functions
+
+--do the actual attack somewhere else probably
+
+function Cat:attack(cat)
+	if self:isSheathed() then print("your claws are sheathed!") end
+
+	--send the attack here ig
+	local attack = cat:takeDamage(self, {["Bleed"] = .5})
+	return attack
+end
+
+--check hit if damage < 0 print message basdew on damage?
+
+function Cat:takeDamage(cat, attack)
+	if cat:isSheathed() then 
+		print("you were hit but took no damage")
+	else
+		if attack["Bleed"] then 
+			self:setBleeding(attack["Bleed"])
+		end
+	end
+	return attack
+end
 
 --accessors
 function Cat:isNursing()

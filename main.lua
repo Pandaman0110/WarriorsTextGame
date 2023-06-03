@@ -30,6 +30,7 @@ function love.load(args)
 	require "Tiles"
 	require "Controller"
 	require "Timer"
+	require "Editor"
 
 	--gamestates
 	require "gamestates/mainmenu"
@@ -39,6 +40,7 @@ function love.load(args)
 	require "gamestates/choosecharacter"
 	require "gamestates/maingame"
 	require "gamestates/play"
+	require "gamestates/leveleditor"
 
 	---------------------
 

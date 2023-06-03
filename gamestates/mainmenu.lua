@@ -7,8 +7,11 @@ function mainmenu:init()
 
 	self.buttons = {}
 
-	self.play_button = ImageButton:new(32, 128, love.graphics.newImage("Images/playbutton.png"), self.buttons)
-	self.options_button = ImageButton:new(32, 192 + 16, love.graphics.newImage("Images/optionsbutton.png"), self.buttons)
+	self.play_button = ImageButton:new(32, 72, love.graphics.newImage("Images/playbutton.png"), self.buttons)
+	self.level__editor_button = ImageButton:new(32, 152, love.graphics.newImage("Images/leveleditor.png"), self.buttons)
+	self.options_button = ImageButton:new(32, 232, love.graphics.newImage("Images/optionsbutton.png"), self.buttons)
+
+	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 end
 
 function mainmenu:mousepressed(x, y, button)
@@ -33,6 +36,7 @@ function mainmenu:checkButtons(mx, my, button)
 				if _button == self.play_button then gamestate.switch(play) end
 				if _button == self.load_game then gamestate.switch(loadgame) end
 				if _button == self.options_button then gamestate.switch(options) end
+				if _button == self.level__editor_button then gamestate.switch(leveleditor) end
 			end
 		end
 	end

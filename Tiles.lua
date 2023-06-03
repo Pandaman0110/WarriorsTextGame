@@ -7,17 +7,15 @@ Map = class("Map")
 function Map:initialize(player)
 	--use this for rendering floor tiles
 	self.tilemap = {
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
-		{1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1},
-		{1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0}
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
 	}
 
 	--hashmap to check if a tile is collidable
@@ -65,7 +63,7 @@ function Map:initialize(player)
 
 	self.player = player
 	self.player:getController():setCollisionMap(self.collisionmap)
-	self.player:setPos(15, 10)
+	self.player:setPos(10, 5)
 	--self.cats = cats
 
 	--self.player:setMap(self.tilemap)
@@ -132,41 +130,78 @@ end
 
 --use this to draw like blood and shit
 
+DecalHandler = class("DecalHandler")
+
+function DecalHandler:initialize()
+	self.decalQueue = Queue:new()
+end
+
+function DecalHandler:createDecal(x, y, num)
+	local decal = Decal:new(x, y, num)
+	decal:printDetails()
+	print(self.decalQueue)
+	self.decalQueue:push(decal)
+end
+
+function DecalHandler:remove()
+	self.decalQueue:pop()
+end
+
+function DecalHandler:update(dt)
+	print(self.decalQueue)
+
+	if self.decalQueue:isEmpty() == false then 
+		if self.decalQueue:peek():getTime() < 0 then
+			self.decalQueue:pop()
+		end
+	end
+
+	self.decalQueue:update(dt)
+end
+
+function DecalHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.decalQueue:drawOffset(offset_x, offset_y, firstTile_x, firstTile_y)
+end
+
+function DecalHandler:numDecals()
+	return #self.decalQueue
+end
+
+function DecalHandler:printDetails()
+	print(#self.decalQueue .. " number of decals")
+end
+
 Decal = class("Decal")
 
-function Decal:initialize(x, y, image)
-	self.image = image
+function Decal:initialize(x, y, imagenum)
+	self.imagenum = imagenum
+	self.image = Decals[imagenum]
 	self.x = x
 	self.y = y
-	self.pos = pos
-	self.table = table
-	self.timer = 3600
+	self.timer = 10
 end
 
-function Decal:add(t)
-	table.insert(t, self)
-	self.pos = #t
-	self.table = t
-end
-
-function Decal:delete()
-	table.remove(self.table, self.pos)
-end
+--hey high mf you need to go make a quee data structure class and then use it to make a qfor the decal showing and shti,
+--after that finish decalhandle r and decal, still working on attackin
 
 function Decal:update(dt)
 	self.timer = self.timer - dt
-
-	if self.timer < 0 then
-		self:delete()
-	end
 end
 
 function Decal:draw(offset_x, offset_y, firstTile_x, firstTile_y) 
-	love.graphics.draw(self.image, ((self.x-1) * 32 - firstTile_x * 32) - offset_x - 16, ((self.y - 1) * 32 - firstTile_y * 32) - offset_y - 8)
+	love.graphics.draw(self.image, ((self.x-1) * 32 - firstTile_x * 32) - offset_x - 16, ((self.y - 1) * 32 - firstTile_y * 32) - offset_y - 24)
 end
 
 function Decal:getImage()
 	return self.image 
+end
+
+function Decal:getImageNum()
+	return self.imagenum
+end
+
+function Decal:getTime()
+	return self.timer
 end
 
 function Decal:getX()
@@ -175,5 +210,12 @@ end
 
 function Decal:getY()
 	return self.y
+end
+
+function Decal:printDetails()
+	print(self.image)
+	print("Image - Decal "..self.imagenum)
+	print("Pos - ("..self.x..", "..self.y..")")
+	print("Time left - "..self.timer)
 end
 
