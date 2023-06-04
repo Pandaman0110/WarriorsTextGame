@@ -1,17 +1,15 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, animals, collision_map)
-	self.animal = animal 
-	self.animals = animals 
+function Controller:initialize(animal, cathandler, collision_map)
+	self.animal = animal  
+	self.cat_handler = cathandler
 	self.collision_map = collision_map
 end
 
 function Controller:checkCollision(x, y)
 	if self.collision_map[y][x] == 1 then return true end
 
-	for i, animal in ipairs(self.animals) do
-		if animal:getTileX() == x and animal:getTileY() == y then return true end
-	end
+	if self.cat_handler:checkTile(x, y) then return true end
 
 	return false
 end
@@ -32,12 +30,6 @@ function Controller:setAnimal(animal)
 	self.animal = animal 
 end
 
-function Controller:checkTile(x, y)
-	for i, animal in ipairs(self.animals) do
-		if animal:getTileX() == tx and animal:getTileY() == ty then end
-	end
-end
-
 
 function Controller:update(dt)
 
@@ -46,16 +38,16 @@ end
 
 Player = class("Player", Controller)
 
-function Player:initialize(animal, animals, collision_map)
-	Controller.initialize(self, animal, animals, collision_map)
+function Player:initialize(animal, cathandler, collision_map)
+	Controller.initialize(self, animal, cathandler, collision_map)
 end
 
 function Player:mousepressed(tx, ty, button)
-	for i, animal in ipairs(self.animals) do
+	for i, animal in ipairs(self.cat_handler:getCats()) do
 		if animal:getTileX() == tx and animal:getTileY() == ty then 			
 			if button == 1 then
-				local attackresult = self.animal:attack(animal)
-				return attackresult
+				local result = self.animal:decide(animal)
+				return result
 			elseif button == 2 then
 
 			end
@@ -87,7 +79,7 @@ function Player:update(dt)
 			local destTileX = inputX + self.animal:getTileX()
 			local destTileY = inputY + self.animal:getTileY()
 
-			if self:checkCollision(destTileX, destTileY) == false then
+			if self.cat_handler:checkTile(destTileX, destTileY) == false then
 				self.animal:setIsMoving(true)
 				self.animal:getInput(inputX, inputY, direction)
 			end
@@ -97,8 +89,8 @@ end
 
 Ai = class("Ai", Controller)
 
-function Ai:initialize(animal, animals, collision_map)
-	Controller.initialize(self, animal, animals, collision_map)
+function Ai:initialize(animal, cathandler, collision_map)
+	Controller.initialize(self, animal, cathandler, collision_map)
 
 	self.path = {}
 	self.moves = 0
@@ -114,7 +106,7 @@ function Ai:update(dt)
 			if self.animal:isMoving() == false then
 				nextMove = self.path[self.currentMove]
 
-				if self:checkCollision(nextMove[1], nextMove[2]) == false then 
+				if self.cat_handler:checkTile(nextMove[1], nextMove[2]) == false then 
 					destX = nextMove[1] - self.animal:getTileX()
 					destY = nextMove[2] - self.animal:getTileY()
 					self.animal:setDirection(destX, destY)

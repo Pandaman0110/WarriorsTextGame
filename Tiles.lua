@@ -62,8 +62,6 @@ function Map:initialize(player)
 	}
 
 	self.player = player
-	self.player:getController():setCollisionMap(self.collisionmap)
-	self.player:setPos(10, 5)
 	--self.cats = cats
 
 	--self.player:setMap(self.tilemap)
@@ -133,42 +131,41 @@ end
 DecalHandler = class("DecalHandler")
 
 function DecalHandler:initialize()
-	self.decalQueue = Queue:new()
+	self.decal_queue = Queue:new()
 end
 
 function DecalHandler:createDecal(x, y, num)
 	local decal = Decal:new(x, y, num)
-	decal:printDetails()
-	print(self.decalQueue)
-	self.decalQueue:push(decal)
+	self.decal_queue:push(decal)
 end
 
 function DecalHandler:remove()
-	self.decalQueue:pop()
+	self.decal_queue:pop()
 end
 
 function DecalHandler:update(dt)
-	print(self.decalQueue)
 
-	if self.decalQueue:isEmpty() == false then 
-		if self.decalQueue:peek():getTime() < 0 then
-			self.decalQueue:pop()
+	if self.decal_queue:isEmpty() == false then 
+		if self.decal_queue:peek():getTime() < 0 then
+			self.decal_queue:pop()
 		end
 	end
 
-	self.decalQueue:update(dt)
+	self.decal_queue:update(dt)
+
 end
 
+
 function DecalHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
-	self.decalQueue:drawOffset(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.decal_queue:drawOffset(offset_x, offset_y, firstTile_x, firstTile_y)
 end
 
 function DecalHandler:numDecals()
-	return #self.decalQueue
+	return #self.decal_queue
 end
 
 function DecalHandler:printDetails()
-	print(#self.decalQueue .. " number of decals")
+	print(#self.decal_queue .. " number of decals")
 end
 
 Decal = class("Decal")

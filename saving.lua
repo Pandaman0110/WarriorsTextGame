@@ -58,11 +58,15 @@ end
 
 function OptionsHandler:applyDefaults()
 	self.data["Stretched"] = true
+	xScale = windowWidth / 640
+	yScale = windowHeight / 360
 	self:apply()
 end
 
 function OptionsHandler:switchStretched()
 	self.data["Stretched"] = not self.data["Stretched"]
+	xScale = windowWidth / 640
+	yScale = windowHeight / 360
 	self:apply() 
 end
 

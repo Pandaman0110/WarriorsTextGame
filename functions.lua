@@ -104,6 +104,12 @@ function DataStructure:isEmpty()
 	isEmpty(self.table)
 end
 
+function DataStructure:empty()
+	for i, item in ipairs(self.table) do
+		self.table[i] = nil
+	end
+end
+
 function DataStructure:update(dt)
 	for i, item in ipairs(self.table) do
 		item:update(dt)

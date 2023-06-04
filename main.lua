@@ -31,6 +31,7 @@ function love.load(args)
 	require "Controller"
 	require "Timer"
 	require "Editor"
+	require "Handler"
 
 	--gamestates
 	require "gamestates/mainmenu"
@@ -80,7 +81,7 @@ function love.load(args)
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(startup)
+	gamestate.switch(choosecharacter)
 
 	love.profiler.start()
 	love.frames = 0

@@ -254,7 +254,7 @@ end
 
 
 
-function Animal:update(dt)  --just make sure to update the cats
+function Animal:update(dt, cathandler)  --just make sure to update the cats
 	self:updatePosition(dt)
 
 	if self.attacking == true then
@@ -284,7 +284,7 @@ function Animal:update(dt)  --just make sure to update the cats
 
 
 	--update controllers last
-	self.controller:update(dt)
+	self.controller:update(dt, cathandler)
 end
 
 function Animal:updatePosition(dt)
@@ -329,15 +329,14 @@ function Animal:getInput(x, y, heading) -- or this
 	self.direction = heading
 end
 
-
-
-
 Cat = class("Cat", Animal)
 
 function Cat:initialize(controller)
 	Animal.initialize(self)
 
 	self.intent = "help" -- help/combat for now
+
+	--"help" and "combat"
 
 	self.clan = clan
 	self.role = role
@@ -376,7 +375,8 @@ function Cat:attack(cat)
 	return attack
 end
 
---check hit if damage < 0 print message basdew on damage?
+--check hit if damage < 0 print message basdew on damage
+--this attack message
 
 function Cat:takeDamage(cat, attack)
 	if cat:isSheathed() then 
@@ -388,6 +388,18 @@ function Cat:takeDamage(cat, attack)
 	end
 	return attack
 end
+
+--cat is the animal you clicked on
+function Cat:decide(cat)
+	local result
+	if self.intent == "help" then
+
+	elseif self.intent == "combat" then
+		result = self:attack(cat)
+	end
+	return result
+end
+
 
 --accessors
 function Cat:isNursing()

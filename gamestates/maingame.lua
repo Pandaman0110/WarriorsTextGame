@@ -6,22 +6,10 @@ function maingame:init()
 end
 
 function maingame:enter(previous, clans, player_cat)
-	self.clans = clans
+	self.cat_handler = CatHandler:new(clans)
 	self.player = player_cat
 
-	--self.animals = {}
-	self.cats = {}
 	self.buttons = {}
-
-	self.player:setController(Player:new(self.player, self.cats, nil))
-
-	--table.insert(self.cats, self.player)
-
-	for i, clan in ipairs(self.clans) do
-		for i, cat in ipairs(clan:getCats()) do
-			table.insert(self.cats, cat)
-		end
-	end
 
 	--clock
 	self.clock = Timer:new()
@@ -34,18 +22,22 @@ function maingame:enter(previous, clans, player_cat)
 	self.mouth_button = ImageButton:new(440, 322, Claws[self.player:getClaws()], self.buttons)
 
 
+	self.player:setPos(10, 5)
+
 	self.map = Map:new(self.player)
 
-	for i = 2, #self.cats do
-		local cat = self.cats[i]
-		cat:setController(Ai:new(cat, self.cats, self.map:getCollisionMap()))
+	for i, cat in ipairs(self.cat_handler:getCats()) do
+		cat:setController(Ai:new(cat, self.cat_handler, self.map:getCollisionMap()))
 	end
 
-	self.decalHandler = DecalHandler:new()
+	self.player:setController(Player:new(self.player, self.cat_handler, self.map:getCollisionMap()))
 
-	self.decalHandler:createDecal(3, 2, 1)
+	self.decal_handler = DecalHandler:new()
 
-	self.cats[2]:move(5, 5)
+
+	local randomcat = self.cat_handler:randomCat()
+	randomcat:printName()
+	randomcat:move(5, 5)
 end
 
 function maingame:update(dt)
@@ -75,12 +67,13 @@ function maingame:mousepressed(x, y, button)
 	--this returns what tile you clicked
 	--print(math.floor((mx+self.player:getCat():getX()+16)/32 - 9).. "  " .. math.floor((my+self.player:getCat():getY()-8)/32 - 4))
 
-	local result = self:checkButtons(mx, my, button)
-	if result == false then 
-		local attackresult = self.player:getController():mousepressed(tx, ty, button)
-		if attackresult["Bleed"] then
-			if attackresult["Bleed"] == .5 then self.decalHandler:createDecal(tx, ty, random(1, 3)) end
-
+	local button_pressed = self:checkButtons(mx, my, button)
+	if button_pressed == false then 
+		local result = self.player:getController():mousepressed(tx, ty, button)
+		if result then
+			if result["Bleed"] then 
+				self.decal_handler:createDecal(tx, ty, random(1, 3))
+			end
 		end
 	end
 end
@@ -109,22 +102,20 @@ function maingame:drawButtons()
 end
 
 function maingame:updateCats(dt)
-	for i, cat in ipairs(self.cats) do
-		cat:update(dt)
-	end
+	self.cat_handler:update(dt)
 end
 
 function maingame:updateDecals(dt)
-	self.decalHandler:update(dt)
+	self.decal_handler:update(dt)
 end
 
 function maingame:drawDecals(offset_x, offset_y, firstTile_x, firstTile_y)
-	self.decalHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.decal_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 end
 
 function maingame:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
-	for i = 2, #self.cats do
-		local cat = self.cats[i]
+	for i = 2, #self.cat_handler:getCats() do
+		local cat = self.cat_handler:getCats()[i]
 		cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	end
 end
