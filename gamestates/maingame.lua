@@ -6,13 +6,15 @@ function maingame:init()
 end
 
 function maingame:enter(previous, clans, player_cat)
-	self.cat_handler = CatHandler:new(clans)
+	--clock
+	self.clock = Timer:new()
+
+	self.cat_handler = CatHandler:new(clans, self.clock)
+	self.decal_handler = DecalHandler:new()
+
 	self.player = player_cat
 
 	self.buttons = {}
-
-	--clock
-	self.clock = Timer:new()
 
 	self.buttons = {}
 
@@ -20,6 +22,9 @@ function maingame:enter(previous, clans, player_cat)
 	self.help_button = ImageButton:new(480, 320, love.graphics.newImage("Images/help.png"), self.buttons)
 	self.combat_button = ImageButton:new(480, 340, love.graphics.newImage("Images/combat.png"), self.buttons)
 	self.mouth_button = ImageButton:new(440, 322, Claws[self.player:getClaws()], self.buttons)
+
+
+	-----------------------
 
 
 	self.player:setPos(10, 5)
@@ -32,11 +37,10 @@ function maingame:enter(previous, clans, player_cat)
 
 	self.player:setController(Player:new(self.player, self.cat_handler, self.map:getCollisionMap()))
 
-	self.decal_handler = DecalHandler:new()
 
 
 	local randomcat = self.cat_handler:randomCat()
-	randomcat:printName()
+
 	randomcat:move(5, 5)
 end
 
@@ -50,12 +54,8 @@ function maingame:update(dt)
 end
 
 function maingame:keypressed(key)
-	if key == 'c' then 
-		self.player:switchClaws(Claws[self.player:getClaws()])
-		self.mouth_button:setImage(Claws[self.player:getClaws()])
-	end
-	if key == 'n' then
-	end
+	self.player:getController():keypressed(key)
+	self.mouth_button:setImage(Claws[self.player:getClaws()])
 end
 
 
@@ -69,12 +69,16 @@ function maingame:mousepressed(x, y, button)
 
 	local button_pressed = self:checkButtons(mx, my, button)
 	if button_pressed == false then 
-		local result = self.player:getController():mousepressed(tx, ty, button)
-		if result then
-			if result["Bleed"] then 
-				self.decal_handler:createDecal(tx, ty, random(1, 3))
-			end
+		local message = self.player:getController():mousepressed(tx, ty, button)
+
+		if message ~= nil then 
+			self.cat_handler:readMessage(message)
 		end
+		--if result then
+		--	if result["Bleed"] then 
+		--		self.decal_handler:createDecal(tx, ty, random(1, 3))
+		--	end
+		--end
 	end
 end
 
@@ -127,8 +131,14 @@ function maingame:checkButtons(mx, my, button)
 		for i, _button in ipairs(self.buttons) do
 			if _button:mouseInside(mx, my) == true then
 				button_pressed = true
-				if _button == self.help_button then self.player:setIntent("help") end
-				if _button == self.combat_button then self.player:setIntent("combat") end
+				if _button == self.help_button then 
+					self.player:setIntent("help")
+					print(self.player:getIntent())
+				 end
+				if _button == self.combat_button then 
+					self.player:setIntent("combat")
+					print(self.player:getIntent())
+				end
 			end
 		end
 	end

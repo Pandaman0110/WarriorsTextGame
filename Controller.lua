@@ -43,15 +43,29 @@ function Player:initialize(animal, cathandler, collision_map)
 end
 
 function Player:mousepressed(tx, ty, button)
+	local message = nil
 	for i, animal in ipairs(self.cat_handler:getCats()) do
-		if animal:getTileX() == tx and animal:getTileY() == ty then 			
+		if animal:getTileX() == tx and animal:getTileY() == ty and animal ~= self.animal then		
 			if button == 1 then
-				local result = self.animal:decide(animal)
-				return result
+				message = self.animal:decide(animal, self.cat_handler)
 			elseif button == 2 then
 
 			end
 		end
+	end
+	return message
+end
+
+--why dont we send an event to cat handler and it decides what to do einstead of printing 
+
+function Player:keypressed(key)
+	if key == 'c' then 
+		self.animal:switchClaws()
+		print(self.animal:getClaws())
+	end
+	if key == 'v' then
+		self.animal:switchIntent()
+		print(self.animal:getIntent())
 	end
 end
 

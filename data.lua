@@ -554,8 +554,8 @@ Decals = {
 }
 
 Claws = {
-	love.graphics.newImage("Images/mouthbox_paw.png"),
-	love.graphics.newImage("Images/mouthbox_paw_unsheathed.png")
+	["sheathed"] = love.graphics.newImage("Images/mouthbox_paw.png"),
+	["unsheathed"] = love.graphics.newImage("Images/mouthbox_paw_unsheathed.png")
 }
 
 SaveNumbers = {

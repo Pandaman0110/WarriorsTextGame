@@ -130,11 +130,12 @@ function Stack:initialize()
 end
 
 function Stack:pop()
-	table.remove(#self.table)
+	local item = table.remove(self.table)
+	return item
 end
 
 function Stack:push(item)
-	table.insert(#self.table, item)
+	table.insert(self.table, #self.table, item)
 end
 
 
@@ -145,7 +146,8 @@ function Queue:initialize()
 end
 
 function Queue:pop()
-	table.remove(#self.table)
+	local item = table.remove(self.table)
+	return item
 end
 
 function Queue:push(item)

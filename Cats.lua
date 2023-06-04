@@ -30,7 +30,7 @@ function Animal:initialize(controller)
 	self.combatSpeed = 1
 	self.attacking = false
 	self.attackTimer = 1
-	self.claws = 1 -- sheathed / unsheathed
+	self.claws = "sheathed" -- sheathed / unsheathed
 
 	--medical shit
 	self.dead = false
@@ -234,9 +234,10 @@ function Animal:setSpeed(speed)
 	self.speed = speed 
 end
 
-function Animal:switchClaws(claws)
-	if self.claws == 1 then self.claws = 2
-	elseif self.claws == 2 then self.claws = 1 end
+function Animal:switchClaws()
+	if self.claws == "sheathed" then self.claws = "unsheathed"
+	elseif self.claws == "unsheathed" then self.claws = "sheathed" 
+	end
 end
 
 function Animal:setName(name)
@@ -355,7 +356,7 @@ function Cat:initialize(controller)
 	self.nursing = false
 
 
-	self._isPlayer = false
+	self.is_player = false
 end
 
 --[[
@@ -367,37 +368,59 @@ or getPos(). i know this doesnt make sense someone else can go in an fix it
 
 --do the actual attack somewhere else probably
 
-function Cat:attack(cat)
-	if self:isSheathed() then print("your claws are sheathed!") end
+--do an event for the attack and the taking damage
+
+function Cat:attack(cat, cathandler)
+	if self:isSheathed() then 
+		if self.is_player == true then return Message:new("claws sheathed", self, "Your claws are sheathed!", true) 
+		elseif self.is_player == false then return Message:new("claws sheathed", self, self.name .. " tried to hit " .. cat:getName() .. " but their claws were sheathed!", true)
+		end
+	end
 
 	--send the attack here ig
-	local attack = cat:takeDamage(self, {["Bleed"] = .5})
-	return attack
+	local attack = {
+		["Type"] = "swiped",
+		["Bleed"] = .5
+	}
+	cat:takeHit(self, attack, cathandler)
+	if self.is_player == true then return Message:new("attack", self, "You " .. attack["Type"] .. " " .. cat:getName() .."!", true)
+	elseif self.is_player == false then return Message:new("attack", self, cat:getName() .. " was " .. attack["Type"] .. " by " .. self.name .."!", true)
+	end
+end
+
+function Cat:tap(cat, cathandler)
+	local tap = {
+		["Type"] = "tapped"
+	} 
+	cat:takeHit(self, tap, cathandler)
+	if self.is_player == true then return Message:new("tap", self, "You " .. tap["Type"] .. " " .. cat:getName() .."!", true)
+	elseif self.is_player == false then return Message:new("tap", self, cat:getName() .. " was " .. tap["Type"] .. " by " .. self.name .."!", true)
+	end
 end
 
 --check hit if damage < 0 print message basdew on damage
 --this attack message
 
-function Cat:takeDamage(cat, attack)
-	if cat:isSheathed() then 
-		print("you were hit but took no damage")
-	else
-		if attack["Bleed"] then 
-			self:setBleeding(attack["Bleed"])
-		end
+function Cat:takeHit(cat, hit, cathandler)
+	if hit["Type"] == "swiped" then 
+		self:setBleeding(hit["Bleed"])
+	elseif hit["Type"] == "tapped" then
+
 	end
-	return attack
+	if self.is_player == true then return Message:new("took damage", self, "You were " .. hit["Type"] .. " by " .. cat:getName() .. "!", true)
+	elseif self.is_player == false then return Message:new("took damage", self, self.name .. " was " .. hit["Type"] .. " by " .. cat:getName() .. "!", false)
+	end
 end
 
 --cat is the animal you clicked on
-function Cat:decide(cat)
-	local result
+function Cat:decide(cat, cathandler)
+	local message = nil
 	if self.intent == "help" then
-
+		message = self:tap(cat, cathandler)
 	elseif self.intent == "combat" then
-		result = self:attack(cat)
+		message = self:attack(cat, cathandler)
 	end
-	return result
+	return message
 end
 
 
@@ -415,7 +438,7 @@ function Cat:getIntent()
 end
 
 function Cat:isPlayer()
-	return self._isPlayer
+	return self.is_player
 end
 
 function Cat:getRole()
@@ -476,12 +499,18 @@ function Cat:setClan(clan)
 end
 
 function Cat:setIsPlayer(isplayer) 
-	self._isPlayer = isplayer
+	self.is_player = isplayer
 end
 
 --put the tile positon here
 function Cat:setIntent(intent)
 	self.intent = intent
+end
+
+function Cat:switchIntent()
+	if self.intent == "help" then self.intent = "combat" 
+	elseif self.intent == "combat" then self.intent = "help"
+	end
 end
 
 function Cat:setRole(role)
