@@ -17,3 +17,5 @@ look into caching and closures
 check out moonscript and raylib 
 
 ???. Add a level editor
+
+For instance, if water cuts the fortress in half, it needs to flood out from one side and update a whole half of the fortress to a new index, but once that’s done, it’s good, generally. Then that allows us to cut almost all failed A* calls from the game—our agents just need to query component numbers, and if the component numbers are the same, they know the call will succeed.

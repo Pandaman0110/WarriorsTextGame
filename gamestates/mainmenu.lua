@@ -12,7 +12,9 @@ function mainmenu:init()
 	self.options_button = ImageButton:new(32, 232, love.graphics.newImage("Images/optionsbutton.png"), self.buttons)
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
+
 end
+
 
 function mainmenu:mousepressed(x, y, button)
 	--this is because of push and the resolution handiling

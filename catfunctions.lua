@@ -17,6 +17,9 @@ function genRandomCat(role, rec)
 	cat:setImage(cat:getPeltNum())
 
 	if not rec then cat:setParents(genParent(), genParent()) end
+
+
+	cat:setBody(Body:new(cat))
 	return cat
 end
 

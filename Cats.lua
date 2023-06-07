@@ -8,6 +8,8 @@ function Animal:initialize(controller)
 	-- all this shit has to do with movement and stuff
 	self.controller = controller
 
+	self.body = nil
+
 	self.tileX = 2
 	self.tileY = 2
 	self.x = self.tileX*32 - 32 --this is so it draws in the correct places, lua arrays start at 1 or something
@@ -140,6 +142,10 @@ end
 
 function Animal:getGender()
 	return self.gender 
+end
+
+function Animal:setBody(body)
+	self.body = body
 end
 
 function Animal:setController(controller)

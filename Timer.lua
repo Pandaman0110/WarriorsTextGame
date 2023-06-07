@@ -9,9 +9,9 @@ end
 
 function Timer:update(dt)
 	self.time = self.time + dt
-	self.seconds = lume.round(self.time)
-	self.secondsAfter = lume.round(self.time % 60)
-	self.minutes = lume.round(self.time / 60)
+	self.seconds = math.floor(self.time)
+	self.secondsAfter = math.floor(self.time % 60)
+	self.minutes = math.floor(self.time / 60)
 end
 
 function Timer:getTime()

@@ -39,7 +39,7 @@ function maingame:enter(previous, clans, player_cat)
 
 
 
-	local randomcat = self.cat_handler:randomCat()
+	local randomcat = self.cat_handler:findNonPlayer()
 
 	randomcat:move(5, 5)
 end

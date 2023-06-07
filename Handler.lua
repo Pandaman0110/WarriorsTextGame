@@ -26,6 +26,7 @@ end
 
 function CatHandler:readMessage(message)
 	message:print()
+	message:logTime(self.clock)
 	self.cat_messages:push(message)
 end
 
@@ -48,6 +49,14 @@ function CatHandler:findPlayer()
 	end
 end
 
+function CatHandler:findNonPlayer()
+	local cat = lume.randomchoice(self.cats)
+	while cat == self:findPlayer() do
+		cat = lume.randomchoice(self.cats)
+	end
+	return cat 
+end
+
 function CatHandler:getCats()
 	return self.cats
 end
@@ -64,7 +73,8 @@ function Message:initialize(messagetype, sender, text, visible)
 	self.sender = sender
 	self.text = text
 	self.visible = visible
-	self.time = time
+	self.minutes = minutes
+	self.seconds_after = seconds_after
 end
 
 function Message:print()
@@ -74,8 +84,8 @@ end
 function Message:printDetails()
 	print("Sender: " .. self.sender)
 	print("Type: " .. self.type)
-	print("Time" .. self.time)
-	print("Text:" .. self.text)
+	print("Time: " .. self.minutes .. ":" .. self.seconds)
+	print("Text: " .. self.text)
 end
 
 function Message:type()
@@ -93,3 +103,9 @@ end
 function Message:getTime()
 	return self.time
 end
+
+function Message:logTime(clock)
+	self.minutes = clock:getMinutes()
+	self.seconds_after = clock:getSecondsAfter()
+end
+

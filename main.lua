@@ -4,11 +4,11 @@ function love.load(args)
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	--third party libraries
+	utf8 = require "utf8"
 	lume = require "libraries/lume"
 	class = require "libraries/middleclass"
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
-	utf8 = require("utf8")
 	bitser = require "libraries/bitser"
 	cron = require "libraries/cron"
 	sti = require "libraries/sti"
@@ -32,6 +32,7 @@ function love.load(args)
 	require "Timer"
 	require "Editor"
 	require "Handler"
+	require "Medical"
 
 	--gamestates
 	require "gamestates/mainmenu"
@@ -81,7 +82,7 @@ function love.load(args)
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(choosecharacter)
+	gamestate.switch(mainmenu)
 
 	love.profiler.start()
 	love.frames = 0

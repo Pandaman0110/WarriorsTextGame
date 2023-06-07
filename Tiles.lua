@@ -147,7 +147,8 @@ function DecalHandler:update(dt)
 
 	if self.decal_queue:isEmpty() == false then 
 		if self.decal_queue:peek():getTime() < 0 then
-			self.decal_queue:pop()
+			local decal = self.decal_queue:pop()
+			decal = nil
 		end
 	end
 
