@@ -1,5 +1,9 @@
 --later on get the cat image here maybe
 
+CatBody = {
+
+}
+
 Body = class("Body")
 
 function Body:initialize(bodyparts)
@@ -20,9 +24,7 @@ end
 
 CatBody = class("CatBody")
 
-function CatBody:initialize(cat)
-	self.cat = cat
-
+function CatBody:initialize()
 	self.head = Head:new()
 	self.neck = Neck:new()
 	self.chest = Chest:new()
@@ -35,10 +37,8 @@ function CatBody:initialize(cat)
 	self.back_left_leg = Leg:new()
 
 	-----------------
-	if self.cat:getMoons() <= 12 then 
-		self.weight = 1/12 * 10
-	else self.weight = 10 end
-
+	
+	self.weight
 	self.blood = 500
 
 
@@ -69,14 +69,6 @@ function BodyPart:initialize()
 		["Broken"] = false
 		["Missing"] = false
 	}
-	--Normal / burned / standing / torn / bloody
-	self.fur = {
-		["Normal"] = true, 
-		["Standing"] = false,
-		["Burned"] = false, 
-		["Torn"] = false, 
-		["Bloody"] = false, 
-	}
 	self.bones = {}
 end
 
@@ -101,17 +93,23 @@ function Head:initialize()
 		["Skull"] = Bone:new()
 		["Teeth"] = Bone:new()
 	}
+	self.organs = {
+		["Brain"] = Brain:new()
+		["Eyes"] = Eyes:new()
+		["Ears"] = Ears:new()
+		["Nose"] = Nose:new()
+	}
 end
-
-
-
 
 
 Neck = class("Neck", BodyPart)
 
 function Neck:initialize()
 	BodyPart.initialize(self)
-	self.bones
+	self.bones = {
+		["Neck"] = Bone:new()
+	}
+
 end
 
 
@@ -169,11 +167,28 @@ end
 SubPart = class("SubPart")
 
 function SubPart:initialize()
-
+	self.status = {}
 end
 
+function SubPart:updateStatus()
+	for key, status in pairs(self.status) do 
+		if key ~= "Normal" and status == true then 
+			self.status["Normal"] = false
+		end
+	end
+end
 
+function SubPart:getStatus()
+	local status = {}
+	for key, status in pairs (self.status) do
+		if status == true then 
+			status[key] = true 
+		end
+	end
+	return status
+end
 
+function SubPart:printStatus()
 
 
 
@@ -181,6 +196,14 @@ Fur = class("Fur", SubPart)
 
 function Fur:initialize()
 	SubPart.initialize(self)
+	--Normal / burned / standing / torn / bloody
+	self.status = {
+		["Normal"] = true, 
+		["Standing"] = false,
+		["Burned"] = false, 
+		["Torn"] = false, 
+		["Bloody"] = false, 
+	}
 end
 
 
@@ -188,6 +211,11 @@ Bone = class("Bone", SubPart)
 
 function Bone:initialize()
 	SubPart.initialize(self)
+	self.status = {
+		["Normal"] = true
+		["Fractured"] = false 
+		["Broken"] = false
+	}
 end
 
 

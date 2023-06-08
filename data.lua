@@ -595,3 +595,4 @@ Quotes = {
 	'"Thank you. You were right. I had to tell the Clan myself. You have a good spirit, young one. \n When it is time for you to receive your warrior name, tell Sunfall I would have named you Lionheart."\n - Pinestar'
 
 }
+

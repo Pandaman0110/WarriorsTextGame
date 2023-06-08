@@ -1,8 +1,7 @@
---choose a whole number from a to b inclusive
-
 --generates a random cat
 --role is optional
 --rec is stop stack overflow
+--fnd a better soltoion than this stupid fucking parameter
 
 function genRandomCat(role, rec)
 	local cat = Cat:new()
