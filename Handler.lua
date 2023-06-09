@@ -65,6 +65,9 @@ function CatHandler:randomCat()
 	return lume.randomchoice(self.cats)
 end
 
+
+
+
 Message = class("Message")
 
 --for now we got attack and took damage

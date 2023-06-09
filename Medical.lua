@@ -1,35 +1,169 @@
 --later on get the cat image here maybe
 
-CatBody = {
+--[[
+	self.symptoms = {
+		["Heavy bleeding "] = false,
+		["Bleeding "] = false,
+		["Pale "] = false,
+		["Faint "] = false,
+		["Paralyzed "] = false,
+		["Partially paralyzed "] = false,
+		["Sluggish "] = false,
+		["Completely numb "] = false,
+		["Partially numb "] = false,
+		["Slightly numb "] = false,
+		["Serious fever "] = false,
+		["Moderate fever "] = false,
+		["Slight fever "] = false,
+		["Dizzy "] = false,
+		["Extreme pain "] = false,
+		["Moderate pain "] = false,
+		["Slight pain "] = false,
+		["Stunned "] = false,
+		["Overexerted "] = false,
+		["Exhausted "] = false,
+		["Tired "] = false,
+		["Drowning "] = false,
+		["Winded "] = false,
+		["Cannot breathe "] = false,
+		["Trouble breathing "] = false,
+		["Dehydrated "] = false,
+		["Thirsty"] = false,
+		["Starving "] = false,
+		["Hungry"] = false,
+		["Very drowsy "] = false,
+		["Drowsy "] = false,
+		["Nauseous "] = false,
+		["Vision lost "] = false,
+		["Vision impaired "] = false,
+		["Vision somewhat impaired "] = false,
+		["Spilled (Popped out) "] = false,
+		["Cannot stand "] = false,
+		["Stand impaired "] = false,
+		["Cannot grasp "] = false,
+		["Grasp impaired "] = false,
+		["Cannot fly "] = false,
+		["Flight impaired "] = false,
+		["Motor nerve severed "] = false,
+		["Sensory nerve severed "] = false,
+		["Major artery torn "] = false,
+		["Artery torn "] = false,
+		["Overlapping fracture "] = false,
+		["Compound fracture "] = false,
+		["Torn tendon "] = false,
+		["Tendon strain "] = false,
+		["Tendon bruise "] = false,
+		["Torn ligament "] = false,
+		["Ligament strain "] = false,
+		["Ligament bruise "] = false,
+		["Need setting "] = false,
+		["Broken tissue"] = false,
+		["Heavy damage "] = false,
+		["Moderate damage "] = false,
+		["Light damage "] = false,
+		["Partially broken tissue "] = false,
+		["Extreme pain "] = false,
+		["Moderate pain "] = false,
+		["Minor pain "] = false,
+		["Extreme swelling "] = false,
+		["Medium swelling "] = false,
+		["Minor swelling "] = false,
+		["Infection "] = false
+	}
+	]]
 
-}
 
 Body = class("Body")
 
 function Body:initialize(bodyparts)
+	self.pain = 0 
+	self.max_pain = 150
+	self.bleeding = 0
+end
 
+function Body:printAfflictions()
+	for key, affliction in pairs (self.affliction) do
+		if affliction then print(key) end
+	end
 end
 
 function Body:update(dt)
 
 end
 
-function Body:getHead()
-	return self.head
-end
 
-function Body:getNeck()
-	return self.neck
-end
 
 CatBody = class("CatBody")
 
 function CatBody:initialize()
+	self.symptoms = {
+		["Heavy bleeding "] = false,
+		["Bleeding "] = false,
+		["Pale "] = false,
+		["Faint "] = false,
+		["Paralyzed "] = false,
+		["Partially paralyzed "] = false,
+		["Sluggish "] = false,
+		["Completely numb "] = false,
+		["Partially numb "] = false,
+		["Slightly numb "] = false,
+		["Serious fever "] = false,
+		["Moderate fever "] = false,
+		["Slight fever "] = false,
+		["Dizzy "] = false,
+		["Stunned "] = false,
+		["Overexerted "] = false,
+		["Exhausted "] = false,
+		["Tired "] = false,
+		["Drowning "] = false,
+		["Winded "] = false,
+		["Cannot breathe "] = false,
+		["Trouble breathing "] = false,
+		["Dehydrated "] = false,
+		["Thirsty"] = false,
+		["Starving "] = false,
+		["Hungry"] = false,
+		["Very drowsy "] = false,
+		["Drowsy "] = false,
+		["Nauseous "] = false,
+		["Vision lost "] = false,
+		["Vision impaired "] = false,
+		["Vision somewhat impaired "] = false,
+		["Spilled (Popped out) "] = false,
+		["Cannot stand "] = false,
+		["Stand impaired "] = false,
+		["Cannot grasp "] = false,
+		["Grasp impaired "] = false,
+		["Cannot fly "] = false,
+		["Flight impaired "] = false,
+		["Motor nerve severed "] = false,
+		["Sensory nerve severed "] = false,
+		["Major artery torn "] = false,
+		["Artery torn "] = false,
+		["Overlapping fracture "] = false,
+		["Compound fracture "] = false,
+		["Torn tendon "] = false,
+		["Tendon strain "] = false,
+		["Tendon bruise "] = false,
+		["Torn ligament "] = false,
+		["Ligament strain "] = false,
+		["Ligament bruise "] = false,
+		["Need setting "] = false,
+		["Broken tissue"] = false,
+		["Heavy damage "] = false,
+		["Moderate damage "] = false,
+		["Light damage "] = false,
+		["Partially broken tissue "] = false,
+		["Extreme swelling "] = false,
+		["Medium swelling "] = false,
+		["Minor swelling "] = false,
+		["Infection "] = false
+	}
+
 	self.head = Head:new()
 	self.neck = Neck:new()
-	self.chest = Chest:new()
-	self.belly = Belly:new()
-	self.back = Back:new()
+	self.upper_body = UpperBody:new()
+	self.lower_body = LowerBody:new()
 	self.tail = Tail:new()
 	self.front_right_leg = Leg:new()
 	self.front_left_leg = Leg:new()
@@ -38,11 +172,15 @@ function CatBody:initialize()
 
 	-----------------
 	
-	self.weight
+	self.weight = 10
+
+	--in mL
 	self.blood = 500
 
+	self.bleeding = 0
 
-
+	self.pain = 0 
+	self.max_pain = 150
 
 end
 
@@ -62,14 +200,16 @@ BodyPart = class("BodyPart")
 function BodyPart:initialize()
 	--None / Minor / Inhibited / Function Loss /  Broken / Missing
 	self.function_status = {
-		["None"] = true
-		["Minor"] = false
-		["Inhibited"] = false
-		["Function Loss"] = false
-		["Broken"] = false
+		["Minor"] = false,
+		["Inhibited"] = false,
+		["Function Loss"] = false,
+		["Broken"] = false,
 		["Missing"] = false
 	}
-	self.bones = {}
+	self.bones = {
+	}
+	self.tissue = {}
+
 end
 
 function BodyPart:update(dt)
@@ -90,13 +230,15 @@ Head = class("Head", BodyPart)
 function Head:initialize()
 	BodyPart.initialize(self)
 	self.bones = {
-		["Skull"] = Bone:new()
+		["Skull"] = Bone:new(),
 		["Teeth"] = Bone:new()
 	}
 	self.organs = {
-		["Brain"] = Brain:new()
-		["Eyes"] = Eyes:new()
-		["Ears"] = Ears:new()
+		["Brain"] = Brain:new(),
+		["Left Eye"] = Eye:new(),
+		["Right Eye"] = Eye:new(),
+		["Left Ear"] = Ear:new(),
+		["Right Ear"] = Ear:new(),
 		["Nose"] = Nose:new()
 	}
 end
@@ -109,35 +251,43 @@ function Neck:initialize()
 	self.bones = {
 		["Neck"] = Bone:new()
 	}
+	self.organs = {
+		["Throat"] = Throat:new()
+	}
 
 end
 
 
 
 
-Chest = class("Chest", BodyPart)
+UpperBody = class("Chest", BodyPart)
 
-function Chest:initialize()
+function UpperBody:initialize()
 	BodyPart.initialize(self)
+	self.bones = {
+		["Ribcage"] = Bone:new(),
+		["Upper Spine"] = Bone:new()
+	}
+	self.organs = {
+		["Heart"] = Heart:new(),
+		["Left Lung"] = Lung:new(), 
+		["Right Lung"] = Lung:new()
+	}
 end
 
 
 
+LowerBody = class("LowerBody", BodyPart)
 
-Belly = class("Belly", BodyPart)
-
-function Belly:initialize()
+function LowerBody:initialize()
 	BodyPart.initialize(self)
-end
-
-
-
-
-
-Back = class("Back", BodyPart)
-
-function Back:initialize()
-	BodyPart.initialize(self)
+	self.bones = {
+		["Lower Spine"] = Bone:new()
+	}
+	self.organs = {
+		["Stomach"] = Stomach:new(),
+		["Guts"] = Guts:new()
+	}
 end
 
 
@@ -147,20 +297,25 @@ Leg = class("Leg", BodyPart)
 
 function Leg:initialize()
 	BodyPart.initialize(self)
+	self.bones = {
+		["Upper Leg"] = Bone:new(),
+		["Lower Leg"] = Bone:new(),
+		["Foot"] = Bone:new()
+	}
 end
-
-
 
 
 Tail = class("Tail", BodyPart)
 
-function Leg:initialize()
+function Tail:initialize()
 	BodyPart.initialize(self)
+	self.bones = {
+		["Tail"] = Bone:new()
+	}
 end
 
 
-
-
+local status_max = 100
 
 
 --subparts
@@ -168,6 +323,7 @@ SubPart = class("SubPart")
 
 function SubPart:initialize()
 	self.status = {}
+
 end
 
 function SubPart:updateStatus()
@@ -178,19 +334,17 @@ function SubPart:updateStatus()
 	end
 end
 
-function SubPart:getStatus()
+function SubPart:getActiveStatus()
 	local status = {}
 	for key, status in pairs (self.status) do
-		if status == true then 
+		if status then 
 			status[key] = true 
 		end
 	end
 	return status
 end
 
-function SubPart:printStatus()
-
-
+function SubPart:printActiveStatus()
 
 Fur = class("Fur", SubPart)
 
@@ -198,12 +352,18 @@ function Fur:initialize()
 	SubPart.initialize(self)
 	--Normal / burned / standing / torn / bloody
 	self.status = {
-		["Normal"] = true, 
-		["Standing"] = false,
-		["Burned"] = false, 
-		["Torn"] = false, 
-		["Bloody"] = false, 
+		["Burn"] = status_max
+		["Torn"] = status_max, 
+		["Bloody"] = status_max
 	}
+end
+
+function Fur:printActiveStatus(part)
+	local active_status = self:getActivesStatus()
+	for key, status in pairs (active_status) do
+		print()
+	end
+
 end
 
 
@@ -212,8 +372,7 @@ Bone = class("Bone", SubPart)
 function Bone:initialize()
 	SubPart.initialize(self)
 	self.status = {
-		["Normal"] = true
-		["Fractured"] = false 
+		["Fractured"] = false,
 		["Broken"] = false
 	}
 end
@@ -228,6 +387,9 @@ Tissue = class("Tissue", SubPart)
 
 function Tissue:initialize()
 	SubPart.initialize(self)
+	self.skin = {
+
+	}
 end
 
 
@@ -248,9 +410,23 @@ end
 
 
 
-Lungs = class("Lungs", Organ)
 
-function Lungs:initialize()
+
+Guts = class("Guts", Organ)
+
+function Guts:initialize()
+	Organ.initialize(self)
+end
+
+Throat = class("Throat", Organ)
+
+function Throat:initialize()
+	Organ.initialize(self)
+end
+
+Lung = class("Lung", Organ)
+
+function Lung:initialize()
 	Organ.initialize(self)
 end
 
@@ -278,15 +454,15 @@ function Brain:initialize()
 	Organ.initialize(self)
 end
 
-Ears = class("Ears", Organ)
+Ear = class("Ear", Organ)
 
-function Ears:initialize()
+function Ear:initialize()
 	Organ.initialize(self)
 end
 
-Eyes = class("Eyes", Organ)
+Eye = class("Eye", Organ)
 
-function Eyes:initialize()
+function Eye:initialize()
 	Organ.initialize(self)
 end
 
@@ -295,3 +471,9 @@ Nose = class("Nose", Organ)
 function Nose:initialize()
 	Organ.initialize(self)
 end
+
+
+
+
+
+Skin = class("Skin", )

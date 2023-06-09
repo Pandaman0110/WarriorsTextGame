@@ -17,8 +17,8 @@ function genRandomCat(role, rec)
 
 	if not rec then cat:setParents(genParent(), genParent()) end
 
+	cat:setBody(CatBody:new(cat))
 
-	cat:setBody(Body:new(cat))
 	return cat
 end
 
