@@ -5,17 +5,17 @@ maingame = {}
 function maingame:init()
 end
 
-function maingame:enter(previous, clans, player_cat)
+function maingame:enter(previous, clans, player_cat, cat_generator)
 	--clock, 1440 seconds for each in game day means a minute passes in game for every second in real life
 	self.game_clock = Timer:new(1440)
 	--self.game_clock:toGame()
 
 	self.cat_handler = CatHandler:new(clans, self.game_clock)
+	self.relationships_handler = RelationshipHandler:new()
 	self.decal_handler = DecalHandler:new()
+	self.cat_generator = cat_generator
 
 	self.player = player_cat
-
-	self.buttons = {}
 
 	self.buttons = {}
 
@@ -29,20 +29,25 @@ function maingame:enter(previous, clans, player_cat)
 
 
 	self.player:setPos(10, 5)
-
 	self.map = Map:new(self.player)
 
-	for i, cat in ipairs(self.cat_handler:getCats()) do
+
+	for cat in self.cat_handler:iterator() do
 		cat:setController(Ai:new(cat, self.cat_handler, self.map:getCollisionMap()))
 	end
 
+	local temp1 = {}
+	local temp2 = {}
+	
+
 	self.player:setController(Player:new(self.player, self.cat_handler, self.map:getCollisionMap()))
-
-
 
 	local randomcat = self.cat_handler:findNonPlayer()
 
 	randomcat:move(5, 5)
+
+	self.relationships_handler:newRelationship(self.player:getName(), randomcat:getName())
+
 end
 
 function maingame:update(dt)
@@ -75,7 +80,7 @@ function maingame:mousepressed(x, y, button)
 		local message = self.player:getController():mousepressed(tx, ty, button)
 
 		if message ~= nil then 
-			self.cat_handler:readMessage(message)
+			self.cat_handler:handleMessage(message)
 		end
 		--if result then
 		--	if result["Bleed"] then 
@@ -121,10 +126,7 @@ function maingame:drawDecals(offset_x, offset_y, firstTile_x, firstTile_y)
 end
 
 function maingame:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
-	for i = 2, #self.cat_handler:getCats() do
-		local cat = self.cat_handler:getCats()[i]
-		cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
-	end
+	self.cat_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 end
 
 function maingame:checkButtons(mx, my, button)

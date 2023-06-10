@@ -16,33 +16,36 @@ function love.load(args)
 	pathfinder = require "libraries/jumper.pathfinder"
 	love.profiler = require "libraries/profile"
 
+	require "conf" 
+
 	---misc files
-	require "conf"
-	require "catfunctions"
-	require "data"
-	require "buttons"
-	require "functions"
-	require "saving"
+	require	"misc/buttons"
+	require "misc/data"
+	require "misc/functions"
+	require "misc/saving"
 
 	--classes
-	require "Cats"
-	require "Clan"
-	require "Tiles"
-	require "Controller"
-	require "Timer"
-	require "Editor"
-	require "Handler"
-	require "Medical"
+	require "classes/CatGenerator"
+	require "classes/Cats"
+	require "classes/Clan"
+	require "classes/Controller"
+	require "classes/Editor"
+	require "classes/Handler"
+	require "classes/Medical"
+	require "classes/Relationship"
+	require "classes/Tiles"
+	require "classes/Timer"
 
 	--gamestates
-	require "gamestates/mainmenu"
-	require "gamestates/startup"
-	require "gamestates/options"
-	require "gamestates/loadgame"
 	require "gamestates/choosecharacter"
-	require "gamestates/maingame"
-	require "gamestates/play"
 	require "gamestates/leveleditor"
+	require "gamestates/loadgame"
+	require "gamestates/maingame"
+	require "gamestates/mainmenu"
+	require "gamestates/options"
+	require "gamestates/play"
+	require "gamestates/startup"
+
 
 	---------------------
 

@@ -500,31 +500,27 @@ Suffixes = {
 
 --order this with the images by index
 Pelts = {
-"Grey",
-"Brown",
-"White"
+	"Grey",
+	"Brown",
+	"White",
+	"Tortieshell", 
+	"White Tortieshell"
 }
 
 Eyecolors = {
-"Blue",
-"Amber",
-"Brown"
-}
-
-Furlengths = {
-"Long",
-"Medium",
-"Short"
+	"Blue",
+	"Amber",
+	"Brown"
 }
 
 Roles = {
-"Leader",
-"Deputy",
-"Medicine Cat",
-"Warrior", 
-"Apprentice", 
-"Kit",
-"Elder"
+	"Leader",
+	"Deputy",
+	"Medicine Cat",
+	"Warrior", 
+	"Apprentice", 
+	"Kit",
+	"Elder"
 }
 
 CatImages = {

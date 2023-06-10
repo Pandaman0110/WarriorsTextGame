@@ -6,6 +6,7 @@ choosecharacter = {}
 
 function choosecharacter:enter(previous, save)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
+	self.cat_generator = CatGenerator:new()
 
 	self:createButtons()
 	self:setupSaving()
@@ -220,10 +221,10 @@ function choosecharacter:clanButtons(first)
 
 	if first then 
 		if not self.save then 
-			clan1 = genClan("Thunder")
-			clan2 = genClan("River")
-			clan3 = genClan("Wind")
-			clan4 = genClan("Shadow")
+			clan1 = self.cat_generator:genClan("Thunder")
+			clan2 = self.cat_generator:genClan("River")
+			clan3 = self.cat_generator:genClan("Wind")
+			clan4 = self.cat_generator:genClan("Shadow")
 		elseif self.save then
 			clan1 = self.save["Clans"][1]
 			clan2 = self.save["Clans"][2]
@@ -231,10 +232,10 @@ function choosecharacter:clanButtons(first)
 			clan4 = self.save["Clans"][4]
 		end
 	else
-		clan1 = genClan("Thunder")
-		clan2 = genClan("River")
-		clan3 = genClan("Wind")
-		clan4 = genClan("Shadow")
+		clan1 = self.cat_generator:genClan("Thunder")
+		clan2 = self.cat_generator:genClan("River")
+		clan3 = self.cat_generator:genClan("Wind")
+		clan4 = self.cat_generator:genClan("Shadow")
 	end
 
 
@@ -254,7 +255,7 @@ function choosecharacter:checkButtons(mx, my, button)
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then 
 					self.currentCat:setIsPlayer(true) 
-					gamestate.switch(maingame, self.clans, self.currentCat) 
+					gamestate.switch(maingame, self.clans, self.currentCat, self.cat_generator) 
 				end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
 				if _button == self.save_button then 

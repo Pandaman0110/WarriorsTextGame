@@ -76,8 +76,53 @@ end
 
 Array = class("Array")
 
-function Array:initialize()
+function Array:initialize(size)
 	self.array = {}
+	if size then 
+		for i = 1, size do
+        	t[i] = i
+    	end
+	end
+end
+
+function Array:iterator(index)
+	if index then assert(type(index) == "number", "cannot index array with type: " .. type(index) .. " please use number") end
+	if index then assert(not self.array[index], "value: " .. index .. " is not a valid index") end
+	local i = 0
+	if index then i = index end
+	local n = table.getn(self.array)
+	return function()
+		i = i + 1
+		if i <= n then return self.array[i] end 
+	end
+end
+
+function Array:remove(...)
+	local removed = {}
+	for i, v in ipairs(arg) do
+		if type(v) == "number" then 
+			table.insert(removed, table.remove(self.array, v))
+		else 
+			for j, thing in ipairs(self.array) do
+				if thing == v then 
+					table.insert(removed, table.remove(self.array, j))
+				end
+			end
+		end
+	end
+	if #removed > 0 then return true, removed 
+	else return false, removed end
+end
+
+function Array:insert(item, index)
+	if index then assert(type(index) == "number", "cannot index array with type: " .. type(index) .. " please use number") end
+	if index then table.insert(self.array, index, item) else
+		table.insert(self.array, item)
+	end
+end 
+
+function Array:randomChoice()
+	return lume.randomchoice(self.array)
 end
 
 function Array:peek()
@@ -86,6 +131,25 @@ end
 
 function Array:size()
 	return #self.array
+end
+
+function Array:find(item)
+	for i, thing in ipairs(self.array) do
+		if thing == item then return i end
+	end
+	return false
+end
+
+function Array:at(index)
+	assert(type(index) == "number", "cannot index array with type: " .. type(index) .. " please use number")
+	return self.array[index]
+end
+
+function Array:contains(item)
+	for i, thing in ipairs(self.array) do
+		if thing == item then return true end
+	end
+	return false
 end
 
 function Array:isEmpty()
@@ -118,13 +182,16 @@ function Stack:initialize()
 end
 
 function Stack:pop()
-	local item = table.remove(self.table)
+	local item = table.remove(self.array)
 	return item
 end
 
 function Stack:push(item)
-	table.insert(self.table, #self.table, item)
+	table.insert(self.array, #self.array, item)
 end
+
+
+
 
 Queue = class("Queue", Array)
 
@@ -133,14 +200,13 @@ function Queue:initialize()
 end
 
 function Queue:pop()
-	local item = table.remove(self.table)
+	local item = table.remove(self.array)
 	return item
 end
 
 function Queue:push(item)
-	table.insert(self.table, item)
+	table.insert(self.array, item)
 end
-
 
 
 
@@ -165,6 +231,9 @@ function Map:count(item)
 	end
 	return false
 end
+
+
+
 
 Set = class("Set", Map)
 
@@ -198,3 +267,37 @@ function Node:initialize()
 
 end
 
+
+Graph = class("Graph")
+
+function Graph:initialize()
+	self.vertexes = Array:new()
+	self.graph = {{}}
+end
+
+function Graph:addVertexPair(vertex_1, vertex_2)
+	assert(not self.vertexes:contains(vertex_1), "graph already contains: " .. vertex_1)
+	assert(not self.vertexes:contains(vertex_2), "graph already contains: " .. vertex_2)
+	self.vertexes:insert(vertex_1)
+	self.vertexes:insert(vertex_2)
+end
+
+function Graph:addEdge(vertex_1, vertex_2, edge)
+	assert(self.vertexes:contains(vertex_1) or self.vertexes:contains(vertex_2), "please add the vertex first before using it to connect an edge")
+	local ver1, ver2 = self.vertexes:find(vertex_1), self.vertexes:find(vertex_2)
+	assert(self.graph[ver1][ver2] == nil, "there is already an edge between these two vertices")
+	self.graph[ver1][ver2] = edge
+end 
+
+function Graph:removeEdge(edge)
+	for vertex_1, row in pairs(self.graph) do
+		for vertex_2, _edge in pairs(row) do
+			if _edge == edge then  self.graph[vertex_1][vertex_2] = nil end
+		end
+	end
+end
+
+function Graph:getEdge(vertex_1, vertex_2)
+	local ver1, ver2 = self.vertexes:find(vertex_1), self.vertexes:find(vertex_2)
+	return self.graph[ver1][ver2]
+end

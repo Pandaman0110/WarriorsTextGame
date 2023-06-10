@@ -4,8 +4,11 @@ local pairs, ipairs = pairs, ipairs
 
 Animal = class("Animal")
 
-function Animal:initialize(controller)
+function Animal:initialize()
 	-- all this shit has to do with movement and stuff
+
+	self.image = image
+
 	self.controller = controller
 
 	self.body = nil
@@ -24,7 +27,6 @@ function Animal:initialize(controller)
 	self.ismoving = false --self explanatory
 	self.direction = "south" --not sure what the fuck im gonna use this for yet
 
-	self.image = image
 	self.name = name
 	self.gender = gender
 
@@ -338,7 +340,7 @@ end
 
 Cat = class("Cat", Animal)
 
-function Cat:initialize(controller)
+function Cat:initialize()
 	Animal.initialize(self)
 
 	self.intent = "help" -- help/combat for now
@@ -351,7 +353,6 @@ function Cat:initialize(controller)
 	self.moons = moons
 	self.eyecolor = eyecolor
 	self.pelt = pelt
-	self.fur_length = fur_length
 
 	self.dad = dad
 	self.mom = mom
@@ -467,10 +468,6 @@ function Cat:getPeltNum()
 	return self.pelt 
 end
 
-function Cat:getFurlength()
-	return Furlengths[self.fur_length]
-end
-
 function Cat:getDad()
 	return self.dad
 end
@@ -527,10 +524,9 @@ function Cat:setMoons(moons)
 	self.moons = moons 
 end
 
-function Cat:setAppearence(eyecolor, pelt, fur_length)
+function Cat:setAppearence(eyecolor, pelt)
 	self.eyecolor = eyecolor
 	self.pelt = pelt 
-	self.fur_length = fur_length
 end
 
 function Cat:setEyecolor(eyecolor)
@@ -539,10 +535,6 @@ end
 
 function Cat:setPelt(pelt)
 	self.pelt = pelt
-end
-
-function Cat:setFurlength(fur_length)
-	self.fur_length = fur_length
 end
 
 function Cat:setDad(dad)
@@ -598,13 +590,12 @@ function Cat:printDetails()
 	print("Moons: " .. self.moons)
 	print("Eyecolor: " .. self:getEyecolor())
 	print("Pelt: " .. self:getPelt())
-	print("Fur Length: " .. self:getFurlength())
 	if self.mate then print("Mate: " .. self.mate:getName()) end
 	if self.mentor then print("Mentor: " .. self.mentor:getName()) end
 	if self.apprentice then print("Apprentice: " .. self.apprentice:getName()) end
 	if self.dad then print("Dad: " .. self.dad:getName()) end
 	if self.mom then print("Mom: " .. self.mom:getName()) end
-	if self.nursing == true then print("Current Litter: ") printTableCatsNames(self.kits) end
+	if self.nursing == true then print("Current Litter: ") CatHandler.printTableCatsNames(self.kits) end
 	print("-------------------------")
 end
 
@@ -616,10 +607,4 @@ function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	-- accessing cat images might be slowing this down
 	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
 	love.graphics.draw(CatImages[self.image], (self.x - firstTile_x * 32) - offset_x - 16, (self.y - firstTile_y * 32) - offset_y - 16 - 8)
-end
-
-Relationship = class("Relationship")
-
-function Relationship:initialize()
-
 end
