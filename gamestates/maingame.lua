@@ -6,10 +6,11 @@ function maingame:init()
 end
 
 function maingame:enter(previous, clans, player_cat)
-	--clock
-	self.clock = Timer:new()
+	--clock, 1440 seconds for each in game day means a minute passes in game for every second in real life
+	self.game_clock = Timer:new(1440)
+	--self.game_clock:toGame()
 
-	self.cat_handler = CatHandler:new(clans, self.clock)
+	self.cat_handler = CatHandler:new(clans, self.game_clock)
 	self.decal_handler = DecalHandler:new()
 
 	self.player = player_cat
@@ -45,7 +46,7 @@ function maingame:enter(previous, clans, player_cat)
 end
 
 function maingame:update(dt)
-	self.clock:update(dt)
+	self.game_clock:update(dt)
 
 	self:updateCats(dt)
 	self:updateDecals(dt)
@@ -56,6 +57,8 @@ end
 function maingame:keypressed(key)
 	self.player:getController():keypressed(key)
 	self.mouth_button:setImage(Claws[self.player:getClaws()])
+
+	self.game_clock:keypressed(key)
 end
 
 
@@ -93,8 +96,8 @@ function maingame:draw()
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-	self.clock:drawTime(16, 16)
-	clear()
+	self.game_clock:draw(16, 16)
+	clearTextSettings(00)
 end
 
 ----------------------------------------------------------------------------------------------

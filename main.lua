@@ -82,7 +82,7 @@ function love.load(args)
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(mainmenu)
+	gamestate.switch(choosecharacter)
 
 	love.profiler.start()
 	love.frames = 0
@@ -142,7 +142,7 @@ function love.draw()
    			--love.graphics.print(love.report or "Please wait...", 10, 10, 0, scX())
    		end
 
-		clear()
+		clearTextSettings()
 
 	push:finish()
 end

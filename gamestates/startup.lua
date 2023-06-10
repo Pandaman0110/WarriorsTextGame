@@ -39,5 +39,5 @@ function startup:drawQuotes()
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
-	clear()
+	clearTextSettings()
 end

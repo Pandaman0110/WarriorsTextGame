@@ -14,21 +14,6 @@ function string_meta:__index( key )
     end
 end
 
---these are for putting buttons in the middle of the screen, not the center coordiantes of the image
-function imageCenterX(image) 
-	local image_width = image:getWidth()
-	local game_width = push:getWidth()
-	local x = game_width / 2 - image_width / 2
-	return x
-end
-
-function imageCenterY(image) 
-	local image_height = image:getHeight()
-	local game_height = push:getHeight()
-	local y = game_height / 2 - image_height / 2
-	return y 
-end
-
 --checks if the mouse is inside of a rectangle
 function mouseInside(mouseX, mouseY, rectX, rectY, rectWidth, rectHeight)
 	if mouseX > rectX and mouseX < (rectX + rectWidth) and mouseY > rectY and mouseY < (rectY + rectHeight) then
@@ -43,8 +28,7 @@ function isEmpty(t)
 	return empty
 end
 
-
-function clear()
+function clearTextSettings()
 	love.graphics.setColor(255,255,255,1)
 end
 
@@ -90,43 +74,47 @@ end
 
 --implmentations of some useful data structures
 
-DataStructure = class("DataStructure")
+Array = class("Array")
 
-function DataStructure:initialize()
-	self.table = {}
+function Array:initialize()
+	self.array = {}
 end
 
-function DataStructure:peek()
-	return self.table[#self.table]
+function Array:peek()
+	return self.array[#self.array]
 end
 
-function DataStructure:isEmpty()
-	isEmpty(self.table)
+function Array:size()
+	return #self.array
 end
 
-function DataStructure:empty()
-	for i, item in ipairs(self.table) do
-		self.table[i] = nil
+function Array:isEmpty()
+	isEmpty(self.array)
+end
+
+function Array:empty()
+	for i, item in ipairs(self.array) do
+		self.array[i] = nil
 	end
 end
 
-function DataStructure:update(dt)
-	for i, item in ipairs(self.table) do
+function Array:update(dt)
+	for i, item in ipairs(self.array) do
 		item:update(dt)
 	end
 end
 
-function DataStructure:drawOffset(offset_x, offset_y, firstTile_x, firstTile_y)
-	for i, item in ipairs(self.table) do
+function Array:drawOffset(offset_x, offset_y, firstTile_x, firstTile_y)
+	for i, item in ipairs(self.array) do
 		item:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	end
 end
 
 
-Stack = class("Stack", DataStructure)
+Stack = class("Stack", Array)
 
 function Stack:initialize()
-	DataStructure.initialize(self)
+	Array.initialize(self)
 end
 
 function Stack:pop()
@@ -138,11 +126,10 @@ function Stack:push(item)
 	table.insert(self.table, #self.table, item)
 end
 
-
-Queue = class("Queue", DataStructure)
+Queue = class("Queue", Array)
 
 function Queue:initialize()
-	DataStructure.initialize(self)
+	Array.initialize(self)
 end
 
 function Queue:pop()
@@ -153,3 +140,61 @@ end
 function Queue:push(item)
 	table.insert(self.table, item)
 end
+
+
+
+
+
+Map = class("Map")
+
+function Map:initialize()
+	self.map = {}
+end
+
+function Map:insert(key, item)
+	self.map[key] = item 
+end
+
+function Map:remove(key)
+	self.map[key] = nil
+end
+
+function Map:count(item)
+	for key, _item in pairs(self.map) do
+		if _item == item then return true end
+	end
+	return false
+end
+
+Set = class("Set", Map)
+
+function Set:initialize()
+	Map.initialize(self)
+end
+
+function Set:insert(item)
+	self.map[item] = true 
+end
+
+function Set:remove(item)
+	self.map[item] = false 
+end
+
+function Set:count(item)
+	return self.map[item]
+end
+
+function Set:size()
+	local i = 0
+	for key in pairs(self.map) do
+		if key then i = i + 1 end
+	end
+	return i 
+end
+
+Node = class("Node")
+
+function Node:initialize()
+
+end
+

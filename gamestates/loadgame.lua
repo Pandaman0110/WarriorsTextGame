@@ -64,7 +64,7 @@ function loadgame:drawSave()
 
 		love.graphics.print(self.player:getName(), 160 + 106, 80, 0, scX())
 
-		clear()
+		clearTextSettings()
 
 		self.player:drawImage(160, 80, 2)
 	end

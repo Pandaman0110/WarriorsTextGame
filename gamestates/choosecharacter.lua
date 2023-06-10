@@ -90,7 +90,7 @@ function choosecharacter:drawSaveText()
 	love.graphics.print(self.savingText, 192, 296, 0, scX())
 	self.save_name_button:draw()
 
-	clear()
+	clearTextSettings()
 end
 
 function choosecharacter:drawButtons()
@@ -121,7 +121,7 @@ function choosecharacter:drawCurrentClan()
 	love.graphics.print("The medicine cat is " .. self.playerClan:getMedicineCat():getName(), textX, 96, 0, scX())
 	love.graphics.print("There are " .. self.playerClan:getNumCats() .. " cats", textX, 112, 0, scX())
 
-	clear()
+	clearTextSettings()
 end
 
 function choosecharacter:drawCurrentCat()
@@ -190,7 +190,7 @@ function choosecharacter:drawCatButtons()
 
 	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 460, 32, 0, scX())
 
-	clear()
+	clearTextSettings()
 
 	for i, _button in ipairs(self.cat_buttons) do
 		local cat = _button:getObject()
@@ -199,11 +199,11 @@ function choosecharacter:drawCatButtons()
 		if i > 5 then
 			local k = i - 5
 			love.graphics.print(cat:getName(), 560, 88 + 32 * (k-1), 0, scX())
-			clear()
+			clearTextSettings()
 			cat:drawImage(512, 80 + 32 * (k-1))
 		else  
 			love.graphics.print(cat:getName(), 440, 88 + 32 * (i-1), 0, scX())
-			clear()
+			clearTextSettings()
 			cat:drawImage(392, 80 + 32 * (i-1))
 		end
 	end

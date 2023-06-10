@@ -97,67 +97,67 @@ CatBody = class("CatBody")
 
 function CatBody:initialize()
 	self.symptoms = {
-		["Heavy bleeding "] = false,
-		["Bleeding "] = false,
-		["Pale "] = false,
-		["Faint "] = false,
-		["Paralyzed "] = false,
-		["Partially paralyzed "] = false,
-		["Sluggish "] = false,
-		["Completely numb "] = false,
-		["Partially numb "] = false,
-		["Slightly numb "] = false,
-		["Serious fever "] = false,
-		["Moderate fever "] = false,
-		["Slight fever "] = false,
-		["Dizzy "] = false,
-		["Stunned "] = false,
-		["Overexerted "] = false,
-		["Exhausted "] = false,
-		["Tired "] = false,
-		["Drowning "] = false,
-		["Winded "] = false,
-		["Cannot breathe "] = false,
-		["Trouble breathing "] = false,
-		["Dehydrated "] = false,
+		["Heavy bleeding"] = false,
+		["Bleeding"] = false,
+		["Pale"] = false,
+		["Faint"] = false,
+		["Paralyzed"] = false,
+		["Partially paralyzed"] = false,
+		["Sluggish"] = false,
+		["Completely numb"] = false,
+		["Partially numb"] = false,
+		["Slightly numb"] = false,
+		["Serious fever"] = false,
+		["Moderate fever"] = false,
+		["Slight fever"] = false,
+		["Dizzy"] = false,
+		["Stunned"] = false,
+		["Overexerted"] = false,
+		["Exhausted"] = false,
+		["Tired"] = false,
+		["Drowning"] = false,
+		["Winded"] = false,
+		["Cannot breathe"] = false,
+		["Trouble breathing"] = false,
+		["Dehydrated"] = false,
 		["Thirsty"] = false,
-		["Starving "] = false,
+		["Starving"] = false,
 		["Hungry"] = false,
-		["Very drowsy "] = false,
-		["Drowsy "] = false,
-		["Nauseous "] = false,
-		["Vision lost "] = false,
-		["Vision impaired "] = false,
-		["Vision somewhat impaired "] = false,
-		["Spilled (Popped out) "] = false,
-		["Cannot stand "] = false,
-		["Stand impaired "] = false,
-		["Cannot grasp "] = false,
-		["Grasp impaired "] = false,
-		["Cannot fly "] = false,
-		["Flight impaired "] = false,
-		["Motor nerve severed "] = false,
-		["Sensory nerve severed "] = false,
-		["Major artery torn "] = false,
-		["Artery torn "] = false,
-		["Overlapping fracture "] = false,
-		["Compound fracture "] = false,
-		["Torn tendon "] = false,
-		["Tendon strain "] = false,
-		["Tendon bruise "] = false,
-		["Torn ligament "] = false,
-		["Ligament strain "] = false,
-		["Ligament bruise "] = false,
-		["Need setting "] = false,
+		["Very drowsy"] = false,
+		["Drowsy"] = false,
+		["Nauseous"] = false,
+		["Vision lost"] = false,
+		["Vision impaired"] = false,
+		["Vision somewhat impaired"] = false,
+		["Spilled (Popped out)"] = false,
+		["Cannot stand"] = false,
+		["Stand impaired"] = false,
+		["Cannot grasp"] = false,
+		["Grasp impaired"] = false,
+		["Cannot fly"] = false,
+		["Flight impaired"] = false,
+		["Motor nerve severed"] = false,
+		["Sensory nerve severed"] = false,
+		["Major artery torn"] = false,
+		["Artery torn"] = false,
+		["Overlapping fracture"] = false,
+		["Compound fracture"] = false,
+		["Torn tendon"] = false,
+		["Tendon strain"] = false,
+		["Tendon bruise"] = false,
+		["Torn ligament"] = false,
+		["Ligament strain"] = false,
+		["Ligament bruise"] = false,
+		["Need setting"] = false,
 		["Broken tissue"] = false,
-		["Heavy damage "] = false,
-		["Moderate damage "] = false,
-		["Light damage "] = false,
-		["Partially broken tissue "] = false,
-		["Extreme swelling "] = false,
-		["Medium swelling "] = false,
-		["Minor swelling "] = false,
-		["Infection "] = false
+		["Heavy damage"] = false,
+		["Moderate damage"] = false,
+		["Light damage"] = false,
+		["Partially broken tissue"] = false,
+		["Extreme swelling"] = false,
+		["Medium swelling"] = false,
+		["Minor swelling"] = false,
+		["Infection"] = false
 	}
 
 	self.head = Head:new()
@@ -346,13 +346,15 @@ end
 
 function SubPart:printActiveStatus()
 
+end
+
 Fur = class("Fur", SubPart)
 
 function Fur:initialize()
 	SubPart.initialize(self)
 	--Normal / burned / standing / torn / bloody
 	self.status = {
-		["Burn"] = status_max
+		["Burn"] = status_max,
 		["Torn"] = status_max, 
 		["Bloody"] = status_max
 	}
@@ -476,4 +478,4 @@ end
 
 
 
-Skin = class("Skin", )
+Skin = class("Skin", Organ)
