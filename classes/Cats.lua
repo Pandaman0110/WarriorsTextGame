@@ -366,6 +366,12 @@ function Cat:initialize()
 	self.is_player = false
 end
 
+function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	-- accessing cat images might be slowing this down
+	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
+	love.graphics.draw(CatImages[self.image], (self.x - firstTile_x * 32) - offset_x - 16, (self.y - firstTile_y * 32) - offset_y - 16 - 8)
+end
+
 --[[
 tile position is gotten by getTileX() or getTileY()
 or getPos(). i know this doesnt make sense someone else can go in an fix it
@@ -603,8 +609,50 @@ function Cat:printName()
 	print(self.name)
 end
 
-function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
-	-- accessing cat images might be slowing this down
-	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
-	love.graphics.draw(CatImages[self.image], (self.x - firstTile_x * 32) - offset_x - 16, (self.y - firstTile_y * 32) - offset_y - 16 - 8)
+--prints the table of cats passed in
+function printCatDetails(cats)
+	for i, cat in pairs(cats) do
+		cat:printDetails()
+	end
+end
+
+function printCatNames(cats)
+	for i, cat in pairs(cats) do
+		cat:printName()
+	end
+end
+
+--t1 is a table of cats
+--t2 is a table of tables of cat
+--creates a new table between the two with only cats in both tables
+function checkDuplicateCats(t1, t2)
+	local dupe = false
+	local cats = {}
+
+	for i, cat1 in ipairs(t1) do
+		for k, cat2 in ipairs(t2) do
+			if cat1 == cat2 then dupe = true end
+		end
+		if dupe == true then table.insert(cats, cat1) end
+		dupe = false
+	end
+
+	return cats 
+end
+
+--removes any cats in the second table from the first, returns a new table
+
+function removeDuplicateCats(t1, t2)
+	local dupe = false
+	local cats = {}
+
+	for i, cat1 in ipairs(t1) do
+		for k, cat2 in ipairs(t2) do
+			if cat1 == cat2 then dupe = true end 
+		end
+		if dupe ~= true then table.insert(cats, cat1) end
+		dupe = false
+	end
+
+	return cats
 end

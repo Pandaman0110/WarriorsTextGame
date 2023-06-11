@@ -6,6 +6,7 @@ choosecharacter = {}
 
 function choosecharacter:enter(previous, save)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
+
 	self.cat_generator = CatGenerator:new()
 
 	self:createButtons()

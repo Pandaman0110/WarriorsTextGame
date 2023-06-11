@@ -275,6 +275,26 @@ function Graph:initialize()
 	self.graph = {{}}
 end
 
+function Graph:iterator()
+	local i = 0
+	local graph_size = table.getn(self.graph)
+
+	for vertex_1, row in pairs(self.graph) do
+		local j = 0
+		for vertex_2, edge in pairs(row) do
+			local row_size = table.getn(row)
+			return function()
+				j = j + 1
+				if j <= row_size then return row[j] end
+			end
+		end
+		return function()
+			i = i + 1
+			if i <= graph_size then return self.graph[i] end
+		end
+	end
+end
+
 function Graph:addVertexPair(vertex_1, vertex_2)
 	assert(not self.vertexes:contains(vertex_1), "graph already contains: " .. vertex_1)
 	assert(not self.vertexes:contains(vertex_2), "graph already contains: " .. vertex_2)
@@ -292,7 +312,7 @@ end
 function Graph:removeEdge(edge)
 	for vertex_1, row in pairs(self.graph) do
 		for vertex_2, _edge in pairs(row) do
-			if _edge == edge then  self.graph[vertex_1][vertex_2] = nil end
+			if _edge == edge then self.graph[vertex_1][vertex_2] = nil end
 		end
 	end
 end
@@ -300,4 +320,19 @@ end
 function Graph:getEdge(vertex_1, vertex_2)
 	local ver1, ver2 = self.vertexes:find(vertex_1), self.vertexes:find(vertex_2)
 	return self.graph[ver1][ver2]
+end
+
+function Graph:at(vertex_1, vertex_2)
+	local ver1, ver2 = self.vertexes:find(vertex_1), self.vertexes:find(vertex_2)
+	if self.graph[ver1][ver2] == false or self.graph[ver1][ver2] == nil then return false
+	else return true end
+end
+
+function Graph:touching(vertex)
+	local ver1 = self.vertexes:find(vertex)
+	local edges = Array:new()
+	for ver2, edge in pairs(self.graph[ver1]) do
+		if self.graph:at(ver1, ver2) then edges:insert(edge) end
+	end
+	return edges
 end

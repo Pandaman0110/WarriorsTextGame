@@ -1,25 +1,62 @@
 --some sort of animalhandler to handle all the animals and shit ad check with collision and stuff
 
-CatHandler = class("CatHandler")
+Handler = class("Handler")
 
-function CatHandler:initialize(clans, clock)
+function Handler:initialize(clock)
 	self.clock = clock
+	self.messages = Array:new()
+end
 
-	self.clans = clans
+function Handler:handleMessage(message)
+	message:print()
+	message:logTime(self.clock)
+	self.messages:insert(message)
+end
+
+function Handler:readMessageAt(index)
+	self.messages:at(index):printDetails()
+end
+
+function Handler:getMessage(index)
+	return self.messages:at(index)
+end
+
+
+
+
+
+GameHandler = class("GameHandler", Handler)
+
+function GameHandler:initialize(clock)
+	Handler.initialize(self, clock)
+end
+
+function GameHandler:update(dt)
+
+end
+
+function GameHandler:draw()
+
+end
+
+
+
+--eventualy yoiu will need to havethis keep track of all the cats not just the ones in the clans
+
+
+CatHandler = class("CatHandler", Handler)
+
+function CatHandler:initialize(clock)
+	Handler.initialize(self, clock)
 
 	self.player = player
 	self.cats = Array:new()
-	self.cat_messages = Array:new()
-
-	self:loadCats()
 end
 
-function CatHandler:loadCats()
-	for i, clan in ipairs(self.clans) do
-		for i, cat in ipairs(clan:getCats()) do
-			self.cats:insert(cat)
-			if cat:isPlayer() then self.player = cat end
-		end
+function CatHandler:loadCatsFromClan(clan)
+	for i, cat in clan:getCats() do
+		self.cats:insert(cat)
+		if cat:isPlayer() then self.player = cat end
 	end
 end
 
@@ -62,19 +99,11 @@ function CatHandler:findNonPlayer()
 	return cat 
 end
 
-function CatHandler:getCats()
-	return self.cats
-end
-
-function CatHandler:getNumCats()
-	return self.cats:size()
-end
-
 function CatHandler:randomCat()
 	return lume.randomchoice(self.cats)
 end
 
-function CatHandler:iterator(index)
+function CatHandler:getCatIterator(index)
 	return self.cats:iterator(index)
 end
 
@@ -94,75 +123,31 @@ end
 
 
 
+ClanHandler = class("ClanHandler", Handler)
 
+function ClanHandler:initialize(clock)
+	Handler.initialize(self, clock)
 
-
-function CatHandler:handleMessage(message)
-	message:print()
-	message:logTime(self.clock)
-	self.cat_messages:insert(message)
+	self.clans = Array:new()
 end
 
-function CatHandler:readMessageAt(index)
-	self.cat_messages:at(index):printDetails()
-end
-
-function CatHandler:getMessage(index)
-	return self.cat_messages:at(index)
-end
-
-
-
-
---prints the table of cats passed in
-function printCatDetails(cats)
-	for i, cat in pairs(cats) do
-		cat:printDetails()
+function ClanHandler:loadClans(clans)
+	for i, clan in pairs(clans) do
+		self.clans:insert(clan)
 	end
 end
 
-function printCatNames(cats)
-	for i, cat in pairs(cats) do
-		cat:printName()
-	end
+function ClanHandler:randomClan()
+	return self.clans:randomChoice()
 end
 
---t1 is a table of cats
---t2 is a table of tables of cat
---creates a new table between the two with only cats in both tables
-function checkDuplicateCats(t1, t2)
-	local dupe = false
-	local cats = {}
-
-	for i, cat1 in ipairs(t1) do
-		for k, cat2 in ipairs(t2) do
-			if cat1 == cat2 then dupe = true end
-		end
-		if dupe == true then table.insert(cats, cat1) end
-		dupe = false
-	end
-
-	return cats 
+function ClanHandler:getClanIterator(index)
+	return self.clans:iterator(index)
 end
 
---removes any cats in the second table from the first, returns a new table
-
-function removeDuplicateCats(t1, t2)
-	local dupe = false
-	local cats = {}
-
-	for i, cat1 in ipairs(t1) do
-		for k, cat2 in ipairs(t2) do
-			if cat1 == cat2 then dupe = true end 
-		end
-		if dupe ~= true then table.insert(cats, cat1) end
-		dupe = false
-	end
-
-	return cats
+function ClanHandler:getNumClans()
+	return self.clans:size()
 end
-
-
 
 
 Message = class("Message")

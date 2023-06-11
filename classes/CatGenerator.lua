@@ -106,14 +106,22 @@ function CatGenerator:genName(role, name)
 		suffix = lume.randomchoice(Suffixes)
 	end
 
-	local _name
+	local final_name = ""
+
 	if prefix[#prefix] == suffix[1] then
-		_name = prefix .. "-" .. suffix
+		final_name = prefix .. "-" .. suffix
 	else
-		_name = prefix .. suffix
+		final_name = prefix .. suffix
 	end
 
-	return _name
+	for cat in self:getGeneratedCatsIterator() do
+		if cat:getName() == final_name then 
+			if name then self:genName(role, name)
+			elseif not name then self:genName(role) end
+		end
+	end
+
+	return final_name
 end
 
 --generates a random name
@@ -231,12 +239,12 @@ function CatGenerator:genWarriors(mom, dad)
 	return warriors
 end 
 
-function CatGenerator:getGeneratedClans()
-	return self.generated_clans
+function CatGenerator:getGeneratedClansIterator(index)
+	return self.generated_clans:iterator(index)
 end
 
-function CatGenerator:getGeneratedCats()
-	return self.generated_cats
+function CatGenerator:getGeneratedCatsIterator(index)
+	return self.generated_cats:iterator(index)
 end
 
 function CatGenerator:printGeneratedClans()

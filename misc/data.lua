@@ -513,6 +513,7 @@ Eyecolors = {
 	"Brown"
 }
 
+--turn this into a set or something
 Roles = {
 	"Leader",
 	"Deputy",

@@ -8,11 +8,9 @@ end
 function maingame:enter(previous, clans, player_cat, cat_generator)
 	--clock, 1440 seconds for each in game day means a minute passes in game for every second in real life
 	self.game_clock = Timer:new(1440)
-	--self.game_clock:toGame()
+	--self.game_clock:toGame()	
 
-	self.cat_handler = CatHandler:new(clans, self.game_clock)
-	self.relationships_handler = RelationshipHandler:new()
-	self.decal_handler = DecalHandler:new()
+	self:setupHandlers(self.game_clock, clans)
 	self.cat_generator = cat_generator
 
 	self.player = player_cat
@@ -32,7 +30,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	self.map = Map:new(self.player)
 
 
-	for cat in self.cat_handler:iterator() do
+	for cat in self.cat_handler:getCatIterator() do
 		cat:setController(Ai:new(cat, self.cat_handler, self.map:getCollisionMap()))
 	end
 
@@ -47,6 +45,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	randomcat:move(5, 5)
 
 	self.relationships_handler:newRelationship(self.player:getName(), randomcat:getName())
+	self.relationships_handler:printCatRelationships(self.player:getName())
 
 end
 
@@ -148,4 +147,29 @@ function maingame:checkButtons(mx, my, button)
 		end
 	end
 	return button_pressed
+end
+
+function maingame:setupHandlers(clocks, clans)
+	self.clan_handler = ClanHandler:new(clock)
+	self.clan_handler:loadClans(clans)
+
+	self.cat_handler = CatHandler:new(clock)
+
+	for clan in self.clan_handler:getClanIterator() do
+		self.cat_handler:loadCatsfromClan(clan)
+	end
+
+
+	self.relationships_handler = RelationshipHandler:new()
+
+	for cat_1 in self.cat_handler:getCatIterator() do
+		for cat_2 in self.cat_handler:getCatIterator() do
+			local cat_1_name, cat_2_name = cat_1:getName(), cat_2:getName()
+			local same_name = (cat_1_name ~= cat_2_name)
+			assert(same_name, "attempt to create a duplicate relationship between: " .. cat_1_name .. " and " .. cat_2_name)
+			if same_name then self.relationships_handler:newRelationship(cat_1_name, cat_2_name) end
+		end
+	end
+
+	self.decal_handler = DecalHandler:new()
 end

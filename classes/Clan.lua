@@ -10,7 +10,7 @@ function Clan:initialize()
 	self.medicine_cat = medicine_cat
 
 	--table of all the cats
-	self.cats = {}
+	self.cats = Array:new()
 end
 
 function Clan:draw(x, y, s)
@@ -47,7 +47,7 @@ function Clan:getNumWarriors()
 	local num = 0
 	if self.leader then num = num + 1 end
 	if self.deputy then num = num + 1 end
-	for i, cat in pairs (self.cats) do
+	for cat in self:getCatsIterator() do
 		if cat ~= nil then
 			if cat:getRole() == "Warrior" then num = num + 1 end
 		end
@@ -56,75 +56,69 @@ function Clan:getNumWarriors()
 end
 
 function Clan:getWarriors()
-	local warriors = {}
-	table.insert(warriors, self.leader)
-	table.insert(warriors, self.deputy)
-	for i, cat in pairs (self.cats) do
+	local warriors = Array:new
+	warriors:insert(self.leader)
+	warriors:insert(self.deputy)
+
+	for cat in self:getCatsIterator() do
 		if cat:getRole() == "Warrior" then
-			table.insert(warriors, cat)
+			warriors:insert(cat)
 		end
 	end
 	return warriors
 end
 
 function Clan:getNumApprentices()
-	local num = 0
-	for i, cat in pairs (self.cats) do
-		if cat ~= nil then
-			if cat:getRole() == "Apprentice" then num = num + 1 end
-		end
-	end
-	return num
+	return self:getApprentices():size()
 end
 
 function Clan:getApprentices()
-	local apprentices = {}
-	for i, cat in pairs (self.cats) do
+	local apprentices = Array:new()
+	for cat in self:getCatsIterator()
 		if cat:getRole() == "Warrior" then
-			table.insert(apprentices, cat)
+			apprentices:insert(cat)
 		end
 	end
 	return apprentices
 end
 
 function Clan:getNumKits()
-	local num = 0
-	for i, cat in pairs (self.cats) do
-		if cat ~= nil then
-			if cat:getRole() == "Kit" then num = num + 1 end
-		end
-	end
-	return num
+	return self:getKits():size()
 end
 
 function Clan:getKits()
-	local kits = {}
-	for i, cat in pairs (self.cats) do
+	local kits = Array:new()
+	for cat in self:getCatsIterator() do
 		if cat:getRole() == "Kit" then
-			table.insert(kits, cat)
+			kits:insert(cat)
 		end
 	end
 	return kits
 end
 
 function Clan:getNumElders()
-	local num = 0
-	for i, cat in pairs (self.cats) do
-		if cat ~= nil then
-			if cat:getRole() == "Elder" then num = num + 1 end
-		end
-	end
-	return num
+	return self:getElders():size()
 end
 
 function Clan:getElders()
-	local elders = {}
-	for i, cat in pairs (self.cats) do
+	local elders = Array:new()
+	for cat in self:getCatsIterator() do
 		if cat:getRole() == "Elder" then
-			table.insert(elders, cat)
+			elders:insert(cat)
 		end
 	end
 	return elders
+end
+
+function Clan:getCatsByRole(...)
+	for i, role in ipairs(arg) do
+		assert(role)
+	local cats = Array:new()
+	for cat in self:getCatsIterator() do
+		for i, role in ipairs(arg) do
+			if cat:getRole() == role then cats:insert() end
+		end
+	end
 end
 
 function Clan:getOther()
@@ -139,8 +133,12 @@ function Clan:getCats()
 	return self.cats
 end
 
+function Clan:getCatsIterator(index)
+	return self.cats:iterator(index)
+end
+
 function Clan:getNumCats()
-	return #self.cats
+	return self.cats:size()
 end
 
 --mutators 
