@@ -16,8 +16,6 @@ function CatGenerator:genClan(name)
 	self.generated_clans:insert(Clan:new())
 	local clan = self.generated_clans:peek()
 
-	local usedNames = {}
-
 	if not name then 
 		clan:setName(self:genName("Clan")) 
 		clan:setImage(lume.round(lume.random(1, 4)))
@@ -29,48 +27,52 @@ function CatGenerator:genClan(name)
 		clan:setName(self:genName("Clan", name))
 	end
 
-	clan:setLeader(self:genRandomCat("Leader"))
-	clan:setDeputy(self:genRandomCat("Deputy"))
-	clan:setMedicineCat(self:genRandomCat("Medicine Cat"))
+	clan:setLeader(self:genRandomClanCat("Leader"))
+
+	clan:setDeputy(self:genRandomClanCat("Deputy"))
+	clan:setMedicineCat(self:genRandomClanCat("Medicine Cat"))
 
 	clan:insertCat(clan:getLeader())
 	clan:insertCat(clan:getDeputy())
 	clan:insertCat(clan:getMedicineCat())
 
 	for i = 1, random(4, 8) do
-		clan:insertCat(self:genRandomCat("Warrior"))
+		clan:insertCat(self:genRandomClanCat("Warrior"))
 	end
 
 	for i = 1, random(2, 4) do
-		local apprentice = self:genRandomCat("Apprentice")
-		self:apprenticeCat(apprentice, clan:getRandomRole({"Warrior", "Deputy"}))
+		local apprentice = self:genRandomClanCat("Apprentice")
+		self:apprenticeCat(apprentice, clan:getCatsRole({"Warrior", "Deputy"}):randomChoice())
 		clan:insertCat(apprentice)
 	end
 
 	for i = 1, lume.random(1, 2) do
 		if clan:findParentsKits() == false then break end
+
 		local mom, dad = clan:findParentsKits()
+		
 
 		local kits = self:genKits(mom, dad)
-		for i, cat in ipairs (kits) do
+		for i, cat in ipairs(kits) do
 			clan:insertCat(cat)
 		end
 	end
 
+
+
 	for i = 1, random(1, 3) do
-		clan:insertCat(self:genRandomCat("Elder"))
+		clan:insertCat(self:genRandomClanCat("Elder"))
 	end
 
-	for i, cat in ipairs(clan:getCats()) do
+	for cat in clan:getCats():iterator() do 
 		cat:setClan(clan)
 	end
 
 	return clan
 end
 
-function CatGenerator:genRandomCat(role, rec)
-	self.generated_cats:insert(Cat:new())
-	local cat = self.generated_cats:peek()
+function CatGenerator:genRandomClanCat(role, parents)
+	local cat = Cat:new()
 
 	if not role then cat:setRole(self:randExRole()) end
 	if role then cat:setRole(role) end
@@ -81,19 +83,53 @@ function CatGenerator:genRandomCat(role, rec)
 	cat:setEyecolor(self:randEyecolor())
 	cat:setImage((cat:getPeltNum() * 2) - 1)
 
-	if not rec then cat:setParents(self:genParent(), self:genParent()) end
+	if not parents then 
+		cat:setParents(self:genParent(), self:genParent()) 
+		self.generated_cats:insert(cat)
+	end
 
 	cat:setBody(CatBody:new(cat))
-
 	return cat
 end
 
 function CatGenerator:genName(role, name)
-	local prefix
-	if not name then prefix = lume.randomchoice(Prefixes) end
-	if name then prefix = name end
+	local prefix = self:choosePrefix(name)
+	local suffix = self:chooseSuffix(role)
 
-	local suffix
+	local final_name
+	if prefix[#prefix] == suffix[1] then
+		final_name = prefix .. "-" .. suffix
+	else
+		final_name = prefix .. suffix
+	end
+
+
+
+	while self:checkDuplicateName(final_name) do
+		final_name = self:genName(role, name)
+	end
+
+	return final_name
+end
+
+function CatGenerator:checkDuplicateName(name)
+	for cat in self.generated_cats:iterator() do 
+		if cat:getName() == name then 
+
+			return true
+		end
+	end
+	return false
+end
+
+function CatGenerator:choosePrefix(name)
+	local prefix = ""
+	if name then prefix = name else prefix = lume.randomchoice(Prefixes) end
+	return prefix 
+end
+
+function CatGenerator:chooseSuffix(role)
+	local suffix = ""
 	if role == "Leader" then
 		suffix  = "star"
 	elseif role == "Apprentice" then
@@ -106,22 +142,7 @@ function CatGenerator:genName(role, name)
 		suffix = lume.randomchoice(Suffixes)
 	end
 
-	local final_name = ""
-
-	if prefix[#prefix] == suffix[1] then
-		final_name = prefix .. "-" .. suffix
-	else
-		final_name = prefix .. suffix
-	end
-
-	for cat in self:getGeneratedCatsIterator() do
-		if cat:getName() == final_name then 
-			if name then self:genName(role, name)
-			elseif not name then self:genName(role) end
-		end
-	end
-
-	return final_name
+	return suffix
 end
 
 --generates a random name
@@ -187,11 +208,11 @@ function CatGenerator:genParent()
 	local parent
 	local unknown = random(0, 1)
 	if unknown == 1 then
-		parent = self:genRandomCat("cum", true)
+		parent = self:genRandomClanCat("cum", true)
 		parent:setName("Unknown")
 	end
 	if unknown == 0 then 
-		parent = self:genRandomCat("cum", true)	
+		parent = self:genRandomClanCat("cum", true)	
 	end
 	return parent 
 end
@@ -209,13 +230,13 @@ end
 --generates a litter of cats for two cats
 --pass the actual mom and dad cat objects in
 function CatGenerator:genKits(mom, dad)
-	local kits = {}
+	local kits = Array:new()
 	local moons = self:randMoons("Kit")
 	for i = 1, lume.weightedchoice({[1] = 1, [2] = 2, [3] = 1}) do
-		local cat = self:genRandomCat("Kit")
+		local cat = self:genRandomClanCat("Kit")
 		cat:setParents(mom, dad)
 		cat:setMoons(moons)
-		table.insert(kits, cat)
+		kits:insert(cat)
 	end
 	mom:setKits(kits)
 	mom:setNursing(true)
@@ -225,13 +246,13 @@ function CatGenerator:genKits(mom, dad)
 end
 
 function CatGenerator:genWarriors(mom, dad)
-	local warriors = {}
+	local warriors = Array:new()
 	local moons = self:randMoons("Warrior")
 	for i = 1, lume.weightedchoice({[1] = 1, [2] = 2, [3] = 1}) do
-		local cat = self:genRandomCat("Warrior")
+		local cat = self:genRandomClanCat("Warrior")
 		cat:setParents(mom, dad)
 		cat:setMoons(moons)
-		table.insert(warriors, cat)
+		warriors:insert(cat)
 	end
 	mom:setKits(warriors)
 	dad:setKits(warriors)
@@ -257,4 +278,8 @@ function CatGenerator:printGeneratedCats()
  	for cat in self.generated_cats:iterator() do
  		print(cat:getName())
  	end
+end
+
+function CatGenerator:getCats()
+	return self.generated_cats
 end

@@ -5,7 +5,7 @@ loadgame = {}
 function loadgame:init()
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
-	self.buttons = {}
+	self.buttons = Array:new()
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
@@ -42,13 +42,13 @@ end
 ----------------------------------------------------------------------------------------------
 
 function loadgame:drawButtons()
-	for i, _button in ipairs(self.buttons) do
+	for _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end
 
 function loadgame:drawSaveButtons()
-	for i, _button in ipairs(self.save_buttons) do 
+	for _button in self.save_buttons:iterator() do
 		_button:draw()
 	end
 end
@@ -81,7 +81,7 @@ end
 
 function loadgame:checkButtons(mx, my, button)
 	if button == 1 then 
-		for i, _button in ipairs (self.buttons) do
+		for _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then
 					if self.save == nil then break
@@ -99,7 +99,7 @@ function loadgame:checkButtons(mx, my, button)
 				end
 			end
 		end
-		for i, _button in ipairs (self.save_buttons) do
+		for _button in self.save_buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				self.save = _button:getObject() 
 			end
@@ -109,7 +109,7 @@ end
 
 function loadgame:saveButtons()
 	self.save = nil
-	self.save_buttons = {}
+	self.save_buttons = Array:new()
 	
 	local i = 1
 

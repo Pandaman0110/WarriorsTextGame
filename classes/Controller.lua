@@ -93,7 +93,7 @@ function Player:update(dt)
 			local destTileX = inputX + self.animal:getTileX()
 			local destTileY = inputY + self.animal:getTileY()
 
-			if self.cat_handler:checkTile(destTileX, destTileY) == false then
+			if self:checkCollision(destTileX, destTileY) == false then		
 				self.animal:setIsMoving(true)
 				self.animal:getInput(inputX, inputY, direction)
 			end
@@ -106,56 +106,87 @@ Ai = class("Ai", Controller)
 function Ai:initialize(animal, cathandler, collision_map)
 	Controller.initialize(self, animal, cathandler, collision_map)
 
-	self.path = {}
-	self.moves = 0
-	self.moveCounter = 0
-	self.currentMove = 2
+	self.move_queue = Queue:new()
+
+	self.current_path = nil
+	self.num_moves = 0
+	self.current_move = 1
+
+	self.path_blocked_timer = 5
+	self.path_blocked = false
 end
 
 function Ai:update(dt)
 	local nextMove = {}
 	local destX, destY = 0, 0
-	if self.path ~= nil then 
-		if self.moveCounter < self.moves then 
-			if self.animal:isMoving() == false then
-				nextMove = self.path[self.currentMove]
 
-				if self.cat_handler:checkTile(nextMove[1], nextMove[2]) == false then 
-					destX = nextMove[1] - self.animal:getTileX()
-					destY = nextMove[2] - self.animal:getTileY()
-					self.animal:setDirection(destX, destY)
-					self.currentMove = self.currentMove + 1
-					self.moveCounter = self.moveCounter + 1
-				end
-			end
-		elseif self.moveCounter > self.moves then 
-			self.currentMove = 2
-			self.moveCounter = 0
-			self.moves = 0
-			self.path = nil
+	if self.path_blocked == true then 
+		print(self.path_blocked_timer)
+		self.path_blocked_timer = self.path_blocked_timer - dt
+		if self.path_blocked_timer < 0 then 
+			self:resetCurrentPath()
+			self.path_blocked_timer = 5
 		end
+	end
+
+	if self.current_move <= self.num_moves then
+		if self.animal:isMoving() == false then
+			print(self.current_move, self.num_moves)
+			nextMove = self.current_path[self.current_move]
+			if self:checkCollision(nextMove[1], nextMove[2]) == false then
+				self.path_blocked = false
+				self.path_blocked_timer = 5
+				destX = nextMove[1] - self.animal:getTileX()
+				destY = nextMove[2] - self.animal:getTileY()
+				self.animal:setDirection(destX, destY)
+				self.current_move = self.current_move + 1
+			else 
+				self.path_blocked = true
+			end
+				--basically if there is something in the way, it just stops, but when that thing moves it will keep going
+		end
+	else
+		self:resetCurrentPath()
 	end
 end
 
-function Ai:setPath(x, y)
+function Ai:resetCurrentPath()
+	self.current_move = 1
+	self.path_blocked = false
+
+	if self.move_queue:size() > 0 then
+		local move = self.move_queue:pop()
+		self.current_path = self:calculatePath(self.animal:getTileX(), self.animal:getTileY(), move[1], move[2])
+		self.num_moves = #self.current_path
+	else 
+		self.current_path = nil
+		self.num_moves = 0
+	end
+end
+
+function Ai:queueMove(x, y)
+	local move = {x, y}
+
+	self.move_queue:push(move)
+
+	if self.current_path == nil then self:resetCurrentPath() end
+end
+
+function Ai:calculatePath(start_x, start_y, end_x, end_y)
 	local walkable = 0 
 	local map = self.collision_map
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'JPS', walkable)
 	finder:setMode("ORTHOGONAL")
-	local startx, starty = self.animal:getPos()
-	local endx = x
-	local endy = y
-	local path = finder:getPath(startx, starty, endx, endy)
-	for node, count in path:iter() do
-		local move = {}
-		table.insert(move, node:getX())
-		table.insert(move, node:getY())
-		table.insert(self.path, move)
-	end
-	--[[for i, move in ipairs(self.path) do
-		print(move[1] .. "   " .. move[2])
-	end--]]
-	self.moves = path:getLength()
-end
 
+	local path = {}
+	for node, count in finder:getPath(start_x, start_y, end_x, end_y):iter() do
+		local move = {}
+		move[1] = node:getX()
+		move[2] = node:getY()
+		table.insert(path, move)
+	end
+
+	table.remove(path, 1)
+	return path
+end

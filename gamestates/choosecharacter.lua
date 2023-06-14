@@ -18,13 +18,13 @@ function choosecharacter:enter(previous, save)
 	self:clanButtons(true)
 
 	if self.save ~= nil then self.playerClan = self.save["Player"]:getClan()
-	else self.playerClan = self.clans[1] end
+	else self.playerClan = self.clans:at(1) end
 
 	self:catPagesSetup()
 	self:catButtons()
 
 	if self.save ~= nil then self.currentCat = self.save["Player"]
-	else self.currentCat = self.cat_buttons[1]:getObject() end
+	else self.currentCat = self.cat_buttons:at(1):getObject() end
 end
 
 function choosecharacter:update(dt)
@@ -55,7 +55,7 @@ end
 ----------------------------------------------------------------------------------------------
 
 function choosecharacter:createButtons()
-	self.buttons = {}
+	self.buttons = Array:new()
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
@@ -70,17 +70,17 @@ end
 
 function choosecharacter:catPagesSetup()
 	self.catListPage = 1
-	self.catListRoles = {}
-	self.catListTables = {}
+	self.catListRoles = Array:new()
+	self.catListTables = Array:new()
 	self.pages = 0
 	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
 	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
 
 	for i = 1, self.pages do
-		local t = {}
-		table.insert(self.catListTables, t)
+		local t = Array:new()
+		self.catListTables:insert(t)
 		for k = 1, 10 do
-			table.insert(self.catListTables[i], self.playerClan:getCats()[k+(10*(i-1))])
+			self.catListTables:at(i):insert(self.playerClan:getCats():at(k+(10*(i-1))))
 		end
 	end
 end
@@ -96,13 +96,13 @@ function choosecharacter:drawSaveText()
 end
 
 function choosecharacter:drawButtons()
-	for i, _button in ipairs(self.buttons) do
+	for _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end
 
 function choosecharacter:drawClanButtons()
-	for i, _button in ipairs(self.clan_buttons) do
+	for _button in self.clan_buttons:iterator() do
 		_button:draw()
 	end
 end
@@ -171,8 +171,9 @@ function choosecharacter:drawCurrentCat()
 end
 
 function choosecharacter:catButtons()
-	self.cat_buttons = {}
-	for i, cat in ipairs(self.catListTables[self.catListPage]) do
+	self.cat_buttons = Array:new()
+	local i = 1
+	for cat in self.catListTables:at(self.catListPage):iterator() do
 		local cat_button
 		if i > 5 then
 			local k = i - 5
@@ -184,6 +185,7 @@ function choosecharacter:catButtons()
 			cat_button:setWidth(120)
 			cat_button:setHeight(32)
 		end
+		i = i + 1
 	end
 end
 
@@ -194,7 +196,8 @@ function choosecharacter:drawCatButtons()
 
 	clearTextSettings()
 
-	for i, _button in ipairs(self.cat_buttons) do
+	local i = 1 
+	for _button in self.cat_buttons:iterator() do
 		local cat = _button:getObject()
 		textSettings()
 		love.graphics.setFont(EBG_R_10)
@@ -208,12 +211,13 @@ function choosecharacter:drawCatButtons()
 			clearTextSettings()
 			cat:drawImage(392, 80 + 32 * (i-1))
 		end
+		i = i + 1
 	end
 end
 
 function choosecharacter:clanButtons(first)
-	self.clans = {}
-	self.clan_buttons = {}
+	self.clans = Array:new()
+	self.clan_buttons = Array:new()
 
 	local clan1
 	local clan2
@@ -240,19 +244,19 @@ function choosecharacter:clanButtons(first)
 	end
 
 
-	table.insert(self.clans, clan1)
-	table.insert(self.clans, clan2)
-	table.insert(self.clans, clan3)
-	table.insert(self.clans, clan4)
+	self.clans:insert(clan1)
+	self.clans:insert(clan2)
+	self.clans:insert(clan3)
+	self.clans:insert(clan4)
 
-	for i, clan in pairs(self.clans) do
-		local _button = ObjectButton:new(32, 32 + 64 * (i-1), clan, clan:getImage(), self.clan_buttons)
+	for clan in self.clans:iterator() do
+		local _button = ObjectButton:new(32, 32 + 64 * (self.clans:find(clan)-1), clan, clan:getImage(), self.clan_buttons)
 	end
 end
 
 function choosecharacter:checkButtons(mx, my, button)
 	if button == 1 then 
-		for i, _button in ipairs (self.buttons) do
+		for  _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then 
 					self.currentCat:setIsPlayer(true) 
@@ -282,7 +286,7 @@ function choosecharacter:checkButtons(mx, my, button)
 				end
 				if _button == self.regen_button then
 					self:clanButtons()
-					self.playerClan = self.clans[1]
+					self.playerClan = self.clans:at(1)
 					self:catPagesSetup()
 				end
 				if _button == self.left_button then 
@@ -294,21 +298,21 @@ function choosecharacter:checkButtons(mx, my, button)
 					if self.catListPage == self.pages + 1 then self.catListPage = 1 end
 				end
 				self:catButtons()
-				self.currentCat = self.cat_buttons[1]:getObject()
+				self.currentCat = self.cat_buttons:at(1):getObject()
 			end
 		end
-		for i, _button in ipairs (self.cat_buttons) do
+		for _button in self.cat_buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				self.currentCat = _button:getObject()
 			end
 		end
-		for i, _button in ipairs (self.clan_buttons) do 
+		for _button in self.clan_buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then 
 				local clan = _button:getObject()
 				self.playerClan = clan
 				self:catPagesSetup()
 				self:catButtons()
-				self.currentCat = self.cat_buttons[1]:getObject()
+				self.currentCat = self.cat_buttons:at(1):getObject()
 			end
 		end
 	end

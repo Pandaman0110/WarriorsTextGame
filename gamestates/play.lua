@@ -3,7 +3,7 @@ play = {}
 function play:init()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
-	self.buttons = {}
+	self.buttons = Array:new()
 
 	self.new_button = ImageButton:new(32, 72, love.graphics.newImage("Images/newbutton.png"), self.buttons)
 	self.load_button = ImageButton:new(32, 152, love.graphics.newImage("Images/loadbutton.png"), self.buttons)
@@ -25,7 +25,7 @@ end
 
 function play:checkButtons(mx, my, button)
 	if button == 1 then
-		for i, _button in ipairs(self.buttons) do
+		for _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.new_button then gamestate.switch(choosecharacter) end
 				if _button == self.load_button then gamestate.switch(loadgame) end
@@ -40,7 +40,7 @@ function play:drawBackground()
 end
 
 function play:drawButtons()
-	for i, _button in ipairs(self.buttons) do
+	for _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end

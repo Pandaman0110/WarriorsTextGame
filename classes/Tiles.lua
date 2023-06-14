@@ -1,21 +1,31 @@
 local pairs, ipairs = pairs, ipairs
 
-Map = class("Map")
+MapHandler = class("MapHandler")
 
 --most of the drawing and shit happens here
 
-function Map:initialize(player)
+function MapHandler:initialize(player)
 	--use this for rendering floor tiles
 	self.tilemap = {
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	}
 
 	--hashmap to check if a tile is collidable
@@ -30,7 +40,7 @@ function Map:initialize(player)
 	--print(self.collisionmap)
 
 
-	function Map:checkCollision(x, y)
+	function MapHandler:checkCollision(x, y)
 		return self.collidable[self.tilemap[x][y]]
 	end
 
@@ -62,15 +72,6 @@ function Map:initialize(player)
 	}
 
 	self.player = player
-	--self.cats = cats
-
-	--self.player:setMap(self.tilemap)
-	--self.testcat = genRandomCat()
-	--table.insert(self.cats, self.testcat)
-	--self.catAi = Ai:new(self.testcat, self.cats, self.tilemap)
-	--self.testtimer = 0
-
-	--self.decals = {}
 
 	self.width = #self.tilemap[1]
 	self.height = #self.tilemap
@@ -80,14 +81,9 @@ function Map:initialize(player)
 	self.displayX = 20 
 	self.displayY = 12
 	self.tileSize = 32
-
-	--self.catAi:setPath(15, 6, self.tilemap)
-	--local x, y = self.catAi:getAnimal():getPos()
-	
-	--randomBlood("light", self.player:getAnimal()):add(self.decals)
 end
 
-function Map:draw()
+function MapHandler:draw()
 	local offset_x = self.mapX % self.tileSize
 	local offset_y = self.mapY % self.tileSize
 	local firstTile_x = math.floor(self.mapX / self.tileSize)
@@ -105,25 +101,17 @@ function Map:draw()
 	return offset_x, offset_y, firstTile_x, firstTile_y
 end
 
-function Map:update(dt)
+function MapHandler:update(dt)
 	self.mapX = (self.player:getX() - 10 * self.tileSize)
 	self.mapY = (self.player:getY() - 6 * self.tileSize)
 end
 
-function Map:getRenderMap()
+function MapHandler:getRenderMap()
 	return self.tilemap 
 end
 
-function Map:getCollisionMap()
+function MapHandler:getCollisionMap()
 	return self.collisionmap
-end
-
-function Map:getWidth()
-	return self.width
-end 
-
-function Map:getHeight() 
-	return self.height 
 end
 
 --use this to draw like blood and shit
@@ -144,8 +132,7 @@ function DecalHandler:remove()
 end
 
 function DecalHandler:update(dt)
-
-	if self.decal_queue:isEmpty() == false then 
+	if not self.decal_queue:isEmpty() then 
 		if self.decal_queue:peek():getTime() < 0 then
 			local decal = self.decal_queue:pop()
 			decal = nil
@@ -153,7 +140,6 @@ function DecalHandler:update(dt)
 	end
 
 	self.decal_queue:update(dt)
-
 end
 
 
@@ -162,11 +148,11 @@ function DecalHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 end
 
 function DecalHandler:numDecals()
-	return #self.decal_queue
+	return self.decal_queue:size()
 end
 
 function DecalHandler:printDetails()
-	print(#self.decal_queue .. " number of decals")
+	print(self.decal_queue:size() .. " decals")
 end
 
 Decal = class("Decal")

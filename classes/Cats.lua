@@ -324,10 +324,6 @@ function Animal:setDirection(x, y, heading)  -- you probably have no reason to u
 	end
 end
 
-function Animal:move(x, y)
-	self.controller:setPath(x, y)
-end
-
 function Animal:getInput(x, y, heading) -- or this
 	self.prevX = self.tileX * 32 - 32
 	self.prevY = self.tileY * 32 - 32
@@ -336,6 +332,10 @@ function Animal:getInput(x, y, heading) -- or this
 	self.destX = self.tileX * 32 - 32
 	self.destY = self.tileY * 32 - 32
 	self.direction = heading
+end
+
+function Animal:move(x, y)
+	self.controller:queueMove(x, y)
 end
 
 Cat = class("Cat", Animal)
@@ -356,14 +356,22 @@ function Cat:initialize()
 
 	self.dad = dad
 	self.mom = mom
-	self.kits = {}
+	self.kits = Array:new()
 	self.mate = mate
 	self.mentor = mentor 
 	self.apprentice = apprentice
 	self.nursing = false
 
-
+	self.is_real = true
 	self.is_player = false
+end
+
+function Cat:isReal()
+	return self.is_real()
+end
+
+function Cat:real(real)
+	self.is_real = real
 end
 
 function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
@@ -569,7 +577,9 @@ function Cat:setApprentice(apprentice)
 end
 
 function Cat:setKits(kits)
-	self.kits = kits
+	for kit in kits:iterator() do
+		self.kits:insert(kit)
+	end
 end
 
 function Cat:setNursing(nursing)
@@ -582,11 +592,8 @@ function Cat:age()
 end
 
 function Cat:hasKits()
-	local hasKits
-	if next(self.kits) == nil then
-		hasKits = false
-	else hasKits = true end
-	return hasKits
+	if self.kits:isEmpty() then return false
+	else return true end
 end
  
 function Cat:printDetails()
@@ -601,7 +608,7 @@ function Cat:printDetails()
 	if self.apprentice then print("Apprentice: " .. self.apprentice:getName()) end
 	if self.dad then print("Dad: " .. self.dad:getName()) end
 	if self.mom then print("Mom: " .. self.mom:getName()) end
-	if self.nursing == true then print("Current Litter: ") CatHandler.printTableCatsNames(self.kits) end
+	if self.nursing == true then print("Current Litter: ") printCatNames(self.kits) end
 	print("-------------------------")
 end
 
@@ -611,47 +618,36 @@ end
 
 --prints the table of cats passed in
 function printCatDetails(cats)
-	for i, cat in pairs(cats) do
+	for cat in cats:iterator() do
 		cat:printDetails()
 	end
 end
 
 function printCatNames(cats)
-	for i, cat in pairs(cats) do
+	for cat in cats:iterator() do
 		cat:printName()
 	end
 end
 
---t1 is a table of cats
---t2 is a table of tables of cat
---creates a new table between the two with only cats in both tables
-function checkDuplicateCats(t1, t2)
-	local dupe = false
-	local cats = {}
+function matchCats(t1, t2)
+	local cats = Array:new()
 
-	for i, cat1 in ipairs(t1) do
-		for k, cat2 in ipairs(t2) do
-			if cat1 == cat2 then dupe = true end
+	for cat_1 in t1:iterator() do
+		if t2:contains(cat_1) then 
+			cats:insert(cat_1)
 		end
-		if dupe == true then table.insert(cats, cat1) end
-		dupe = false
 	end
 
 	return cats 
 end
 
---removes any cats in the second table from the first, returns a new table
-
 function removeDuplicateCats(t1, t2)
-	local dupe = false
-	local cats = {}
+	local cats = Array:new()
 
-	for i, cat1 in ipairs(t1) do
-		for k, cat2 in ipairs(t2) do
-			if cat1 == cat2 then dupe = true end 
+	for cat_1 in t1:iterator() do
+		if not t2:contains(cat_1) then 
+		 	cats:insert(cat_1)
 		end
-		if dupe ~= true then table.insert(cats, cat1) end
-		dupe = false
 	end
 
 	return cats

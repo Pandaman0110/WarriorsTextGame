@@ -15,7 +15,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	self.player = player_cat
 
-	self.buttons = {}
+	self.buttons = Array:new()
 
 	-- buttons
 	self.help_button = ImageButton:new(480, 320, love.graphics.newImage("Images/help.png"), self.buttons)
@@ -27,35 +27,30 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 
 	self.player:setPos(10, 5)
-	self.map = Map:new(self.player)
+	self.map_handler = MapHandler:new(self.player)
 
-
-	for cat in self.cat_handler:getCatIterator() do
-		cat:setController(Ai:new(cat, self.cat_handler, self.map:getCollisionMap()))
+	for cat in self.cat_handler:iterator() do
+		cat:setController(Ai:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
 	end
 
 	local temp1 = {}
 	local temp2 = {}
 	
 
-	self.player:setController(Player:new(self.player, self.cat_handler, self.map:getCollisionMap()))
+	self.player:setController(Player:new(self.player, self.cat_handler, self.map_handler:getCollisionMap()))
 
 	local randomcat = self.cat_handler:findNonPlayer()
 
 	randomcat:move(5, 5)
-
-	self.relationships_handler:newRelationship(self.player:getName(), randomcat:getName())
-	self.relationships_handler:printCatRelationships(self.player:getName())
-
+	randomcat:move(20, 10)
 end
 
 function maingame:update(dt)
 	self.game_clock:update(dt)
-
-	self:updateCats(dt)
-	self:updateDecals(dt)
-
-	self.map:update(dt)
+	self.cat_handler:update(dt)
+	self.decal_handler:update(dt)
+	self.map_handler:update(dt)
+	self.game_handler:update(dt)
 end
 
 function maingame:keypressed(key)
@@ -90,13 +85,13 @@ function maingame:mousepressed(x, y, button)
 end
 
 function maingame:draw()
-	local offset_x, offset_y, firstTile_x, firstTile_y = self.map:draw()
+	local offset_x, offset_y, firstTile_x, firstTile_y = self.map_handler:draw()
 
 	self:drawButtons()
-
 	self.player:drawImage(640 / 2 - 18, 360 / 2 - 16)
-	self:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
-	self:drawDecals(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.cat_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.decal_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+	self.game_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 
 	textSettings()
 	love.graphics.setFont(EBG_R_20)
@@ -107,32 +102,16 @@ end
 ----------------------------------------------------------------------------------------------
 
 function maingame:drawButtons()
-	for i, _button in ipairs(self.buttons) do
+	for _button in self.buttons:iterator() do
 		_button:draw()
 	end
-end
-
-function maingame:updateCats(dt)
-	self.cat_handler:update(dt)
-end
-
-function maingame:updateDecals(dt)
-	self.decal_handler:update(dt)
-end
-
-function maingame:drawDecals(offset_x, offset_y, firstTile_x, firstTile_y)
-	self.decal_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
-end
-
-function maingame:drawCats(offset_x, offset_y, firstTile_x, firstTile_y)
-	self.cat_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 end
 
 function maingame:checkButtons(mx, my, button)
 	local button_pressed = false
 
 	if button == 1 then
-		for i, _button in ipairs(self.buttons) do
+		for _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				button_pressed = true
 				if _button == self.help_button then 
@@ -155,21 +134,11 @@ function maingame:setupHandlers(clocks, clans)
 
 	self.cat_handler = CatHandler:new(clock)
 
-	for clan in self.clan_handler:getClanIterator() do
-		self.cat_handler:loadCatsfromClan(clan)
-	end
-
-
-	self.relationships_handler = RelationshipHandler:new()
-
-	for cat_1 in self.cat_handler:getCatIterator() do
-		for cat_2 in self.cat_handler:getCatIterator() do
-			local cat_1_name, cat_2_name = cat_1:getName(), cat_2:getName()
-			local same_name = (cat_1_name ~= cat_2_name)
-			assert(same_name, "attempt to create a duplicate relationship between: " .. cat_1_name .. " and " .. cat_2_name)
-			if same_name then self.relationships_handler:newRelationship(cat_1_name, cat_2_name) end
-		end
+	for clan in self.clan_handler:iterator() do
+		self.cat_handler:loadCatsFromClan(clan)
 	end
 
 	self.decal_handler = DecalHandler:new()
+
+	self.game_handler = GameHandler:new(clock)
 end

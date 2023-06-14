@@ -514,15 +514,7 @@ Eyecolors = {
 }
 
 --turn this into a set or something
-Roles = {
-	"Leader",
-	"Deputy",
-	"Medicine Cat",
-	"Warrior", 
-	"Apprentice", 
-	"Kit",
-	"Elder"
-}
+Roles = Array:new({"Leader", "Deputy", "Medicine Cat", "Warrior", "Apprentice", "Kit", "Elder"})
 
 CatImages = {
 	love.graphics.newImage("Images/catimage/catgreyidle.png"),

@@ -5,7 +5,7 @@ function Button:initialize(x, y, w, h, t)
 	self.y = y 
 	self.w = w 
 	self.h = h
-	table.insert(t, self)
+	t:insert(self)
 end
 
 function Button:mouseInside(mx, my)

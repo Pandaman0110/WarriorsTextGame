@@ -1,6 +1,6 @@
 local drawDetails = false
 
-function love.load(args)
+function love.load()
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	--third party libraries
@@ -20,9 +20,9 @@ function love.load(args)
 
 	---misc files
 	require	"misc/buttons"
-	require "misc/data"
 	require "misc/functions"
 	require "misc/saving"
+	require "misc/data"
 
 	--classes
 	require "classes/CatGenerator"
@@ -67,28 +67,28 @@ function love.load(args)
 
 	---------------------
 	
-	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale)
+	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "light")
 	EBG_R_10:setFilter("nearest", "nearest")
 
-	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale)
+	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale, "light")
 	EBG_R_8:setFilter("nearest", "nearest")
 
-	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale)
+	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale, "light")
 	EBG_R_20:setFilter("nearest", "nearest")
 
-	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale)
+	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale, "light")
 	EBG_R_25:setFilter("nearest", "nearest")
 
-	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale)
+	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "light")
 	EBG_I_Large:setFilter("nearest", "nearest")
 
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(choosecharacter)
+	gamestate.switch(startup)
 
-	love.profiler.start()
 	love.frames = 0
+	love.frame_timer = 10
 end
 
 function love.resize(w, h)
@@ -126,7 +126,7 @@ function love.mousepressed(x, y, button)
 end
 
 function love.update(dt)
-	--love.checkPerformance()
+	--love.checkPerformance(dt)
 
 	gamestate.update(dt)
 end
@@ -150,11 +150,15 @@ function love.draw()
 	push:finish()
 end
 
-function love.checkPerformance()
+function love.checkPerformance(dt)
 	love.frames = love.frames + 1
-	if love.frames % 1000 == 0 then 
+	love.frame_timer = love.frame_timer - dt
+	--if love.frames % 1000 == 0 then 
+	if love.frame_timer < 0 then 
 		love.report = love.profiler.report(10)
 		love.profiler.reset()
 		print(love.report or "Please wait...")
+		love.frames = 0
+		love.frame_timer = 10
 	end
 end

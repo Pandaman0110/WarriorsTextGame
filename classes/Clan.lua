@@ -47,7 +47,7 @@ function Clan:getNumWarriors()
 	local num = 0
 	if self.leader then num = num + 1 end
 	if self.deputy then num = num + 1 end
-	for cat in self:getCatsIterator() do
+	for cat in self.cats:iterator() do
 		if cat ~= nil then
 			if cat:getRole() == "Warrior" then num = num + 1 end
 		end
@@ -56,11 +56,11 @@ function Clan:getNumWarriors()
 end
 
 function Clan:getWarriors()
-	local warriors = Array:new
+	local warriors = Array:new()
 	warriors:insert(self.leader)
 	warriors:insert(self.deputy)
 
-	for cat in self:getCatsIterator() do
+	for cat in self.cats:iterator() do
 		if cat:getRole() == "Warrior" then
 			warriors:insert(cat)
 		end
@@ -74,7 +74,7 @@ end
 
 function Clan:getApprentices()
 	local apprentices = Array:new()
-	for cat in self:getCatsIterator()
+	for cat in self.cats:iterator() do
 		if cat:getRole() == "Warrior" then
 			apprentices:insert(cat)
 		end
@@ -88,7 +88,7 @@ end
 
 function Clan:getKits()
 	local kits = Array:new()
-	for cat in self:getCatsIterator() do
+	for cat in self.cats:iterator() do
 		if cat:getRole() == "Kit" then
 			kits:insert(cat)
 		end
@@ -102,7 +102,7 @@ end
 
 function Clan:getElders()
 	local elders = Array:new()
-	for cat in self:getCatsIterator() do
+	for cat in self.cats:iterator() do
 		if cat:getRole() == "Elder" then
 			elders:insert(cat)
 		end
@@ -110,30 +110,11 @@ function Clan:getElders()
 	return elders
 end
 
-function Clan:getCatsByRole(...)
-	for i, role in ipairs(arg) do
-		assert(role)
-	local cats = Array:new()
-	for cat in self:getCatsIterator() do
-		for i, role in ipairs(arg) do
-			if cat:getRole() == role then cats:insert() end
-		end
-	end
-end
-
-function Clan:getOther()
-	local other = {}
-	table.insert(other, self.medicine_cat)
-	local elders = self:getElders()
-	for i, cat in pairs (elders) do table.insert(other, cat) end
-	return other 
-end
-
 function Clan:getCats()
 	return self.cats
 end
 
-function Clan:getCatsIterator(index)
+function Clan:iterator(index)
 	return self.cats:iterator(index)
 end
 
@@ -162,120 +143,107 @@ function Clan:setMedicineCat(medicine_cat)
 	self.medicine_cat = medicine_cat
 end
 
-function Clan:insertCat(cat)
-	local c = cat
-	local role = c:getRole()
-	local found = 0
-	if role == "Leader" then table.insert(self.cats, 1, c) end
-	if role == "Deputy" then table.insert(self.cats, 2, c) end
-	if role == "Medicine Cat" then table.insert(self.cats, 3, c) end
-	if role == "Warrior" then table.insert(self.cats, 4, c) end
-	if role == "Apprentice" then
-		for i, _cat in pairs(self.cats) do
-			if _cat:getRole() == "Warrior" then found = i end
-		end
-		if found == 0 then table.insert(self.cats, 4, c)
-		else table.insert(self.cats, found+1, c)
+function Clan:getCatsRole(...)
+	for i, role in pairs(...) do
+		assert(Roles:contains(role), "invalid role: " .. role)
+	end
+	local cats = Array:new()
+	for cat in self.cats:iterator() do
+		for i, role in pairs(...) do
+			if cat:getRole() == role then cats:insert(cat) end
 		end
 	end
-	if role == "Kit" then
-		for i, _cat in pairs(self.cats) do
-			if _cat:getRole() == "Apprentice" then found = i end
+	return cats
+end
+
+function Clan:printNumRole(...)
+	for i, role in pairs(...) do
+		assert(Roles:contains(role), "invalid role: " .. role)
+
+		local num_cats = 0
+		for cat in self.cats:iterator() do
+			if cat:getRole() == role then num_cats = num_cats + 1 end
 		end
-		if found == 0 then 
-			for i, _cat in pairs(self.cats) do
-				if _cat:getRole() == "Warrior" then found = i end
-			end
-		end
-		if found == 0 then table.insert(self.cats, 4, c)
-		else table.insert(self.cats, found+1, c)
-		end
-	end
-	if role == "Elder" then
-		for i, _cat in pairs(self.cats) do
-			if _cat:getRole() == "Kit" then found = i end
-		end
-		if found == 0 then
-			for i, _cat in pairs(self.cats) do
-				if _cat:getRole() == "Apprentice" then found = i end
-			end
-			if found == 0 then
-				for i, _cat in pairs(self.cats) do
-					if _cat:getRole() == "Warrior" then found = i end
-				end
-			end
-		end
-		if found == 0 then table.insert(self.cats, 4, c)
-		else table.insert(self.cats, found+1, c)
-		end
+
+		print("There are " .. num_cats .. " " .. role .. " in " .. self.name)
 	end
 end
 
+function Clan:getNumRole(...)
+	local num_cats_for_role = Array:new()
+
+	for i, role in pairs(...) do
+		assert(Roles:contains(role), "invalid role: " .. role)
+
+		local num_cats = 0
+		for cat in self.cats:iterator() do
+			if cat:getRole() == role then num_cats = num_cats + 1 end
+		end
+
+		num_cats_for_role:insert(num_cats)
+
+	end
+	return num_cats_for_role
+end
+
+function Clan:insertCat(cat)
+	local cat_role = cat:getRole()
+
+	--turn role into numeric value and calculate
+	local offset = 0
+
+	for role in Roles:iterator() do
+		if cat_role == role then
+			for num in self:getNumRole(Roles:getRange(1, Roles:find(role))):iterator() do
+				offset = offset + num
+			end
+		end
+	end
+
+	self.cats:insert(cat, offset+1)
+end
+
 function Clan:getCatsRandom()
-	local cat = lume.randomchoice(self.cats)
-	return cat
+	return self.cats:randomChoice()
 end
 
 --false return basically means no suitable parents
 
 function Clan:findParentsKits()
-	local females = checkDuplicateCats(self:getCatsGender("Female"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
-	local males = checkDuplicateCats(self:getCatsGender("Male"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
-	females = removeDuplicateCats(females, self:getCatsHasKits())
-	males = removeDuplicateCats(males, self:getCatsHasKits())
+	local females = matchCats(self:getCatsGender("Female"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
+	local males = matchCats(self:getCatsGender("Male"), self:getCatsRole({"Leader", "Deputy", "Warrior"}))
 
-	if isEmpty(females) or isEmpty(males) then return false end
+	females = removeDuplicateCats(females, self:getCatsWithKits())
+	males = removeDuplicateCats(males, self:getCatsWithKits())
 
-	local mom = lume.randomchoice(females)
-	local dad = lume.randomchoice(males)
+	if females:isEmpty() or males:isEmpty() then return false end
+
+	local mom = females:randomChoice()
+	local dad = males:randomChoice()
 
 	return mom, dad
 end
 
-function Clan:findParents()
-
+function Clan:getCats()
+	return self.cats
 end
-
---returns all the cats of a certain gender in the clan
 
 function Clan:getCatsGender(gender)
-	local cats = {}
-	for i, cat in ipairs(self.cats) do
-		if cat:getGender() == gender then table.insert(cats, cat) end
+	local cats = Array:new()
+	for cat in self.cats:iterator() do
+		if cat:getGender() == gender then cats:insert(cat) end
 	end
 	return cats
 end
 
---returns all the cats with the given roles
-
-function Clan:getCatsRole(t)
-	local cats = {}
-	local roles = t
-	for i, cat in ipairs(self.cats) do 
-		for i, role in ipairs(roles) do
-			if cat:getRole() == role then table.insert(cats, cat) end
-		end
+function Clan:getCatsWithKits()
+	local cats = Array:new()
+	for cat in self.cats:iterator() do
+		if cat:hasKits() then cats:insert(cat) end
 	end
 	return cats
 end
 
-function Clan:getRandomRole(t)
-	local cat = lume.randomchoice(self:getCatsRole(t))
-	return cat
-end
-
-function Clan:getRandomGender(gender)
-	local cat = lume.randomchoice(self:getCatsGender(genderg))
-	return cat
-end
-
-function Clan:getCatsHasKits()
-	local cats = {}
-	for i, cat in ipairs(self.cats) do
-		if cat:hasKits() then table.insert(cats, cat) end
-	end
-	return cats
-end
 
 function Clan:printDetails()
 	print (self.name)

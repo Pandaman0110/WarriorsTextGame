@@ -5,13 +5,12 @@ mainmenu = {}
 function mainmenu:init()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
-	self.buttons = {}
+	self.buttons = Array:new()
 
 	self.play_button = ImageButton:new(32, 72, love.graphics.newImage("Images/playbutton.png"), self.buttons)
 	self.level__editor_button = ImageButton:new(32, 152, love.graphics.newImage("Images/leveleditor.png"), self.buttons)
 	self.options_button = ImageButton:new(32, 232, love.graphics.newImage("Images/optionsbutton.png"), self.buttons)
 
-	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 
 end
 
@@ -33,7 +32,7 @@ end
 
 function mainmenu:checkButtons(mx, my, button)
 	if button == 1 then
-		for i, _button in ipairs(self.buttons) do
+		for _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.play_button then gamestate.switch(play) end
 				if _button == self.load_game then gamestate.switch(loadgame) end
@@ -45,7 +44,7 @@ function mainmenu:checkButtons(mx, my, button)
 end
 
 function mainmenu:drawButtons()
-	for i, _button in ipairs(self.buttons) do
+	for _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end
