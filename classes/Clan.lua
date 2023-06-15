@@ -4,6 +4,7 @@ Clan = class("Clan") -- creates a classs
 function Clan:initialize()
 	self.clan_image = num
 	self.name = name
+	self.location = {}
 	--these should be instances of cats
 	self.leader = leader
 	self.deputy = deputy
@@ -129,6 +130,10 @@ end
 
 function Clan:setName(name)
 	self.name = name
+end
+
+function Clan:setLocation(location)
+	self.location = location
 end
 
 function Clan:setLeader(leader)

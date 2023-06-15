@@ -52,6 +52,7 @@ function love.load()
 	osString = love.system.getOS()
 	local gameWidth, gameHeight = 640, 360 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()
+	--windowWidth, windowHeight = 1280, 720
 	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true})
 
 	xScale = windowWidth / 640
@@ -60,13 +61,11 @@ function love.load()
 	---------------------
 	
 	saveHandler = SaveHandler:new()
-	--saveHandler:print()
 
 	optionsHandler = OptionsHandler:new()
-	--optionsHandler:print()
 
 	---------------------
-	
+
 	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "light")
 	EBG_R_10:setFilter("nearest", "nearest")
 
@@ -101,8 +100,7 @@ function love.keypressed(key)
 		love.event.quit()
 	end
 	if key == "`" then
-		if drawDetails == false then drawDetails = true
-		elseif drawDetails == true then drawDetails = false end
+		drawDetails = not drawDetails
 	end
 end
 

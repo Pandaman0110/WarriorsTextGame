@@ -27,29 +27,29 @@ GameHandler = class("GameHandler", Handler)
 
 function GameHandler:initialize(clock)
 	Handler.initialize(self, clock)
-	self.nodes = Map:new()
-	self.nodes:insert("thunder_clan_base", GameNode:new(5, 6))
-	self.nodes:insert("river_clan_base", GameNode:new(20, 6))
+	self.locations = Map:new()
+	self.locations:insert("thunder_clan_base", Location:new(5, 6))
+	self.locations:insert("river_clan_base", Location:new(20, 15))
 end
 
 function GameHandler:update(dt)
-	for key, node in self.nodes:iterator() do
+	for key, node in self.locations:iterator() do
 		node:update(dt)
 	end
 end
 
 function GameHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
-	for key, node in self.nodes:iterator() do
+	for key, node in self.locations:iterator() do
 		node:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	end
 end
 
-function GameHandler:getNode(name)
-	return self.nodes:at(name)
+function GameHandler:getLocation(name)
+	return self.locations:at(name)
 end
 
-function GameHandler:sendCat()
-
+function GameHandler:sendCat(cat, location)
+	cat:move(self.locations:at(location):getPos())
 end
 
 
@@ -96,7 +96,8 @@ end
 
 function CatHandler:checkTile(x, y)
 	for cat in self.cats:iterator() do
-		if cat:getTileX() == x and cat:getTileY() == y then return cat end
+		local coords = cat:getGamePos()
+		if coords[1] == x and coords[2] == y then return cat end
 	end
 	return false
 end
@@ -202,6 +203,10 @@ function ClanHandler:getNumClans()
 end
 
 
+MessageTypes = {
+	""
+}
+
 Message = class("Message")
 
 --for now we got attack and took damage
@@ -245,22 +250,22 @@ function Message:logTime(clock)
 	self.time = clock:getGameTime()
 end
 
-GameNode = class("GameNode")
+Location = class("Location")
 
-function GameNode:initialize(x, y)
+function Location:initialize(x, y)
 	self.image = love.graphics.newImage("Images/node.png")
 	self.x = x
 	self.y = y
 end
 
-function GameNode:update(dt)
+function Location:update(dt)
 	local d = nil
 end
 
-function GameNode:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+function Location:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	love.graphics.draw(self.image, ((self.x-1) * 32 - firstTile_x * 32) - offset_x - 16, ((self.y-1) * 32 - firstTile_y * 32) - offset_y - 16 - 8)
 end
 
-function GameNode:getPos()
-	return self.x, self.y
+function Location:getPos()
+	return {self.x, self.y}
 end

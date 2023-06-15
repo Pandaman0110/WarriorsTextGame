@@ -26,7 +26,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	-----------------------
 
 
-	self.player:setPos(10, 5)
+	self.player:setGamePos({10, 5})
 	self.map_handler = MapHandler:new(self.player)
 
 	for cat in self.cat_handler:iterator() do
@@ -41,8 +41,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	local randomcat = self.cat_handler:findNonPlayer()
 
-	randomcat:move(5, 5)
-	randomcat:move(20, 10)
+	randomcat:move({5, 5})
 end
 
 function maingame:update(dt)
@@ -63,11 +62,10 @@ end
 
 function maingame:mousepressed(x, y, button)
 	local mx, my = push:toGame(x, y)
-	if mx == nil or my == nil then mx, my = -99, -99 end
-	local tx, ty = math.floor((mx+self.player:getX()+16)/32 - 9), math.floor((my+self.player:getY()-8)/32 - 4)
+	local player_pos = self.player:getRealPos()
 
-	--this returns what tile you clicked
-	--print(math.floor((mx+self.player:getCat():getX()+16)/32 - 9).. "  " .. math.floor((my+self.player:getCat():getY()-8)/32 - 4))
+	if mx == nil or my == nil then mx, my = -999999, -9999999 end
+	local tx, ty = math.floor((mx+player_pos[1]+16)/32 - 9), math.floor((my+player_pos[2]-8)/32 - 4)
 
 	local button_pressed = self:checkButtons(mx, my, button)
 	if button_pressed == false then 
@@ -76,18 +74,12 @@ function maingame:mousepressed(x, y, button)
 		if message ~= nil then 
 			self.cat_handler:handleMessage(message)
 		end
-		--if result then
-		--	if result["Bleed"] then 
-		--		self.decal_handler:createDecal(tx, ty, random(1, 3))
-		--	end
-		--end
 	end
 end
 
 function maingame:draw()
 	local offset_x, offset_y, firstTile_x, firstTile_y = self.map_handler:draw()
 
-	self:drawButtons()
 	self.player:drawImage(640 / 2 - 18, 360 / 2 - 16)
 	self.cat_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	self.decal_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
@@ -97,6 +89,7 @@ function maingame:draw()
 	love.graphics.setFont(EBG_R_20)
 	self.game_clock:draw(16, 16)
 	clearTextSettings(00)
+	self:drawButtons()
 end
 
 ----------------------------------------------------------------------------------------------
@@ -128,7 +121,7 @@ function maingame:checkButtons(mx, my, button)
 	return button_pressed
 end
 
-function maingame:setupHandlers(clocks, clans)
+function maingame:setupHandlers(clock, clans)
 	self.clan_handler = ClanHandler:new(clock)
 	self.clan_handler:loadClans(clans)
 

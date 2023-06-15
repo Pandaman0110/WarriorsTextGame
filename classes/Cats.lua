@@ -2,30 +2,34 @@
 
 local pairs, ipairs = pairs, ipairs
 
+local sqrt2 = math.sqrt(2)
+
 Animal = class("Animal")
+
+local move_timer_val = .5
 
 function Animal:initialize()
 	-- all this shit has to do with movement and stuff
 
 	self.image = image
+	self.image_num = num
 
 	self.controller = controller
 
 	self.body = nil
 
-	self.tileX = 2
-	self.tileY = 2
-	self.x = self.tileX*32 - 32 --this is so it draws in the correct places, lua arrays start at 1 or something
-	self.y = self.tileX*32 - 32
-	self.prevX = 0
-	self.prevY = 0
-	self.destX = 0
-	self.destY = 0
-	self.speed = .5 --you can just play with this
-	self.movetimer = 0 -- this is used to control how fast the cat moves in conjuction with the speed
+	self.game_x = 2
+	self.game_y = 2
+	self.real_x = self.game_x * 32 - 32 --this is so it draws in the correct places, lua arrays start at 1 or something
+	self.real_y = self.game_x * 32 - 32
+	self.prev_x = 0
+	self.prev_y = 0
+	self.dest_x = 0
+	self.dest_y = 0
+	self.speed = 1 --you can just play with this
+	self.move_timer = move_timer_val -- this is used to control how fast the cat moves in conjuction with the speed
 	self.t = 0 --this is used for doing the movement animation
 	self.ismoving = false --self explanatory
-	self.direction = "south" --not sure what the fuck im gonna use this for yet
 
 	self.name = name
 	self.gender = gender
@@ -50,60 +54,46 @@ function Animal:getController()
 	return self.controller
 end
 
-function Animal:getX()
-	return self.x 
+function Animal:getRealPos()
+	return {self.real_x, self.real_y}
 end
 
-function Animal:getY()
-	return self.y 
+function Animal:getGamePos()
+	return {self.game_x, self.game_y}
 end
 
-function Animal:getTileX()
-	return self.tileX 
+function Animal:getDestPos()
+	return {self.dest_x, self.dest_y}
 end
 
-function Animal:getTileY()
-	return self.tileY 
+function Animal:getPrevPos()
+	return {self.prev_x, self.prev_y}
 end
 
-function Animal:getDestX()
-	return self.destX
+function Animal:toReal(coords)
+	local t = {}
+	for i, coord in ipairs(coords) do
+		t[i] = coord * 32 - 32
+	end
+	if #t == 1 then return t[1] end
+	return t
 end
 
-function Animal:getDestY()
-	return self.destX
-end
-
-function Animal:getPos()
-	return self.tileX, self.tileY 
-end
-
-function Animal:getPixelPos()
-	return self.x, self.y
-end
-
-function Animal:getMoveTimer()
-	return self.movetimer
+function Animal:toGame(coords)
+	local t = {}
+	for i, coord in ipairs(coords) do
+		t[i] = (coord + 32) / 32
+	end
+	if #t == 1 then return t[1] end
+	return t
 end
 
 function Animal:isMoving()
 	return self.ismoving
 end
 
-function Animal:getDest()
-	return self.destX, self.destY 
-end
-
 function Animal:getImage()
-	return CatImages[self.image]
-end
-
-function Animal:getImageNum()
 	return self.image
-end
-
-function Animal:getDirection()
-	return self.direction 
 end
 
 function Animal:isSheathed()
@@ -154,21 +144,10 @@ function Animal:setController(controller)
 	self.controller = controller
 end
 
-function Animal:setPos(x, y)
-	self.tileX = x 
-	self.tileY = y
-	self.x = self.tileX * 32 - 32
-	self.y = self.tileY * 32 - 32
-end
-
-function Animal:setPixelPos(x, y)
-	self.x = x 
-	self.y = y 
-end
-
-function Animal:setDest(x, y)
-	self.destX = x
-	self.destY = y
+function Animal:setGamePos(pos)
+	local x, y = pos[1], pos[2]
+	self.game_x = x 
+	self.game_y = y
 end
 
 function Animal:setIsMoving(bool)
@@ -176,35 +155,12 @@ function Animal:setIsMoving(bool)
 end
 
 function Animal:setMoveTimer(movetimer)
-	self.movetimer = self.movetimer
-end
-
-function Animal:setX(x)
-	self.x = x 
-end
-
-function Animal:setY(y)
-	self.y = y 
-end
-
-function Animal:setTileX(x)
-	self.tileX = x
-end
-
-function Animal:setTileY(y)
-	self.tileY = y
+	self.move_timer = self.move_timer
 end
 
 function Animal:setImage(num)
-	self.image = num
-end
-
-function Animal:setImageEVIL(image)
-	self.image = image 
-end
-
-function Animal:setDirection(direction)
-	self.direction = direction 
+	self.image_num = num
+	self.image = CatImages[self.image_num]
 end
 
 function Animal:kill()
@@ -257,8 +213,8 @@ function Animal:setGender(gender)
 end
 
 function Animal:drawImage(x, y, s)
-	if not s then love.graphics.draw(CatImages[self.image], x + 2, y + 4) end
-	if s then love.graphics.draw(CatImages[self.image], x, y, 0, s, s) end
+	if not s then love.graphics.draw(self.image, x + 2, y + 4) end
+	if s then love.graphics.draw(self.image, x, y, 0, s, s) end
 end
 
 
@@ -297,45 +253,50 @@ function Animal:update(dt, cathandler)  --just make sure to update the cats
 end
 
 function Animal:updatePosition(dt)
-	local direction = self.direction
-	local rate_of_change = 32 / (16 * self.speed)  --all this shit is just dealing with the animations and stuff like that.
-	
+	local distance_to_next_tile
+
+	if self.dest_x ~= self.prev_x and self.dest_y ~= self.prev_y then distance_to_next_tile = sqrt2 
+	else distance_to_next_tile = 1 end
+
+	local rate_of_change = 32 / (8 * self.speed * distance_to_next_tile)
+
 	if self.ismoving == true then
-		self.movetimer = self.movetimer + dt
+		self.move_timer = self.move_timer - dt
 
 		self.t = self.t + (rate_of_change * dt)
 		if self.t >= 1 then self.t = 1 end
 
-		self.x = self.prevX + (self.destX - self.prevX) * self.t
-		self.y = self.prevY + (self.destY - self.prevY) * self.t
+		self.real_x = self.prev_x + (self.dest_x - self.prev_x) * self.t
+		self.real_y = self.prev_y + (self.dest_y - self.prev_y) * self.t
 
-		if self.movetimer > 1 * self.speed then
+		--self.dest_x = self.dest_x - self.prev_y
+
+		if self.real_x == self.dest_x and self.real_y == self.dest_y then 
+			if self.game_x ~= self:toGame({self.dest_x}) and self.game_y ~= self:toGame({self.dest_y}) then 
+				self:setGamePos(self:toGame({self.real_x, self.real_y}))
+			end
+		end
+
+		if self.move_timer * self.speed * distance_to_next_tile < 0 then
 			self.ismoving = false
-			self.movetimer = 0
+			self.move_timer = .5
 			self.t = 0
 		end
 	end
 end
 
-function Animal:setDirection(x, y, heading)  -- you probably have no reason to use this 
+function Animal:setDestination(x, y)
 	if self.ismoving == false then
-		self.ismoving = true 
-		self:getInput(x, y, heading)
+		self.ismoving = true
+		self.prev_x = self.real_x
+		self.prev_y = self.real_y
+		self.dest_x = (self.real_x + (x * 32))
+		self.dest_y = (self.real_y + (y * 32))
 	end
 end
 
-function Animal:getInput(x, y, heading) -- or this
-	self.prevX = self.tileX * 32 - 32
-	self.prevY = self.tileY * 32 - 32
-	self.tileX = self.tileX + x 
-	self.tileY = self.tileY + y
-	self.destX = self.tileX * 32 - 32
-	self.destY = self.tileY * 32 - 32
-	self.direction = heading
-end
-
-function Animal:move(x, y)
-	self.controller:queueMove(x, y)
+function Animal:move(move)
+	self.controller:queueMove(move)
 end
 
 Cat = class("Cat", Animal)
@@ -377,13 +338,13 @@ end
 function Cat:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	-- accessing cat images might be slowing this down
 	--self.testcat:drawImage((self.testcat:getX()-firstTile_x * self.tileSize) - offset_x - self.tileSize/2, (self.testcat:getY()-firstTile_y * self.tileSize) - offset_y - self.tileSize/2 - 8)
-	love.graphics.draw(CatImages[self.image], (self.x - firstTile_x * 32) - offset_x - 16, (self.y - firstTile_y * 32) - offset_y - 16 - 8)
+	love.graphics.draw(self.image, (self.real_x - firstTile_x * 32) - offset_x - 16, (self.real_y - firstTile_y * 32) - offset_y - 16 - 8)
 end
 
---[[
-tile position is gotten by getTileX() or getTileY()
-or getPos(). i know this doesnt make sense someone else can go in an fix it
-]]--
+function Cat:setImage(num)
+	self.image_num = num
+	self.image = CatImages[self.image_num]
+end
 
 --combat functions
 
@@ -394,9 +355,10 @@ or getPos(). i know this doesnt make sense someone else can go in an fix it
 function Cat:attack(cat, cathandler)
 	if self:isSheathed() then 
 		if self.is_player == true then return Message:new("claws sheathed", self, "Your claws are sheathed!", true) 
-		elseif self.is_player == false then return Message:new("claws sheathed", self, self.name .. " tried to hit " .. cat:getName() .. " but their claws were sheathed!", true)
+		elseif self.is_player == false then return Message:new("claws sheathed", self, self:getName() .. " tried to hit " .. cat:getName() .. " but their claws were sheathed!", true)
 		end
 	end
+	if cat == self then 
 
 	--send the attack here ig
 	local attack = {
@@ -404,9 +366,7 @@ function Cat:attack(cat, cathandler)
 		["Bleed"] = .5
 	}
 	cat:takeHit(self, attack, cathandler)
-	if self.is_player == true then return Message:new("attack", self, "You " .. attack["Type"] .. " " .. cat:getName() .."!", true)
-	elseif self.is_player == false then return Message:new("attack", self, cat:getName() .. " was " .. attack["Type"] .. " by " .. self.name .."!", true)
-	end
+	return Message:new("attack", self, cat:getName() .. " was " .. attack["Type"] .. " by " .. self:getName() .."!", true)
 end
 
 function Cat:tap(cat, cathandler)
@@ -415,7 +375,7 @@ function Cat:tap(cat, cathandler)
 	} 
 	cat:takeHit(self, tap, cathandler)
 	if self.is_player == true then return Message:new("tap", self, "You " .. tap["Type"] .. " " .. cat:getName() .."!", true)
-	elseif self.is_player == false then return Message:new("tap", self, cat:getName() .. " was " .. tap["Type"] .. " by " .. self.name .."!", true)
+	elseif self.is_player == false then return Message:new("tap", self, cat:getName() .. " was " .. tap["Type"] .. " by " .. self:getName() .."!", true)
 	end
 end
 
@@ -446,6 +406,11 @@ end
 
 
 --accessors
+function Cat:getName(format)
+	if format then return (self.name .. " (you)") 
+	else return self.name end
+end
+
 function Cat:isNursing()
 	return self.nursing 
 end
@@ -610,10 +575,6 @@ function Cat:printDetails()
 	if self.mom then print("Mom: " .. self.mom:getName()) end
 	if self.nursing == true then print("Current Litter: ") printCatNames(self.kits) end
 	print("-------------------------")
-end
-
-function Cat:printName()
-	print(self.name)
 end
 
 --prints the table of cats passed in

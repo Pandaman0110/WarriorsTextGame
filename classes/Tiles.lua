@@ -4,6 +4,11 @@ MapHandler = class("MapHandler")
 
 --most of the drawing and shit happens here
 
+local tile_size = 32
+local display_x = 20 
+local display_y = 12
+local display_buffer = 2
+
 function MapHandler:initialize(player)
 	--use this for rendering floor tiles
 	self.tilemap = {
@@ -75,24 +80,23 @@ function MapHandler:initialize(player)
 
 	self.width = #self.tilemap[1]
 	self.height = #self.tilemap
-	self.mapX = self.player:getX()
-	self.mapY = self.player:getY() 
-	self.displayBuffer = 2
-	self.displayX = 20 
-	self.displayY = 12
-	self.tileSize = 32
+	
+	local player_coords = self.player:getRealPos()
+
+	self.mapX = (player_coords[1])
+	self.mapY = (player_coords[2])
 end
 
 function MapHandler:draw()
-	local offset_x = self.mapX % self.tileSize
-	local offset_y = self.mapY % self.tileSize
-	local firstTile_x = math.floor(self.mapX / self.tileSize)
-	local firstTile_y = math.floor(self.mapY / self.tileSize)
+	local offset_x = self.mapX % tile_size
+	local offset_y = self.mapY % tile_size
+	local firstTile_x = math.floor(self.mapX / tile_size)
+	local firstTile_y = math.floor(self.mapY / tile_size)
 
-	for y = 1, (self.displayY + self.displayBuffer) do
-		for x = 1, (self.displayX + self.displayBuffer) do
+	for y = 1, (display_y + display_buffer) do
+		for x = 1, (display_x + display_buffer) do
 			if y + firstTile_y >= 1 and y+firstTile_y <= self.height and x + firstTile_x >= 1 and x + firstTile_x <= self.width then 
-				love.graphics.draw(self.tiles[self.tilemap[y + firstTile_y][x + firstTile_x] + 1], ((x-1) * self.tileSize) - offset_x - self.tileSize/2, ((y-1) * self.tileSize) - offset_y - self.tileSize/2 - 8)
+				love.graphics.draw(self.tiles[self.tilemap[y + firstTile_y][x + firstTile_x] + 1], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
 				
 			end
 		end
@@ -102,8 +106,10 @@ function MapHandler:draw()
 end
 
 function MapHandler:update(dt)
-	self.mapX = (self.player:getX() - 10 * self.tileSize)
-	self.mapY = (self.player:getY() - 6 * self.tileSize)
+	local player_coords = self.player:getRealPos()
+
+	self.mapX = (player_coords[1] - 10 * tile_size)
+	self.mapY = (player_coords[2] - 6 * tile_size)
 end
 
 function MapHandler:getRenderMap()
