@@ -8,7 +8,9 @@ end
 function maingame:enter(previous, clans, player_cat, cat_generator)
 	--clock, 1440 seconds for each in game day means a minute passes in game for every second in real life
 	self.game_clock = Timer:new(1440)
-	--self.game_clock:toGame()	
+	--self.game_clock:toGame(
+
+	self.clans = clans
 
 	self:setupHandlers(self.game_clock, clans)
 	self.cat_generator = cat_generator
@@ -45,11 +47,13 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 end
 
 function maingame:update(dt)
+	--love.profiler.start()
 	self.game_clock:update(dt)
 	self.cat_handler:update(dt)
 	self.decal_handler:update(dt)
 	self.map_handler:update(dt)
 	self.game_handler:update(dt)
+	--love.profiler.stop()
 end
 
 function maingame:keypressed(key)
@@ -122,12 +126,9 @@ function maingame:checkButtons(mx, my, button)
 end
 
 function maingame:setupHandlers(clock, clans)
-	self.clan_handler = ClanHandler:new(clock)
-	self.clan_handler:loadClans(clans)
-
 	self.cat_handler = CatHandler:new(clock)
 
-	for clan in self.clan_handler:iterator() do
+	for clan in self.clans:iterator() do
 		self.cat_handler:loadCatsFromClan(clan)
 	end
 

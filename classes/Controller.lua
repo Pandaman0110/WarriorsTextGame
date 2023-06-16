@@ -57,7 +57,6 @@ function Player:mousepressed(tx, ty, button)
 			end
 		end
 	end
-	print(tx, ty)
 	return message
 end
 
@@ -75,8 +74,6 @@ function Player:keypressed(key)
 end
 
 function Player:update(dt)
-	local direction = ""
-
 	if self.animal:isMoving() == false then
 		if love.keyboard.isDown("d") or love.keyboard.isDown("a") or love.keyboard.isDown("w") or love.keyboard.isDown("s") then
 			local input_x, input_y = 0, 0

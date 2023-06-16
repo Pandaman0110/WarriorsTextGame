@@ -26,14 +26,17 @@ function love.load()
 
 	--classes
 	require "classes/CatGenerator"
+	require "classes/CatHandler"
 	require "classes/Cats"
 	require "classes/Clan"
 	require "classes/Controller"
 	require "classes/Editor"
+	require "classes/GameHandler"
 	require "classes/Handler"
+	require "classes/Location"
 	require "classes/Medical"
 	require "classes/Relationship"
-	require "classes/Tiles"
+	require "classes/Map"
 	require "classes/Timer"
 
 	--gamestates
@@ -150,7 +153,7 @@ end
 
 function love.checkPerformance(dt)
 	love.frames = love.frames + 1
-	love.frame_timer = love.frame_timer - dt
+	--love.frame_timer = love.frame_timer - dt
 	--if love.frames % 1000 == 0 then 
 	if love.frame_timer < 0 then 
 		love.report = love.profiler.report(10)

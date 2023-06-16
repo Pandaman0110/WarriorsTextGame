@@ -9,8 +9,6 @@ Animal = class("Animal")
 local move_timer_val = .5
 
 function Animal:initialize()
-	-- all this shit has to do with movement and stuff
-
 	self.image = image
 	self.image_num = num
 
@@ -20,16 +18,17 @@ function Animal:initialize()
 
 	self.game_x = 2
 	self.game_y = 2
-	self.real_x = self.game_x * 32 - 32 --this is so it draws in the correct places, lua arrays start at 1 or something
+	self.real_x = self.game_x * 32 - 32
 	self.real_y = self.game_x * 32 - 32
 	self.prev_x = 0
 	self.prev_y = 0
 	self.dest_x = 0
 	self.dest_y = 0
-	self.speed = 1 --you can just play with this
-	self.move_timer = move_timer_val -- this is used to control how fast the cat moves in conjuction with the speed
-	self.t = 0 --this is used for doing the movement animation
-	self.ismoving = false --self explanatory
+
+	self.speed = 1
+	self.move_timer = move_timer_val
+	self.t = 0
+	self.is_moving = false
 
 	self.name = name
 	self.gender = gender
@@ -39,15 +38,6 @@ function Animal:initialize()
 	self.attacking = false
 	self.attackTimer = 1
 	self.claws = "sheathed" -- sheathed / unsheathed
-
-	--medical shit
-	self.dead = false
-	self.unconcious = false
-	self.blood = 500
-	self.bleedpulsetimer = 10
-	--check if bleeding light == .2 , medium = .4, heavy = .5
-
-	self.bleeding = 0
 end
 
 function Animal:getController()
@@ -89,7 +79,7 @@ function Animal:toGame(coords)
 end
 
 function Animal:isMoving()
-	return self.ismoving
+	return self.is_moving
 end
 
 function Animal:getImage()
@@ -98,22 +88,6 @@ end
 
 function Animal:isSheathed()
 	if self.claws == 1 then return true elseif self.claws == 2 then return false end
-end
-
-function Animal:isDead()
-	return self.dead 
-end
-
-function Animal:isUnconcious()
-	return self.unconcious
-end
-
-function Animal:getBlood()
-	return self.blood 
-end
-
-function Animal:getBleeding()
-	return self.bleeding 
 end
 
 function Animal:getSpeed() 
@@ -148,50 +122,13 @@ function Animal:setGamePos(pos)
 	local x, y = pos[1], pos[2]
 	self.game_x = x 
 	self.game_y = y
-end
-
-function Animal:setIsMoving(bool)
-	self.ismoving = bool
-end
-
-function Animal:setMoveTimer(movetimer)
-	self.move_timer = self.move_timer
+	self.real_x = x * 32 - 32
+	self.real_y = y * 32 - 32
 end
 
 function Animal:setImage(num)
 	self.image_num = num
 	self.image = CatImages[self.image_num]
-end
-
-function Animal:kill()
-	self.dead = true
-	self.image = self.image + 1
-end
-
-function Animal:knockout()
-	self.unconcious = true
-	self.image = self.image + 1
-end
-
-function Animal:wake()
-	self.unconcious = false
-	self.image = self.image + 1
-end
-
-function Animal:setBlood(blood)
-	self.blood = blood 
-end
-
-function Animal:setBleeding(speed)
-	self.bleeding = speed 
-end
-
-function Animal:checkBleeding()
-	return self.bleeding
-end
-
-function Animal:checkBlood()
-	return self.blood
 end
 
 function Animal:setSpeed(speed) 
@@ -232,22 +169,6 @@ function Animal:update(dt, cathandler)  --just make sure to update the cats
 	end
 
 
-	--update medical stuff
-
-	self.blood = self.blood - self.bleeding * dt
-	--both of these flags will be true be careful maybe 
-	if self.blood <= 200 then self.unconcious = true end
-	if self.blood <= 0 then self.dead = true end
-
-	if self.bleeding > 0 then
-		self.bleedpulsetimer = 10 * self.bleeding
-		self.bleedpulsetimer = self.bleedpulsetimer - dt
-		if self.bleedpulsetimer < 0 then
-			self.bleedpulsetimer = 10 * self.bleeding
-		end
-	end
-
-
 	--update controllers last
 	self.controller:update(dt, cathandler)
 end
@@ -258,41 +179,36 @@ function Animal:updatePosition(dt)
 	if self.dest_x ~= self.prev_x and self.dest_y ~= self.prev_y then distance_to_next_tile = sqrt2 
 	else distance_to_next_tile = 1 end
 
-	local rate_of_change = 32 / (8 * self.speed * distance_to_next_tile)
+	local rate_of_change = 4 
 
-	if self.ismoving == true then
+	if self.is_moving then 
 		self.move_timer = self.move_timer - dt
 
 		self.t = self.t + (rate_of_change * dt)
-		if self.t >= 1 then self.t = 1 end
+		if self.t > 1 then self.t = 1 end
 
 		self.real_x = self.prev_x + (self.dest_x - self.prev_x) * self.t
 		self.real_y = self.prev_y + (self.dest_y - self.prev_y) * self.t
 
-		--self.dest_x = self.dest_x - self.prev_y
-
-		if self.real_x == self.dest_x and self.real_y == self.dest_y then 
-			if self.game_x ~= self:toGame({self.dest_x}) and self.game_y ~= self:toGame({self.dest_y}) then 
-				self:setGamePos(self:toGame({self.real_x, self.real_y}))
-			end
-		end
 
 		if self.move_timer * self.speed * distance_to_next_tile < 0 then
 			self.ismoving = false
+			self.movetimer = 0
 			self.move_timer = .5
 			self.t = 0
 		end
 	end
+
+	self.game_x = lume.round(self.real_x - 32 / 32)
+	self.game_y = lume.round(self.real_y - 32 / 32)
 end
 
 function Animal:setDestination(x, y)
-	if self.ismoving == false then
-		self.ismoving = true
-		self.prev_x = self.real_x
-		self.prev_y = self.real_y
-		self.dest_x = (self.real_x + (x * 32))
-		self.dest_y = (self.real_y + (y * 32))
-	end
+	self.is_moving = true
+	self.prev_x = self.real_x
+	self.prev_y = self.real_y
+	self.dest_x = (self.real_x + (x * 32))
+	self.dest_y = (self.real_y + (y * 32))
 end
 
 function Animal:move(move)
@@ -354,11 +270,8 @@ end
 
 function Cat:attack(cat, cathandler)
 	if self:isSheathed() then 
-		if self.is_player == true then return Message:new("claws sheathed", self, "Your claws are sheathed!", true) 
-		elseif self.is_player == false then return Message:new("claws sheathed", self, self:getName() .. " tried to hit " .. cat:getName() .. " but their claws were sheathed!", true)
-		end
+		Message:new("claws sheathed", self, self:getName() .. " tried to hit " .. cat:getName() .. " but their claws were sheathed!", true)
 	end
-	if cat == self then 
 
 	--send the attack here ig
 	local attack = {
@@ -374,9 +287,7 @@ function Cat:tap(cat, cathandler)
 		["Type"] = "tapped"
 	} 
 	cat:takeHit(self, tap, cathandler)
-	if self.is_player == true then return Message:new("tap", self, "You " .. tap["Type"] .. " " .. cat:getName() .."!", true)
-	elseif self.is_player == false then return Message:new("tap", self, cat:getName() .. " was " .. tap["Type"] .. " by " .. self:getName() .."!", true)
-	end
+	Message:new("tap", self, cat:getName() .. " was " .. tap["Type"] .. " by " .. self:getName() .."!", true)
 end
 
 --check hit if damage < 0 print message basdew on damage
@@ -388,13 +299,12 @@ function Cat:takeHit(cat, hit, cathandler)
 	elseif hit["Type"] == "tapped" then
 
 	end
-	if self.is_player == true then return Message:new("took damage", self, "You were " .. hit["Type"] .. " by " .. cat:getName() .. "!", true)
-	elseif self.is_player == false then return Message:new("took damage", self, self.name .. " was " .. hit["Type"] .. " by " .. cat:getName() .. "!", false)
-	end
+	Message:new("took damage", self, self:getName() .. " was " .. hit["Type"] .. " by " .. cat:getName() .. "!", false)
 end
 
 --cat is the animal you clicked on
 function Cat:decide(cat, cathandler)
+	if cat == self then return nil end
 	local message = nil
 	if self.intent == "help" then
 		message = self:tap(cat, cathandler)
