@@ -3,8 +3,8 @@ GameHandler = class("GameHandler", Handler)
 function GameHandler:initialize(clock)
 	Handler.initialize(self, clock)
 	self.locations = Map:new()
-	self.locations:insert("thunder_clan_base", Location:new(5, 6))
-	self.locations:insert("river_clan_base", Location:new(20, 15))
+	self.locations:insert("thunder_clan_base", Location:new(5, 6, 10, 10))
+	self.locations:insert("river_clan_base", Location:new(30, 15, 10, 10))
 end
 
 function GameHandler:update(dt)
@@ -19,10 +19,18 @@ function GameHandler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	end
 end
 
-function GameHandler:getLocation(name)
-	return self.locations:at(name)
+function GameHandler:getLocation(location_name)
+	return self.locations:at(location_name)
 end
 
-function GameHandler:sendCat(cat, location)
-	cat:move(self.locations:at(location):getPos())
+function GameHandler:sendCat(cat, location_name)
+	cat:moveto(self.locations:at(location_name):getOrigin())
+end
+
+function GameHandler:at(coords)
+	for location_name, location in self.locations:iterator() do
+		local pos = location:inside(coords)
+		if coords[1] == pos[1] and coords[2] == pos[2] then return location end
+	end
+	return false
 end

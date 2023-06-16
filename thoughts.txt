@@ -4,6 +4,7 @@ to-do
 6. look into some sort of code generation to fill in parts of map
 7. look into spritebatches
 8. 2d matrix ediyor for map
+9. create a family tree system and generate familys, create a page to view the trees
 
 10. allow the player to map keys 
 11. do the assert thingy everywhere and be proffesional

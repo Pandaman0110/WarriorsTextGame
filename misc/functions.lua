@@ -79,7 +79,7 @@ Array = class("Array")
 function Array:initialize(...)
 	self.array = {} 
 	if ... then 
-		for i, item in pairs(...) do self:insert(item) end
+		for i, item in ipairs(...) do self:insert(item) end
 	end
 end
 
@@ -131,7 +131,7 @@ end
 function Array:insert(item, index)
 	if index then assert(type(index) == "number", "cannot index array with type: " .. type(index) .. " please use number") end
 	if index then table.insert(self.array, index, item) else
-		table.insert(self.array, item)
+		self.array[#self.array+1] = item
 	end
 end 
 
@@ -227,12 +227,15 @@ end
 
 Stack = class("Stack", Array)
 
-function Stack:initialize()
+function Stack:initialize(...)
 	Array.initialize(self)
+	if ... then 
+		for i, item in pairs(...) do self:push(item) end
+	end
 end
 
 function Stack:pop()
-	local item = table.remove(self.array)
+	local item = table.remove(self.array, #self.array)
 	return item
 end
 
@@ -384,4 +387,34 @@ function Graph:touching(vertex)
 		if self.graph[ver1][ver2] then edges:insert(edge) end
 	end
 	return edges
+end
+
+StateMachine = class("StateMachine")
+
+function StateMachine:initialize(...)
+	self.states = {}
+	self.state_stack = Stack:new()
+end
+
+function StateMachine:update(dt)
+	self.state_stack:peek():update(dt)
+end
+
+function StateMachine:switchState()
+
+end
+
+function StateMachine:getState()
+
+
+end
+
+State = class("State") 
+
+function State:initialize()
+
+end
+
+function State:update(dt) 
+
 end

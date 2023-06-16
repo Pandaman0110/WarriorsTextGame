@@ -71,6 +71,9 @@ function CatGenerator:genClan(name)
 	return clan
 end
 
+--TODO get rid of this parents thing, and create the family tree sepertely. start
+-- at the top so you dont have to generate any parent and life is easy
+
 function CatGenerator:genRandomClanCat(role, parents)
 	local cat = Cat:new()
 
@@ -86,9 +89,8 @@ function CatGenerator:genRandomClanCat(role, parents)
 	if not parents then 
 		cat:setParents(self:genParent(), self:genParent()) 
 		self.generated_cats:insert(cat)
+		cat:setBody(CatBody:new(cat))
 	end
-
-	cat:setBody(CatBody:new(cat))
 	return cat
 end
 

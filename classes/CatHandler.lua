@@ -39,8 +39,10 @@ end
 
 function CatHandler:checkTile(x, y)
 	for cat in self.cats:iterator() do
-		local coords = cat:getGamePos()
-		if coords[1] == x and coords[2] == y then return true end
+		local coords_1 = cat:getGamePos()
+		local coords_2 = cat:getGameDestPos()
+		if coords_1[1] == x and coords_1[2] == y then return true end
+		if coords_2[1] == x and coords_2[2] == y then return true end
 	end
 	return false
 end

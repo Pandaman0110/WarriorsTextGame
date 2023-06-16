@@ -1,8 +1,9 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, cathandler, collision_map)
+function Controller:initialize(animal, cat_handler, game_handler, collision_map)
 	self.animal = animal  
-	self.cat_handler = cathandler
+	self.cat_handler = cat_handler
+	self.game_handler = game_handler
 	self.collision_map = collision_map
 end
 
@@ -22,6 +23,10 @@ function Controller:getCollisionMap()
 	return self.collision_map 
 end
 
+function Controller:setCatHandler(cat_handler)
+	self.cat_handler = cat_handler
+end
+
 function Controller:setCollisionMap(collision_map)
 	self.collision_map = collision_map 
 end
@@ -29,7 +34,6 @@ end
 function Controller:setAnimal(animal)
 	self.animal = animal 
 end
-
 
 function Controller:update(dt)
 
@@ -100,12 +104,12 @@ function Player:update(dt)
 	end
 end
 
-Ai = class("Ai", Controller)
+AnimalController = class("AnimalController", Controller)
 
 local path_blocked_timer_val = 2
 
-function Ai:initialize(animal, cathandler, collision_map)
-	Controller.initialize(self, animal, cathandler, collision_map)
+function AnimalController:initialize(animal, cathandler, game_handler, collision_map)
+	Controller.initialize(self, animal, cathandler, game_handler, collision_map)
 
 	self.move_queue = Queue:new()
 
@@ -117,7 +121,7 @@ function Ai:initialize(animal, cathandler, collision_map)
 	self.path_blocked = false
 end
 
-function Ai:update(dt)
+function AnimalController:update(dt)
 	if self.path_blocked == true then 
 		self.path_blocked_timer = self.path_blocked_timer - dt
 		if self.path_blocked_timer < 0 then
@@ -127,33 +131,33 @@ function Ai:update(dt)
 	end
 
 	if self.current_move_num <= self.num_moves then
-		if self.animal:isMoving() == false then
+		if self.animal:isMoving() == false then 
 			next_move = self.current_path[self.current_move_num]
 			if self:checkCollision(next_move[1], next_move[2]) == false then
 				self.path_blocked = false
 				self.path_blocked_timer = path_blocked_timer_val
+
 				local coords = self.animal:getGamePos()
 				local dest_x, dest_y = 0, 0
+
 				dest_x = next_move[1] - coords[1]
 				dest_y = next_move[2] - coords[2]
+
 				self.animal:setDestination(dest_x, dest_y)
 				self.current_move_num = self.current_move_num + 1
 			else 
 				self.path_blocked = true
 			end
-				--basically if there is something in the way, it just stops, but when that thing moves it will keep going
 		end
 	else
 		self:resetCurrentPath()
 	end
 end
 
-function Ai:resetCurrentPath()
-	local coords = self.animal:getGamePos()
-
-	self.current_move_num = 1
-
+function AnimalController:resetCurrentPath()
 	if self.move_queue:size() > 0 then
+		local coords = self.animal:getGameDestPos()
+
 		self.current_move_order = self.move_queue:pop()
 		self.current_path = self:calculatePath(coords[1], coords[2], self.current_move_order[1], self.current_move_order[2])
 		self.num_moves = #self.current_path
@@ -161,23 +165,29 @@ function Ai:resetCurrentPath()
 		self.current_path = nil
 		self.num_moves = 0
 	end
+
+	self.current_move_num = 1
 end
 
-function Ai:recalculateCurrentPath()
-	local coords = self.animal:getGamePos()
+function AnimalController:recalculateCurrentPath()
+	local coords = self.animal:getGameDestPos()
 
 	self.current_move_num = 1
 	self.current_path = self:calculatePath(coords[1], coords[2], self.current_move_order[1], self.current_move_order[2])
 	self.num_moves = #self.current_path
 end
 
-function Ai:queueMove(move)
+function AnimalController:queueMove(move)
 	self.move_queue:push(move)
 
-	if self.current_path == nil then self:resetCurrentPath() end
+	print(move[1], move[2])
+
+	if self.current_path == nil then 
+		self:resetCurrentPath()
+	end
 end
 
-function Ai:calculatePath(start_x, start_y, end_x, end_y)
+function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 	local walkable = 0 
 
 	local map = {}
@@ -196,6 +206,7 @@ function Ai:calculatePath(start_x, start_y, end_x, end_y)
 
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'ASTAR', walkable)
+	finder:setTunnelling(false)
 
 	local path = {}
 
@@ -207,6 +218,10 @@ function Ai:calculatePath(start_x, start_y, end_x, end_y)
 	end
 
 	table.remove(path, 1)
+
+	--for i, move in ipAnimalControllerrs(path) do
+	--	print(move[1], move[2])
+	--end
 
 	return path
 end

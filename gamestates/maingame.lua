@@ -11,10 +11,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	--self.game_clock:toGame(
 
 	self.clans = clans
-
-	self:setupHandlers(self.game_clock, clans)
 	self.cat_generator = cat_generator
-
 	self.player = player_cat
 
 	self.buttons = Array:new()
@@ -29,21 +26,22 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 
 	self.player:setGamePos({10, 5})
-	self.map_handler = MapHandler:new(self.player)
+
+	self:setupHandlers(self.game_clock)
+
+	local randomcat = self.cat_handler:findNonPlayer()
 
 	for cat in self.cat_handler:iterator() do
-		cat:setController(Ai:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
+		cat:setController(CatController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
 	end
 
 	local temp1 = {}
 	local temp2 = {}
-	
 
-	self.player:setController(Player:new(self.player, self.cat_handler, self.map_handler:getCollisionMap()))
+	self.player:setController(Player:new(self.player, self.cat_handler, self.map_handler:getCollisionMap())) 
 
-	local randomcat = self.cat_handler:findNonPlayer()
-
-	randomcat:move({5, 5})
+	randomcat:moveto({5,5})
+	self.game_handler:sendCat(randomcat, "river_clan_base")
 end
 
 function maingame:update(dt)
@@ -125,14 +123,12 @@ function maingame:checkButtons(mx, my, button)
 	return button_pressed
 end
 
-function maingame:setupHandlers(clock, clans)
+function maingame:setupHandlers(clock)
+	self.map_handler = MapHandler:new(self.player, self.cat_handler)
 	self.cat_handler = CatHandler:new(clock)
-
+	self.decal_handler = DecalHandler:new()
+	self.game_handler = GameHandler:new(clock)
 	for clan in self.clans:iterator() do
 		self.cat_handler:loadCatsFromClan(clan)
 	end
-
-	self.decal_handler = DecalHandler:new()
-
-	self.game_handler = GameHandler:new(clock)
 end

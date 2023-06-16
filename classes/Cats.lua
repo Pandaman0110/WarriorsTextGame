@@ -6,29 +6,33 @@ local sqrt2 = math.sqrt(2)
 
 Animal = class("Animal")
 
-local move_timer_val = .5
+local move_timer_val = .7
 
 function Animal:initialize()
 	self.image = image
 	self.image_num = num
 
 	self.controller = controller
-
+	self.brain = brain
 	self.body = nil
 
 	self.game_x = 2
 	self.game_y = 2
+	self.game_dest_x = self.game_x
+	self.game_dest_y = self.game_y
 	self.real_x = self.game_x * 32 - 32
 	self.real_y = self.game_x * 32 - 32
-	self.prev_x = 0
-	self.prev_y = 0
-	self.dest_x = 0
-	self.dest_y = 0
+	self.prev_x = self.game_x * 32 - 32
+	self.prev_y = self.real_y * 32 - 32
+	self.dest_x = self.game_x * 32 - 32
+	self.dest_y = self.real_y * 32 - 32
 
-	self.speed = 1
+	self.speed = 1.0
 	self.move_timer = move_timer_val
 	self.t = 0
 	self.is_moving = false
+
+	self.move_state = Stack:new()
 
 	self.name = name
 	self.gender = gender
@@ -50,6 +54,10 @@ end
 
 function Animal:getGamePos()
 	return {self.game_x, self.game_y}
+end
+
+function Animal:getGameDestPos()
+	return {self.game_dest_x, self.game_dest_y}
 end
 
 function Animal:getDestPos()
@@ -157,6 +165,7 @@ end
 
 
 function Animal:update(dt, cathandler)  --just make sure to update the cats
+	if self.controller then self.controller:update(dt, cathandler) end
 	self:updatePosition(dt)
 
 	if self.attacking == true then
@@ -170,18 +179,17 @@ function Animal:update(dt, cathandler)  --just make sure to update the cats
 
 
 	--update controllers last
-	self.controller:update(dt, cathandler)
 end
 
 function Animal:updatePosition(dt)
-	local distance_to_next_tile
+	local distance_to_next_tile 
 
 	if self.dest_x ~= self.prev_x and self.dest_y ~= self.prev_y then distance_to_next_tile = sqrt2 
 	else distance_to_next_tile = 1 end
 
-	local rate_of_change = 4 
+	local rate_of_change = 32 / (8 * distance_to_next_tile)
 
-	if self.is_moving then 
+	if self.is_moving == true then 
 		self.move_timer = self.move_timer - dt
 
 		self.t = self.t + (rate_of_change * dt)
@@ -190,17 +198,18 @@ function Animal:updatePosition(dt)
 		self.real_x = self.prev_x + (self.dest_x - self.prev_x) * self.t
 		self.real_y = self.prev_y + (self.dest_y - self.prev_y) * self.t
 
+		if self.real_x == self.dest_x and self.real_y == self.dest_y then 
+			if self.game_x ~= (self.dest_x - 32) / 32 and self.game_y ~= (self.dest_y - 32) / 32 then 
+				self:setGamePos(self:toGame({self.real_x, self.real_y}))
+			end
+		end
 
 		if self.move_timer * self.speed * distance_to_next_tile < 0 then
-			self.ismoving = false
-			self.movetimer = 0
-			self.move_timer = .5
+			self.is_moving = false
+			self.move_timer = move_timer_val
 			self.t = 0
 		end
 	end
-
-	self.game_x = lume.round(self.real_x - 32 / 32)
-	self.game_y = lume.round(self.real_y - 32 / 32)
 end
 
 function Animal:setDestination(x, y)
@@ -209,11 +218,29 @@ function Animal:setDestination(x, y)
 	self.prev_y = self.real_y
 	self.dest_x = (self.real_x + (x * 32))
 	self.dest_y = (self.real_y + (y * 32))
+	self.game_dest_x = self.game_dest_x + x
+	self.game_dest_y = self.game_dest_y + y
 end
 
-function Animal:move(move)
-	self.controller:queueMove(move)
+--moves the animal to coords 
+
+function Animal:moveto(move)
+	self.controller:queueMove(move) --from here switch the state of the ai 
 end
+
+function Animal:idle()
+	self.controller:idle()
+end
+
+function Animal:pause()
+
+end
+
+function Animal:move(location)
+	self:move(location:getOrigin())
+end
+
+
 
 Cat = class("Cat", Animal)
 
@@ -231,7 +258,7 @@ function Cat:initialize()
 	self.eyecolor = eyecolor
 	self.pelt = pelt
 
-	self.dad = dad
+	self.dad = dad --move this to some sort of family tree thing
 	self.mom = mom
 	self.kits = Array:new()
 	self.mate = mate

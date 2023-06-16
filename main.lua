@@ -25,6 +25,7 @@ function love.load()
 	require "misc/data"
 
 	--classes
+	require "classes/CatController"
 	require "classes/CatGenerator"
 	require "classes/CatHandler"
 	require "classes/Cats"
@@ -87,7 +88,7 @@ function love.load()
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(startup)
+	gamestate.switch(choosecharacter)
 
 	love.frames = 0
 	love.frame_timer = 10

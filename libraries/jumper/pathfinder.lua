@@ -93,7 +93,7 @@ if (...) then
     newPathfinder:setFinder(finderName)
     newPathfinder:setWalkable(walkable)
     newPathfinder:setMode('DIAGONAL')
-    newPathfinder:setHeuristic('DIAGONAL')
+    newPathfinder:setHeuristic('MANHATTAN')
     newPathfinder:setTunnelling(false)
     return newPathfinder
   end
