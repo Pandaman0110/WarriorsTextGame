@@ -98,14 +98,9 @@ function CatGenerator:genName(role, name)
 	local prefix = self:choosePrefix(name)
 	local suffix = self:chooseSuffix(role)
 
-	local final_name
-	if prefix[#prefix] == suffix[1] then
-		final_name = prefix .. "-" .. suffix
-	else
-		final_name = prefix .. suffix
-	end
+	local final_name = prefix .. suffix
 
-
+	if prefix[#prefix] == suffix[1] then final_name = prefix .. "-" .. suffix end
 
 	while self:checkDuplicateName(final_name) do
 		final_name = self:genName(role, name)

@@ -1,9 +1,8 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, cat_handler, game_handler, collision_map)
+function Controller:initialize(animal, cat_handler, collision_map)
 	self.animal = animal  
 	self.cat_handler = cat_handler
-	self.game_handler = game_handler
 	self.collision_map = collision_map
 end
 
@@ -108,8 +107,8 @@ AnimalController = class("AnimalController", Controller)
 
 local path_blocked_timer_val = 2
 
-function AnimalController:initialize(animal, cathandler, game_handler, collision_map)
-	Controller.initialize(self, animal, cathandler, game_handler, collision_map)
+function AnimalController:initialize(animal, cathandler, collision_map)
+	Controller.initialize(self, animal, cathandler, collision_map)
 
 	self.move_queue = Queue:new()
 
@@ -180,8 +179,6 @@ end
 function AnimalController:queueMove(move)
 	self.move_queue:push(move)
 
-	print(move[1], move[2])
-
 	if self.current_path == nil then 
 		self:resetCurrentPath()
 	end
@@ -203,6 +200,8 @@ function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 		local coords = cat:getGamePos()
 		map[coords[2]][coords[1]] = 1
 	end
+
+
 
 	local _grid = grid(map)
 	local finder = pathfinder(_grid, 'ASTAR', walkable)

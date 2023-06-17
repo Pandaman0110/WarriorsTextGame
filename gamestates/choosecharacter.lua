@@ -27,6 +27,10 @@ function choosecharacter:enter(previous, save)
 	else self.currentCat = self.cat_buttons:at(1):getObject() end
 end
 
+function choosecharacter:leave()
+	collectgarbage("collect")
+end
+
 function choosecharacter:update(dt)
 	self:updateSaveText(dt)
 end

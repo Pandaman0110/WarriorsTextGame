@@ -31,8 +31,9 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	local randomcat = self.cat_handler:findNonPlayer()
 
+
 	for cat in self.cat_handler:iterator() do
-		cat:setController(CatController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
+		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
 	end
 
 	local temp1 = {}

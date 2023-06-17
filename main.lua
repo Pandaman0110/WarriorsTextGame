@@ -88,7 +88,7 @@ function love.load()
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(choosecharacter)
+	gamestate.switch(startup)
 
 	love.frames = 0
 	love.frame_timer = 10

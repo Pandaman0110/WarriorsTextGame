@@ -6,7 +6,7 @@ local sqrt2 = math.sqrt(2)
 
 Animal = class("Animal")
 
-local move_timer_val = .7
+local move_timer_val = .5
 
 function Animal:initialize()
 	self.image = image
