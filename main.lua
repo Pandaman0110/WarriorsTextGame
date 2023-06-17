@@ -25,7 +25,7 @@ function love.load()
 	require "misc/data"
 
 	--classes
-	require "classes/CatController"
+	require "classes/AnimalAi"
 	require "classes/CatGenerator"
 	require "classes/CatHandler"
 	require "classes/Cats"
