@@ -22,7 +22,7 @@ function love.load()
 	require	"misc/buttons"
 	require "misc/functions"
 	require "misc/saving"
-	require "misc/data"
+
 
 	--classes
 	require "classes/AnimalAi"
@@ -36,9 +36,9 @@ function love.load()
 	require "classes/GameHandler"
 	require "classes/Handler"
 	require "classes/Location"
+	require "classes/Map"
 	require "classes/Medical"
 	require "classes/Relationship"
-	require "classes/Map"
 	require "classes/Timer"
 	require "classes/Tree"
 
@@ -52,7 +52,9 @@ function love.load()
 	require "gamestates/play"
 	require "gamestates/startup"
 
-
+	--gamedata
+	require "gamedata/data"
+	require "gamedata/behaviordata"
 	---------------------
 
 	osString = love.system.getOS()
@@ -94,6 +96,7 @@ function love.load()
 
 	love.frames = 0
 	love.frame_timer = 10
+
 end
 
 function love.resize(w, h)

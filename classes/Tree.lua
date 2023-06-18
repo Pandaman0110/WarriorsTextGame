@@ -5,26 +5,37 @@ local node_statuses = {
 	running = 4,
 }
 
+--[[
+so this blackboard thing is supposed to be like a place you can post 
+informationn apprently thats pretty cool I guess like other nodes can use it
+
+]]
+
 
 BehaviorTree = class("BehaviorTree")
 
 function BehaviorTree:initialize(tree, agent)
 	self.agent = agent
-	self.tree = self:loadTree(tree, agent)
+	self.blackboard = Array:new()
+	self.root = tree[1][1]
+	self:loadTree(tree, self.root)
 end
 
 -- sp i guess we want it to were we just call root:process()
 
-function BehaviorTree:loadTree(tree, agent)
-
+function BehaviorTree:loadTree(tree, node)
+	if #tree == 
+	for i = 2, #tree do 
+		node:addChild(self:loadTree(tree[1], node))
+	end --tree[1] should be the root node
 end
  
 function BehaviorTree:tick(dt)
-	self.tree.root:process(dt, agent)
+	--self.root:process(dt)
 end
 
-
-
+function BehaviorTree:printTree()
+end
 
 
 Node = class("Node")
@@ -32,11 +43,11 @@ Node = class("Node")
 function Node:initialize()
 	--"success, running, failure"
 	self.status = node_statuses.ready
-
+		self.has_children = false
 	self.init = false
 end
 
-function Node:process() 
+function Node:process(dt)
 	--check a condition or implemement an action here
 
 
@@ -46,9 +57,18 @@ end
 function Node:getStatus()
 	return self.status
 end
+
+function Node:hasChildren()
+	return self.has_children
+end
+
+function Node:print()
+
+end
+
+
+
 -----
-
-
 
 
 
@@ -57,24 +77,27 @@ CompositeNode = class("CompositeNode", Node)
 
 function CompositeNode:initialize(...)
 	Node.initialize(self)
-
-	self.num_children = 0
-
+	self.has_children = true
+	self.children = {}
 	if ... then 
-		for name, child_node in pairs(...) do
-			self.children[name] = child_node
-			self.num_children = self.num_children + 1
+		for i, child_node in ipairs(...) do 
+			self.children[i] = child_node
 		end
 	end
-
-	assert(self.num_children > 0, "must have at least one child")
 end
 
-function CompositeNode:addChild(name, child_node)
-	self.children[name] = child_node
-	self.num_children = self.num_children + 1
+function CompositeNode:addChild(child_node)
+	self.children[#self.children+1] = child_node
 end
 
+function CompositeNode:getChildren()
+
+end
+
+function CompositeNode:print()
+	print(self)
+	print("Number of child nodes: " .. #self.children)
+end
 
 
 --[[
@@ -156,16 +179,16 @@ LeafNode = class("LeafNode", Node)
 function LeafNode:initialize(agent)
 	Node.initialize(self)
 	self.agent = agent
-	self.started = node_statuses.running
+	self.initialize = node_statuses.running
 end
 
 function LeafNode:started()
 	return self.started
 end
 
-function LeafNode:start()
+function LeafNode:init()
 	-- do stuff for the for the first tick
-	self.started = true
+	self.initialized = true
 end
 
 function LeafNode:process()
@@ -173,18 +196,26 @@ function LeafNode:process()
 	return self.status
 end
 
+function LeafNode:getAgent()
+	return self.agent
+end
+
+function LeafNode:setAgent(agent)
+	self.agent = agent
+end
+
 
 
 Failure = class("Failure", LeafNode)
 
-function Failure:initialize()
-	LeafNode.initialize(self)
+function Failure:initialize(agent)
+	LeafNode.initialize(self, agent)
 end
 
 Success = class("Success", LeafNode)
 
-function Success:initialize()
-	LeafNode.initialize(self)
+function Success:initialize(agent)
+	LeafNode.initialize(self, agent)
 end
 
 function Success:process()
@@ -192,7 +223,6 @@ function Success:process()
 end
 
 Wait = class("Wait", LeafNode)
-
 
 
 

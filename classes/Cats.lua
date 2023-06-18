@@ -13,8 +13,9 @@ function Animal:initialize()
 	self.image_num = num
 
 	self.controller = controller
-	self.brain = brain
 	self.body = nil
+
+	--self.behavior = BehaviorTree:new(CatBehaviorTree, self)
 
 	self.game_x = 2
 	self.game_y = 2
@@ -169,6 +170,7 @@ end
 
 
 function Animal:update(dt, cathandler)  --just make sure to update the cats
+	--self.behavior:tick(dt)
 	if self.controller then self.controller:update(dt, cathandler) end
 	self:updatePosition(dt)
 

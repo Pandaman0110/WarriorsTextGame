@@ -1,15 +1,14 @@
 --Action LeafNodes
 
-
-FindPath = class ("FindPath", LeafNode)
+FindPath = class("FindPath", LeafNode)
 
 function FindPath:initialize(agent)
 	LeafNode.initialize(self, agent)
 end
 
-function FindPath:start()
+function FindPath:init()
 	
-	self.started = true
+	self.initialize = true
 end
 
 
@@ -29,12 +28,12 @@ function MoveTo:initialize(agent)
 	LeafNode.initialize(self, agent)
 end
 
-function MoveTo:start()
+function MoveTo:init()
 	self.agent:getController():queueMove(move)
-	self.started = true
+	self.initialize = true
 end
 
-function MoveTo:process(move)
+function MoveTo:process()
 	if self.agent:isAt(move) then self.status = node_states.success
 	--elseif  then fail conditiont
 	else self.status = node_states.running --continue running
@@ -49,13 +48,12 @@ end
 LookAround = class("LookAround", LeafNode)
 
 function LookAround:initialize(agent)
-	LeafNode.initialize(self,agent)
+	LeafNode.initialize(self, agent)
 end
 
-function LookAround:start()
-
-
-	self.started = true
+function LookAround:init()
+	
+	self.initialize = true
 end
 
 function LookAround:process()

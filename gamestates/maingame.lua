@@ -41,6 +41,8 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	randomcat:moveto({5,5})
 	self.game_handler:sendCat(randomcat, "river_clan_base")
+
+	self.behavior_tree = BehaviorTree:new(CatBehaviorTree, randomcat)
 end
 
 function maingame:update(dt)
