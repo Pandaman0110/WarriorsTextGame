@@ -48,7 +48,7 @@ function Clan:getNumWarriors()
 	local num = 0
 	if self.leader then num = num + 1 end
 	if self.deputy then num = num + 1 end
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat ~= nil then
 			if cat:getRole() == "Warrior" then num = num + 1 end
 		end
@@ -61,7 +61,7 @@ function Clan:getWarriors()
 	warriors:insert(self.leader)
 	warriors:insert(self.deputy)
 
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat:getRole() == "Warrior" then
 			warriors:insert(cat)
 		end
@@ -75,7 +75,7 @@ end
 
 function Clan:getApprentices()
 	local apprentices = Array:new()
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat:getRole() == "Warrior" then
 			apprentices:insert(cat)
 		end
@@ -89,7 +89,7 @@ end
 
 function Clan:getKits()
 	local kits = Array:new()
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat:getRole() == "Kit" then
 			kits:insert(cat)
 		end
@@ -103,7 +103,7 @@ end
 
 function Clan:getElders()
 	local elders = Array:new()
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat:getRole() == "Elder" then
 			elders:insert(cat)
 		end
@@ -116,7 +116,7 @@ function Clan:getCats()
 end
 
 function Clan:iterator(index)
-	return self.cats:iterator(index)
+	return i, self.cats:iterator(index)
 end
 
 function Clan:getNumCats()
@@ -153,7 +153,7 @@ function Clan:getCatsRole(...)
 		assert(Roles:contains(role), "invalid role: " .. role)
 	end
 	local cats = Array:new()
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		for i, role in pairs(...) do
 			if cat:getRole() == role then cats:insert(cat) end
 		end
@@ -166,7 +166,7 @@ function Clan:printNumRole(...)
 		assert(Roles:contains(role), "invalid role: " .. role)
 
 		local num_cats = 0
-		for cat in self.cats:iterator() do
+		for i, cat in self.cats:iterator() do
 			if cat:getRole() == role then num_cats = num_cats + 1 end
 		end
 
@@ -181,7 +181,7 @@ function Clan:getNumRole(...)
 		assert(Roles:contains(role), "invalid role: " .. role)
 
 		local num_cats = 0
-		for cat in self.cats:iterator() do
+		for i, cat in self.cats:iterator() do
 			if cat:getRole() == role then num_cats = num_cats + 1 end
 		end
 
@@ -197,9 +197,9 @@ function Clan:insertCat(cat)
 	--turn role into numeric value and calculate
 	local offset = 0
 
-	for role in Roles:iterator() do
+	for i, role in Roles:iterator() do
 		if cat_role == role then
-			for num in self:getNumRole(Roles:getRange(1, Roles:find(role))):iterator() do
+			for i, num in self:getNumRole(Roles:getRange(1, Roles:find(role))):iterator() do
 				offset = offset + num
 			end
 		end
@@ -235,7 +235,7 @@ end
 
 function Clan:getCatsGender(gender)
 	local cats = Array:new()
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat:getGender() == gender then cats:insert(cat) end
 	end
 	return cats
@@ -243,7 +243,7 @@ end
 
 function Clan:getCatsWithKits()
 	local cats = Array:new()
-	for cat in self.cats:iterator() do
+	for i, cat in self.cats:iterator() do
 		if cat:hasKits() then cats:insert(cat) end
 	end
 	return cats

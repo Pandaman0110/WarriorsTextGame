@@ -64,7 +64,7 @@ function CatGenerator:genClan(name)
 		clan:insertCat(self:genRandomClanCat("Elder"))
 	end
 
-	for cat in clan:getCats():iterator() do 
+	for i, cat in clan:getCats():iterator() do 
 		cat:setClan(clan)
 	end
 
@@ -110,7 +110,7 @@ function CatGenerator:genName(role, name)
 end
 
 function CatGenerator:checkDuplicateName(name)
-	for cat in self.generated_cats:iterator() do 
+	for i, cat in self.generated_cats:iterator() do 
 		if cat:getName() == name then 
 
 			return true
@@ -266,13 +266,13 @@ function CatGenerator:getGeneratedCatsIterator(index)
 end
 
 function CatGenerator:printGeneratedClans()
- 	for clan in self.generated_clans:iterator() do
+ 	for i, clan in self.generated_clans:iterator() do
  		print(clan:getName())
  	end
 end
 
 function CatGenerator:printGeneratedCats()
- 	for cat in self.generated_cats:iterator() do
+ 	for i, cat in self.generated_cats:iterator() do
  		print(cat:getName())
  	end
 end

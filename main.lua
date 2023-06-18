@@ -26,6 +26,7 @@ function love.load()
 
 	--classes
 	require "classes/AnimalAi"
+	require "classes/Behavior"
 	require "classes/CatGenerator"
 	require "classes/CatHandler"
 	require "classes/Cats"
@@ -39,6 +40,7 @@ function love.load()
 	require "classes/Relationship"
 	require "classes/Map"
 	require "classes/Timer"
+	require "classes/Tree"
 
 	--gamestates
 	require "gamestates/choosecharacter"

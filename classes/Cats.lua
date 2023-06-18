@@ -68,6 +68,10 @@ function Animal:getPrevPos()
 	return {self.prev_x, self.prev_y}
 end
 
+function Animal:isAt(coords)
+	return self.game_x == coords[1] and self.game_y == coords[2]
+end
+
 function Animal:toReal(coords)
 	local t = {}
 	for i, coord in ipairs(coords) do
@@ -236,7 +240,7 @@ function Animal:pause()
 
 end
 
-function Animal:move(location)
+function Animal:movetolocation(location)
 	self:move(location:getOrigin())
 end
 
@@ -479,7 +483,7 @@ function Cat:setApprentice(apprentice)
 end
 
 function Cat:setKits(kits)
-	for kit in kits:iterator() do
+	for i, kit in kits:iterator() do
 		self.kits:insert(kit)
 	end
 end
@@ -516,13 +520,13 @@ end
 
 --prints the table of cats passed in
 function printCatDetails(cats)
-	for cat in cats:iterator() do
+	for i, cat in cats:iterator() do
 		cat:printDetails()
 	end
 end
 
 function printCatNames(cats)
-	for cat in cats:iterator() do
+	for i, cat in cats:iterator() do
 		cat:printName()
 	end
 end
@@ -530,7 +534,7 @@ end
 function matchCats(t1, t2)
 	local cats = Array:new()
 
-	for cat_1 in t1:iterator() do
+	for i, cat_1 in t1:iterator() do
 		if t2:contains(cat_1) then 
 			cats:insert(cat_1)
 		end
@@ -542,7 +546,7 @@ end
 function removeDuplicateCats(t1, t2)
 	local cats = Array:new()
 
-	for cat_1 in t1:iterator() do
+	for i, cat_1 in t1:iterator() do
 		if not t2:contains(cat_1) then 
 		 	cats:insert(cat_1)
 		end

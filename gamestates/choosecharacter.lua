@@ -100,13 +100,13 @@ function choosecharacter:drawSaveText()
 end
 
 function choosecharacter:drawButtons()
-	for _button in self.buttons:iterator() do
+	for i, _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end
 
 function choosecharacter:drawClanButtons()
-	for _button in self.clan_buttons:iterator() do
+	for i, _button in self.clan_buttons:iterator() do
 		_button:draw()
 	end
 end
@@ -148,9 +148,11 @@ function choosecharacter:drawCurrentCat()
 	love.graphics.print("Mom... "..self.currentCat:getMom():getName(), textX, 232, 0, scX())
 	love.graphics.print("Dad... "..self.currentCat:getDad():getName(), textX, 248, 0, scX())
 
+	-- this is a biug for sure
+
 	if self.currentCat:getRole() == "Kit" then
 		local str = ""
-		for i, kit in ipairs (self.currentCat:getMom():getKits()) do 
+		for i, kit in ipairs (self.currentCat:getMom():getKits()) do --hree
 			local kits = self.currentCat:getMom():getKits()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
@@ -177,7 +179,7 @@ end
 function choosecharacter:catButtons()
 	self.cat_buttons = Array:new()
 	local i = 1
-	for cat in self.catListTables:at(self.catListPage):iterator() do
+	for i, cat in self.catListTables:at(self.catListPage):iterator() do
 		local cat_button
 		if i > 5 then
 			local k = i - 5
@@ -201,7 +203,7 @@ function choosecharacter:drawCatButtons()
 	clearTextSettings()
 
 	local i = 1 
-	for _button in self.cat_buttons:iterator() do
+	for i, _button in self.cat_buttons:iterator() do
 		local cat = _button:getObject()
 		textSettings()
 		love.graphics.setFont(EBG_R_10)
@@ -253,14 +255,14 @@ function choosecharacter:clanButtons(first)
 	self.clans:insert(clan3)
 	self.clans:insert(clan4)
 
-	for clan in self.clans:iterator() do
+	for i, clan in self.clans:iterator() do
 		local _button = ObjectButton:new(32, 32 + 64 * (self.clans:find(clan)-1), clan, clan:getImage(), self.clan_buttons)
 	end
 end
 
 function choosecharacter:checkButtons(mx, my, button)
 	if button == 1 then 
-		for  _button in self.buttons:iterator() do
+		for i, _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then 
 					self.currentCat:setIsPlayer(true) 
@@ -305,12 +307,12 @@ function choosecharacter:checkButtons(mx, my, button)
 				self.currentCat = self.cat_buttons:at(1):getObject()
 			end
 		end
-		for _button in self.cat_buttons:iterator() do
+		for i, _button in self.cat_buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				self.currentCat = _button:getObject()
 			end
 		end
-		for _button in self.clan_buttons:iterator() do
+		for i, _button in self.clan_buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then 
 				local clan = _button:getObject()
 				self.playerClan = clan

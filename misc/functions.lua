@@ -93,7 +93,7 @@ function Array:iterator(index)
 
 	return function()
 		i = i + 1
-		if i <= n then return self.array[i] end 
+		if i <= n then return i, self.array[i] end 
 	end
 end
 
@@ -107,7 +107,7 @@ function Array:riterator(index)
 
 	return function()
 		i = i - 1
-		if i >= 1 then return self.array[i] end 
+		if i >= 1 then return i, self.array[i] end 
 	end
 end
 
@@ -178,7 +178,7 @@ function Array:range(index_1, index_2)
 		local n = index_2
 		return function()
 			i = i - 1
-			if i >= n then return self.array[i] end 
+			if i >= n then return i, self.array[i] end 
 		end
 	end
 end
@@ -380,14 +380,40 @@ function Graph:removeEdge(edge)
 	end
 end
 
-function Graph:touching(vertex)
+function Graph:getEdge(vertex_1, vertex_2)
+	local ver1, ver2 = self.vertexes_1:find(vertex_1), self.vertexes_2:find(vertex_2)
+	assert(ver1 or ver2, "not valid vertexes")
+	return self.graph[ver1][ver2]
+end
+
+function Graph:touching(vertex_1)
 	local ver1 = self.vertexes_1:find(vertex)
+	if ver1 == false then return false end
 	local edges = Array:new()
-	for ver2, edge in pairs(self.graph[ver1]) do
-		if self.graph[ver1][ver2] then edges:insert(edge) end
+	for ver2, vertex_2 in self.vertexes_2:iterator() do
+		print(ver1, ver2)
+		edges:insert(self.graph[ver1][ver2])
 	end
 	return edges
 end
+
+function Graph:outgoing(vertex)
+	local outgoing_vertexes = Array:new()
+	for i, vertex_2 in self.vertexes_2:iterator() do 
+		outgoing_vertexes:insert(self:getEdge(vertex, vertex_2))
+	end
+	return outgoing_vertexes
+end
+
+function Graph:incoming(vertex)
+	local incoming_vertexes = Array:new()
+	for i, vertex_1 in self.vertexes_1:iterator() do 
+		incoming_vertexes:insert(self:getEdge(vertex_1, vertex))
+	end
+	return incoming_vertexes
+end
+
+
 
 StateMachine = class("StateMachine")
 

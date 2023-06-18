@@ -24,15 +24,13 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	-----------------------
 
-
 	self.player:setGamePos({10, 5})
 
 	self:setupHandlers(self.game_clock)
 
 	local randomcat = self.cat_handler:findNonPlayer()
 
-
-	for cat in self.cat_handler:iterator() do
+	for i, cat in self.cat_handler:iterator() do
 		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
 	end
 
@@ -98,7 +96,7 @@ end
 ----------------------------------------------------------------------------------------------
 
 function maingame:drawButtons()
-	for _button in self.buttons:iterator() do
+	for i, _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end
@@ -107,7 +105,7 @@ function maingame:checkButtons(mx, my, button)
 	local button_pressed = false
 
 	if button == 1 then
-		for _button in self.buttons:iterator() do
+		for i, _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				button_pressed = true
 				if _button == self.help_button then 
@@ -129,7 +127,7 @@ function maingame:setupHandlers(clock)
 	self.cat_handler = CatHandler:new(clock)
 	self.decal_handler = DecalHandler:new()
 	self.game_handler = GameHandler:new(clock)
-	for clan in self.clans:iterator() do
+	for i, clan in self.clans:iterator() do
 		self.cat_handler:loadCatsFromClan(clan)
 	end
 end

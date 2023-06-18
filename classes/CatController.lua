@@ -115,7 +115,7 @@ function Moving:calculatePath(start_x, start_y, end_x, end_y)
 		end
 	end
 
-	for cat in self.cat_handler:iterator() do
+	for i,cat in self.cat_handler:iterator() do
 		local coords = cat:getGamePos()
 		map[coords[2]][coords[1]] = 1
 	end

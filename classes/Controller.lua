@@ -50,7 +50,7 @@ end
 
 function Player:mousepressed(tx, ty, button)
 	local message = nil
-	for animal in self.cat_handler:iterator() do
+	for i, animal in self.cat_handler:iterator() do
 		local animal_pos = animal:getGamePos()
 		if animal_pos[1] == tx and animal_pos[2] == ty then		
 			if button == 1 then
@@ -113,8 +113,8 @@ function AnimalController:initialize(animal, cathandler, collision_map)
 	self.move_queue = Queue:new()
 
 	self.current_path = nil
-	self.num_moves = 0
-	self.current_move_num = 1
+	self.num_steps = 0
+	self.current_step_num = 1
 
 	self.path_blocked_timer = path_blocked_timer_val
 	self.path_blocked = false
@@ -129,9 +129,9 @@ function AnimalController:update(dt)
 		end
 	end
 
-	if self.current_move_num <= self.num_moves then
+	if self.current_step_num <= self.num_steps then
 		if self.animal:isMoving() == false then 
-			next_move = self.current_path[self.current_move_num]
+			next_move = self.current_path[self.current_step_num]
 			if self:checkCollision(next_move[1], next_move[2]) == false then
 				self.path_blocked = false
 				self.path_blocked_timer = path_blocked_timer_val
@@ -143,7 +143,7 @@ function AnimalController:update(dt)
 				dest_y = next_move[2] - coords[2]
 
 				self.animal:setDestination(dest_x, dest_y)
-				self.current_move_num = self.current_move_num + 1
+				self.current_step_num = self.current_step_num + 1
 			else 
 				self.path_blocked = true
 			end
@@ -159,21 +159,21 @@ function AnimalController:resetCurrentPath()
 
 		self.current_move_order = self.move_queue:pop()
 		self.current_path = self:calculatePath(coords[1], coords[2], self.current_move_order[1], self.current_move_order[2])
-		self.num_moves = #self.current_path
+		self.num_steps = #self.current_path
 	else 
 		self.current_path = nil
-		self.num_moves = 0
+		self.num_steps = 0
 	end
 
-	self.current_move_num = 1
+	self.current_step_num = 1
 end
 
 function AnimalController:recalculateCurrentPath()
 	local coords = self.animal:getGameDestPos()
 
-	self.current_move_num = 1
+	self.current_step_num = 1
 	self.current_path = self:calculatePath(coords[1], coords[2], self.current_move_order[1], self.current_move_order[2])
-	self.num_moves = #self.current_path
+	self.num_steps = #self.current_path
 end
 
 function AnimalController:queueMove(move)
@@ -196,7 +196,7 @@ function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 		end
 	end
 
-	for cat in self.cat_handler:iterator() do
+	for i, cat in self.cat_handler:iterator() do
 		local coords = cat:getGamePos()
 		map[coords[2]][coords[1]] = 1
 	end

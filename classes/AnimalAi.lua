@@ -1,13 +1,12 @@
 AnimalAi = class("AnimalAi")
 	
-local behavior_tree_timer_val = 1
 
 function AnimalAi:initialize()
-	self.behavior_tree_timer = 1
+	self.behavior_tree = tree
 end
 
 function AnimalAi:update(dt)
-	self.behavior_tree_timer = self.behavior_tree_timer - dt
+	--self.behavior_tree:tick(dt)
 end
 
 

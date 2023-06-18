@@ -32,7 +32,7 @@ end
 
 function mainmenu:checkButtons(mx, my, button)
 	if button == 1 then
-		for _button in self.buttons:iterator() do
+		for i, _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.play_button then gamestate.switch(play) end
 				if _button == self.load_game then gamestate.switch(loadgame) end
@@ -44,7 +44,7 @@ function mainmenu:checkButtons(mx, my, button)
 end
 
 function mainmenu:drawButtons()
-	for _button in self.buttons:iterator() do
+	for i, _button in self.buttons:iterator() do
 		_button:draw()
 	end
 end
