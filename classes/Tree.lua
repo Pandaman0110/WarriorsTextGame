@@ -12,11 +12,29 @@ informationn apprently thats pretty cool I guess like other nodes can use it
 ]]
 
 
+Blackboard = class("Blackboard")
+
+function Blackboard:initialize()
+	self.map = Map:new()
+end
+
+function Blackboard:post(info_name, data)
+	self.map:insert(info_name, data)
+end
+
+function Blackboard:clear()
+	self.map:emtpy()
+end
+
+function Blackboard:getInfo(info_name)
+	return self.map:at(info_name)
+end
+
 BehaviorTree = class("BehaviorTree")
 
 function BehaviorTree:initialize(tree, agent)
 	self.agent = agent
-	self.blackboard = Array:new()
+	self.blackboard = Blackboard:new()
 	self.root = tree[1][1]
 	self:loadTree(tree, self.root)
 end
@@ -24,19 +42,24 @@ end
 -- sp i guess we want it to were we just call root:process()
 
 function BehaviorTree:loadTree(tree, node)
-	if #tree == 
-	for i = 2, #tree do 
-		node:addChild(self:loadTree(tree[1], node))
-	end --tree[1] should be the root node
+	if node:hasChildren() then
+		for i = 2, #tree do 
+			node:addChild(self:loadTree(tree[i], node))
+		end
+	end
 end
  
 function BehaviorTree:tick(dt)
 	--self.root:process(dt)
 end
 
-function BehaviorTree:printTree()
+function BehaviorTree:printTree(node)
+	node:print()
 end
 
+function BehaviorTree:getNode()
+
+end
 
 Node = class("Node")
 
@@ -95,8 +118,10 @@ function CompositeNode:getChildren()
 end
 
 function CompositeNode:print()
-	print(self)
 	print("Number of child nodes: " .. #self.children)
+	for i, child in ipairs(self.children) do
+		child:print()
+	end
 end
 
 
@@ -223,16 +248,4 @@ function Success:process()
 end
 
 Wait = class("Wait", LeafNode)
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -30,11 +30,10 @@ end
 
 function MoveTo:init()
 	self.agent:getController():queueMove(move)
-	self.initialize = true
 end
 
-function MoveTo:process()
-	if self.agent:isAt(move) then self.status = node_states.success
+function MoveTo:process(dt, blackboard)
+	if self.agent:isAt(blackboard:get) then self.status = node_states.success
 	--elseif  then fail conditiont
 	else self.status = node_states.running --continue running
 	end

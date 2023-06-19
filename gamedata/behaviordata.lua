@@ -9,13 +9,12 @@ local nodes = {
 
 
 
-CatBehaviorTree = {	
-	[1] = {nodes["Sequence"], 
-		[2] = {nodes["Sequence"],  
-			nodes["LookAround"]
-		}
-		[3] = {}
 
+CatBehaviorTree = {	
+	{nodes["Sequence"], 
+		{nodes["Sequence"],  
+			nodes["LookAround"], 
+			nodes["MoveTo"], 
 
 		}
 		--[1] = node_dictionary["Sequence"],
