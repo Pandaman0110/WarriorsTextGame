@@ -53,16 +53,16 @@ function MapHandler:initialize(player, cat_handler)
 		[1] = 1
 	}
 	
-	self.collisionmap = {}
+	self.collision_map = {}
 
 	function MapHandler:checkCollision(x, y)
 		return self.collidable[self.tilemap[x][y]]
 	end
 
 	for i = 1, #self.tilemap do
-		self.collisionmap[i] = {}
+		self.collision_map[i] = {}
 		for k = 1, #self.tilemap[i] do
-			self.collisionmap[i][k] = self:checkCollision(i, k)
+			self.collision_map[i][k] = self:checkCollision(i, k)
 		end
 	end
 
@@ -112,7 +112,7 @@ function MapHandler:getRenderMap()
 end
 
 function MapHandler:getCollisionMap()
-	return self.collisionmap
+	return self.collision_map
 end
 
 --use this to draw like blood and shit

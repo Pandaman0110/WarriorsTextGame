@@ -22,33 +22,47 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	self.mouth_button = ImageButton:new(440, 322, Claws[self.player:getClaws()], self.buttons)
 
 
+	self.cat_buttons = Array:new()
+
+	--catbuttons
+	
+
 	-----------------------
 
 	self.player:setGamePos({10, 5})
 
 	self:setupHandlers(self.game_clock)
 
-	local randomcat = self.cat_handler:findNonPlayer()
+	self.randomcat = self.cat_handler:findNonPlayer()
 
 	for i, cat in self.cat_handler:iterator() do
 		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
 	end
 
-	local temp1 = {}
-	local temp2 = {}
+
 
 	self.player:setController(Player:new(self.player, self.cat_handler, self.map_handler:getCollisionMap())) 
 
-	randomcat:moveto({5,5})
-	self.game_handler:sendCat(randomcat, "river_clan_base")
 
-	self.behavior_tree = BehaviorTree:new(CatBehaviorTree, randomcat)
+	self.randomcat:move({5,5})
+	--self.game_handler:sendCat(self.randomcat, "river_clan_base")
+
+	self.player:setBehavior(BehaviorTree:new(CatBehaviorTree, self.player, self.cat_handler, self.game_handler, self.clock))
+
+	--self.randomcat:setBehavior(BehaviorTree:new(CatBehaviorTree, self.randomcat, self.cat_handler, self.game_handler, self.clock))
+
+	local root = self.player:getBehavior():getRoot()
+
+	root:print()
+
+	self.player:getBehavior():tick(.001)
 end
 
 function maingame:update(dt)
 	--love.profiler.start()
 	self.game_clock:update(dt)
 	self.cat_handler:update(dt)
+	self.player:getBehavior():tick(dt)
 	self.decal_handler:update(dt)
 	self.map_handler:update(dt)
 	self.game_handler:update(dt)
@@ -60,6 +74,10 @@ function maingame:keypressed(key)
 	self.mouth_button:setImage(Claws[self.player:getClaws()])
 
 	self.game_clock:keypressed(key)
+
+	if key == "k" then 
+		self.player:getBehavior():tick(.001)
+	end
 end
 
 

@@ -23,14 +23,17 @@ function Timer:initialize(daylength)
 	self.game_minutes_after = 0
 	self.game_hours = 0
 
-	self.game_days_elapsed = 0
+	self.moon_elapsed = 0
+	self.game_day_elapsed = 0
 end
 
 function Timer:update(dt)
 	if self.game_hours >= 24 then 
 		self.real_time = 0
-		self.game_days_elapsed = self.game_days_elapsed + 1  
+		self.game_day_elapsed = self.game_day_elapsed + 1  
 	end
+
+	self.moon_elapsed = math.floor(self.moon_elapsed / 30)
 
 	self.real_time = self.real_time + dt
 	self.game_time = self.real_time * (seconds_in_day / self.seconds_in_game_day)
@@ -101,4 +104,3 @@ function Timer:drawGameTime(x, y)
 	local time = self:getGameTime()
 	love.graphics.print(time, x, y, 0, scX())
 end
-

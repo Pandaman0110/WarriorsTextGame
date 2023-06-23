@@ -10,10 +10,11 @@ function love.load()
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	bitser = require "libraries/bitser"
-	cron = require "libraries/cron"
-	sti = require "libraries/sti"
 	grid = require "libraries/jumper.grid"
 	pathfinder = require "libraries/jumper.pathfinder"
+	bresenham = require "libraries/bresenham"
+	
+
 	love.profiler = require "libraries/profile"
 
 	require "conf" 
@@ -23,10 +24,13 @@ function love.load()
 	require "misc/functions"
 	require "misc/saving"
 
-
 	--classes
+	require "classes/Tree/CompositeNode"
+	require "classes/Tree/DecoratorNode"
+	require "classes/Tree/LeafNode"
+	require "classes/Tree/Node"
+	require "classes/Tree/Tree"
 	require "classes/AnimalAi"
-	require "classes/Behavior"
 	require "classes/CatGenerator"
 	require "classes/CatHandler"
 	require "classes/Cats"
@@ -40,7 +44,6 @@ function love.load()
 	require "classes/Medical"
 	require "classes/Relationship"
 	require "classes/Timer"
-	require "classes/Tree"
 
 	--gamestates
 	require "gamestates/choosecharacter"
@@ -72,21 +75,21 @@ function love.load()
 
 	optionsHandler = OptionsHandler:new()
 
-	---------------------
+	--------------------- 
 
-	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "light")
+	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "normal")
 	EBG_R_10:setFilter("nearest", "nearest")
 
-	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale, "light")
+	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale, "normal")
 	EBG_R_8:setFilter("nearest", "nearest")
 
-	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale, "light")
+	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale, "normal")
 	EBG_R_20:setFilter("nearest", "nearest")
 
-	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale, "light")
+	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale, "normal")
 	EBG_R_25:setFilter("nearest", "nearest")
 
-	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "light")
+	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "normal")
 	EBG_I_Large:setFilter("nearest", "nearest")
 
 	---------------------

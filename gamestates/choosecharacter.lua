@@ -1,4 +1,3 @@
---put a help button somewhere
 local pairs, ipairs = pairs, ipairs
 
 choosecharacter = {}

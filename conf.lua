@@ -9,7 +9,7 @@ function love.conf(t)
 	t.version = "11.4"
 	t.window.display = 1
 	t.window.highdpi = true
-	t.window.vsync = 0
+	t.window.vsync = 1
 
 
 	t.modules.joystick = false

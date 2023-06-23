@@ -7,11 +7,10 @@ function Controller:initialize(animal, cat_handler, collision_map)
 end
 
 function Controller:checkCollision(x, y)
-	if self.collision_map[y][x] == 1 then return true end
-
-	if self.cat_handler:checkTile(x, y) then return true end
-
-	return false
+	assert(x, x .. " must be a number")
+	assert(y, y .. " must be a number")
+	if self.collision_map[y][x] == 1 then return false end
+	return true
 end
 
 function Controller:getAnimal() 
@@ -95,7 +94,7 @@ function Player:update(dt)
 				local dest_x = input_x + coords[1]
 				local dest_y = input_y + coords[2]
 
-				if self:checkCollision(dest_x, dest_y) == false then		
+				if self:checkCollision(dest_x, dest_y) then		
 					self.animal:setDestination(input_x, input_y)
 				end
 			end
@@ -132,7 +131,7 @@ function AnimalController:update(dt)
 	if self.current_step_num <= self.num_steps then
 		if self.animal:isMoving() == false then 
 			next_move = self.current_path[self.current_step_num]
-			if self:checkCollision(next_move[1], next_move[2]) == false then
+			if self:checkCollision(next_move[1], next_move[2]) then
 				self.path_blocked = false
 				self.path_blocked_timer = path_blocked_timer_val
 
@@ -153,8 +152,18 @@ function AnimalController:update(dt)
 	end
 end
 
+
+function AnimalController:queueMove(move)
+	self.move_queue:push(move)
+
+	if self.current_path == nil then 
+		self:resetCurrentPath()
+	end
+end
+
 function AnimalController:resetCurrentPath()
 	if self.move_queue:size() > 0 then
+
 		local coords = self.animal:getGameDestPos()
 
 		self.current_move_order = self.move_queue:pop()
@@ -173,15 +182,8 @@ function AnimalController:recalculateCurrentPath()
 
 	self.current_step_num = 1
 	self.current_path = self:calculatePath(coords[1], coords[2], self.current_move_order[1], self.current_move_order[2])
+
 	self.num_steps = #self.current_path
-end
-
-function AnimalController:queueMove(move)
-	self.move_queue:push(move)
-
-	if self.current_path == nil then 
-		self:resetCurrentPath()
-	end
 end
 
 function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
@@ -189,6 +191,7 @@ function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 
 	local map = {}
 
+	--[[
 	for i = 1, #self.collision_map do
 		map[i] = {}
 		for j = 1, #self.collision_map[1] do
@@ -198,12 +201,13 @@ function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 
 	for i, cat in self.cat_handler:iterator() do
 		local coords = cat:getGamePos()
-		map[coords[2]][coords[1]] = 1
+		map[coords[2][coords[1] = 1
 	end
 
+	]]
 
 
-	local _grid = grid(map)
+	local _grid = grid(self.collision_map)
 	local finder = pathfinder(_grid, 'ASTAR', walkable)
 	finder:setTunnelling(false)
 
