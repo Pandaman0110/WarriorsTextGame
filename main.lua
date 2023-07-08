@@ -1,6 +1,12 @@
 local drawDetails = false
 
 function love.load()
+	local success = love.filesystem.createDirectory("saves")
+	assert(success, "failed to create saves directory")
+	success = love.filesystem.createDirectory("levels")
+	assert(success, "failed to create levels directory")
+
+
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	--third party libraries
