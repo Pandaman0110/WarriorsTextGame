@@ -19,9 +19,10 @@ end
 
 function CatHandler:loadCatsFromClan(clan)
 	for i, cat in clan:getCats():iterator() do
-
 		self:insertCat(cat)
-		if cat:isPlayer() then self.player = cat end
+		if cat:isPlayer() then 
+			self.player = cat
+		end
 	end
 end
 
@@ -93,13 +94,16 @@ function CatHandler:getCats()
 	return self.cats
 end
 
-function CatHandler:getNumCats()
-	return self.cats:size()
+function CatHandler:getPlayer() 
+	return self.player 
 end
 
+function CatHandler:getNumCats() 
+	return self.cats:size() 
+end
 
-function CatHandler:randomCat()
-	return lume.randomchoice(self.cats)
+function CatHandler:randomCat() 
+	return lume.randomchoice(self.cats) 
 end
 
 function CatHandler:printCatDetails()
@@ -114,6 +118,6 @@ function CatHandler:printCatNames()
 	end
 end
 
-function CatHandler:getRelationships()
-	return self.relationships_handler
+function CatHandler:getRelationships() 
+	return self.relationships_handler 
 end

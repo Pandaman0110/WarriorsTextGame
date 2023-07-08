@@ -4,6 +4,10 @@ local pairs, ipairs = pairs, ipairs
 
 local sqrt2 = math.sqrt(2)
 
+
+
+
+
 Animal = class("Animal")
 
 local move_timer_val = .5
@@ -425,8 +429,8 @@ function Cat:setClan(clan)
 	self.clan = clan
 end
 
-function Cat:setIsPlayer(isplayer) 
-	self.is_player = isplayer
+function Cat:setIsPlayer(is_player) 
+	self.is_player = is_player
 end
 
 --put the tile positon here

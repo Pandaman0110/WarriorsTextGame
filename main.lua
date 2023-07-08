@@ -100,6 +100,12 @@ function love.load()
 	love.frames = 0
 	love.frame_timer = 10
 
+	local files = love.filesystem.getDirectoryItems("levels")
+
+	for i, filename in ipairs(files) do
+		print(filename)
+	end
+	
 end
 
 function love.resize(w, h)
@@ -111,7 +117,7 @@ function love.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
 	end
-	if key == "`" then
+	if key == "f3" then
 		drawDetails = not drawDetails
 	end
 end

@@ -264,7 +264,7 @@ function choosecharacter:checkButtons(mx, my, button)
 		for i, _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then 
-					self.currentCat:setIsPlayer(true) 
+					self.currentCat:setIsPlayer(true)
 					gamestate.switch(maingame, self.clans, self.currentCat, self.cat_generator) 
 				end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
@@ -276,9 +276,9 @@ function choosecharacter:checkButtons(mx, my, button)
 					end
 					if self.saving == false and not(self.save_name_button:isEmpty()) then 
 						local saveName = self.save_name_button:getText()
-						self.currentCat:setIsPlayer("true")
+						self.currentCat:setIsPlayer(true)
 						local success = saveHandler:createSave(saveName, 1, self.currentCat,  self.clans)
-						self.currentCat:setIsPlayer("false")
+						self.currentCat:setIsPlayer(false)
 
 						if success == false then
 							self.savingText = "Duplicate name, save not created"

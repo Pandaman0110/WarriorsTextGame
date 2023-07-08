@@ -39,10 +39,18 @@ function FileHandler:getName(item)
 	return false
 end
 
+
+LevelHandler = class("LevelHandler", FileHandler)
+
+function LevelHandler:initialize()
+	FileHandler.initialize(self)
+end
+
+
 OptionsHandler = class("OptionsHandler", FileHandler)
 
 function OptionsHandler:initialize()
-	FileHandler.initialize(self, "options")
+	FileHandler.initialize(self, "options.txt")
 	if not self:checkFileExists() then 
 		self:applyDefaults()
 		self:saveFile()

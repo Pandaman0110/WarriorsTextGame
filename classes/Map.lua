@@ -9,8 +9,10 @@ local display_x = 20
 local display_y = 12
 local display_buffer = 2
 
-function MapHandler:initialize(player, cat_handler)
+function MapHandler:initialize(cat_handler)
 	self.cat_handler = cat_handler
+	self.player = self.cat_handler:getPlayer()
+
 
 	--use this for rendering floor tiles
 	self.tilemap = {
@@ -70,8 +72,6 @@ function MapHandler:initialize(player, cat_handler)
 		love.graphics.newImage("map/grass.png"),
 		love.graphics.newImage("map/wall.png")
 	}
-
-	self.player = player
 
 	self.width = #self.tilemap[1]
 	self.height = #self.tilemap

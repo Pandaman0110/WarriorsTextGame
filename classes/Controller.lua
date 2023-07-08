@@ -7,8 +7,8 @@ function Controller:initialize(animal, cat_handler, collision_map)
 end
 
 function Controller:checkCollision(x, y)
-	assert(x, x .. " must be a number")
-	assert(y, y .. " must be a number")
+	assert(x .. " must be a number")
+	assert(y .. " must be a number")
 	if self.collision_map[y][x] == 1 then return false end
 	return true
 end
