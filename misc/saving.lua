@@ -20,6 +20,14 @@ function FileHandler:saveGame(game_save, save_name)
 	love.filesystem.write(path, game_save)
 end
 
+function FileHandler:deleteLevel(level_name)
+	love.filesystem.remove(levels_directory .. level_name)
+end
+
+function FileHandler:deleteSave(save_name)
+	love.filesystem.remove(save_directory .. save_name)
+end
+
 function FileHandler:loadLevel(level_name)
 	local path = levels_directory .. level_name
 	local level = love.filesystem.read(path)
@@ -36,7 +44,7 @@ function FileHandler:getSaves()
 	local save_names = love.filesystem.getDirectoryItems(save_directory)
 	local saves = Map:new()
 
-	for save_name in pairs(save_names)
+	for save_name in pairs(save_names) do
 		saves:insert(save_name, self:loadSaveGame(save_name))
 	end
 	return saves
@@ -46,7 +54,7 @@ function FileHandler:getLevels()
 	local level_names = love.filesystem.getDirectoryItems(levels_directory)
 	local levels = Map:new()
 
-	for level_name in pairs(level_names)
+	for level_name in pairs(level_names) do
 		levels:insert(level_name, self:loadSaveGame(level_name))
 	end
 	return levels
@@ -96,64 +104,7 @@ function OptionsHandler:apply()
 	self:saveFile()
 end
 
-SaveHandler = class("SaveHandler", FileHandler)
-
-function SaveHandler:initialize()
-	FileHandler.initialize(self, "savegames")
-	self:setupBitser()
-	if self:checkFileExists() then 
-		self:loadData()
-	end
-end
-
-function SaveHandler:getNumSaves()
-	return #self.data 
-end
-
-function SaveHandler:addSave(name, saveData)
-	self.data[name] = saveData
-end
-
-function SaveHandler:loadSave(name)
-	return self.data[name]
-end
-
-function SaveHandler:getSaves()
-	return self.data
-end
-
---maybe where the names are the keys and the save tables are the values
---dump the whole son of a bitch 
-
-function SaveHandler:createSave(name, phase, player, clans, misc)
-	if not self:checkDuplicateSave(name) then return false end
-
-	local saveData = {}
-
-	saveData["Phase"] = phase 
-	saveData["Player"] = player
-	saveData["Clans"] = clans
-
-	self:addSave(name, saveData)
-	self:saveFile()
-
-	return true
-end
-
-function SaveHandler:deleteSave(name)
-	self.data[name] = nil
-	self:saveFile()
-end
-
-
-function SaveHandler:checkDuplicateSave(name)
-	for i, save in pairs(self.data) do
-		if name == i then return false end
-	end
-	return true
-end
-
-function SaveHandler:setupBitser()
+function FileHandler:setupBitser()
 	bitser.registerClass(Cat)
 	bitser.registerClass(Clan)
 	bitser.registerClass(Animal)
@@ -163,7 +114,6 @@ function SaveHandler:setupBitser()
 	bitser.registerClass(Button)
 	bitser.registerClass(Controller) 
 	bitser.registerClass(Player) 
-	--bitser.registerClass(Controller)
 	bitser.registerClass(FileHandler)
 	bitser.registerClass(OptionsHandler)
 	bitser.registerClass(SaveHandler)

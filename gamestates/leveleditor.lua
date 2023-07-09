@@ -7,7 +7,7 @@ function leveleditor:init()
 end
 
 function leveleditor:enter(previous)
-
+	
 end
 
 function leveleditor:keypressed(key)

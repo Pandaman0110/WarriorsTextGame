@@ -81,6 +81,10 @@ function love.load()
 
 	optionsHandler = OptionsHandler:new()
 
+	fileHandler = FileHandler:new()
+
+	fileHandler:setupBitser()
+
 	--------------------- 
 
 	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "normal")
@@ -105,16 +109,6 @@ function love.load()
 
 	love.frames = 0
 	love.frame_timer = 10
-
-	local files = love.filesystem.getDirectoryItems("levels")
-
-	for i, filename in ipairs(files) do
-		print(filename)
-	end
-
-
-	saveHandler:saveLevel("cum", "cum_level.txt")
-	
 end
 
 function love.resize(w, h)
