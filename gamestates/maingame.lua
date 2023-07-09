@@ -1,9 +1,6 @@
 local pairs, ipairs = pairs, ipairs
 
-maingame = {}
-
-function maingame:init()
-end
+maingame = class("maingame")
 
 function maingame:enter(previous, clans, player_cat, cat_generator)
 	--clock, 1440 seconds for each in game day means a minute passes in game for every second in real life
@@ -129,18 +126,16 @@ end
 function maingame:checkButtons(mx, my, button)
 	local button_pressed = false
 
-	if button == 1 then
-		for i, _button in self.buttons:iterator() do
-			if _button:mouseInside(mx, my) == true then
-				button_pressed = true
-				if _button == self.help_button then 
-					self.cat_handler:getPlayer():setIntent("help")
-					print(self.cat_handler:getPlayer():getIntent())
-				 end
-				if _button == self.combat_button then 
-					self.cat_handler:getPlayer():setIntent("combat")
-					print(self.cat_handler:getPlayer():getIntent())
-				end
+	for i, _button in self.buttons:iterator() do
+		if _button:mouseInside(mx, my) == true then
+			button_pressed = true
+			if _button == self.help_button then 
+				self.cat_handler:getPlayer():setIntent("help")
+				print(self.cat_handler:getPlayer():getIntent())
+			end
+			if _button == self.combat_button then 
+				self.cat_handler:getPlayer():setIntent("combat")
+				print(self.cat_handler:getPlayer():getIntent())
 			end
 		end
 	end

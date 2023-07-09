@@ -53,7 +53,7 @@ function love.load()
 
 	--gamestates
 	require "gamestates/choosecharacter"
-	require "gamestates/leveleditor"
+	require "gamestates/editor"
 	require "gamestates/loadgame"
 	require "gamestates/maingame"
 	require "gamestates/mainmenu"
@@ -76,14 +76,11 @@ function love.load()
 	yScale = windowHeight / 360
 
 	---------------------
-	
-	saveHandler = SaveHandler:new()
-
-	optionsHandler = OptionsHandler:new()
 
 	fileHandler = FileHandler:new()
-
 	fileHandler:setupBitser()
+
+	optionsHandler = OptionsHandler:new()
 
 	--------------------- 
 

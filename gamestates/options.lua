@@ -1,6 +1,6 @@
-options = {}
+options = class("options")
 
-function options:init()
+function options:initialize()
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
 
 	self.buttons = Array:new()
@@ -29,12 +29,10 @@ function options:drawButtons()
 end
 
 function options:checkButtons(mx, my, button)
-	if button == 1 then
-		for i, _button in self.buttons:iterator() do
-			if _button:mouseInside(mx, my) == true then
-				if _button == self.stretched_button then optionsHandler:switchStretched() end
-				if _button == self.next_button then gamestate.switch(mainmenu) end
-			end
+	for i, _button in self.buttons:iterator() do
+		if _button:mouseInside(mx, my) == true then
+			if _button == self.stretched_button then optionsHandler:switchStretched() end
+			if _button == self.next_button then gamestate.switch(mainmenu) end
 		end
 	end
 end

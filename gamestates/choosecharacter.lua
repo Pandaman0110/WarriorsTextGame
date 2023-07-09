@@ -1,7 +1,6 @@
 local pairs, ipairs = pairs, ipairs
 
-choosecharacter = {}
-
+choosecharacter = class("choosecharacter")
 
 function choosecharacter:enter(previous, save)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
@@ -12,22 +11,16 @@ function choosecharacter:enter(previous, save)
 
 	self:clanButtons(true)
 
-	self.playerClan = self.clans:at(1) end
+	self.playerClan = self.clans:at(1)
 
 	self:catPagesSetup()
 	self:catButtons()
 
-    self.currentCat = self.cat_buttons:at(1):getObject() end
+    self.currentCat = self.cat_buttons:at(1):getObject()
 end
 
 function choosecharacter:leave()
 	collectgarbage("collect")
-end
-
-function choosecharacter:update(dt)
-end
-
-function choosecharacter:keypressed(key)
 end
 
 function choosecharacter:mousepressed(x, y, button) 
@@ -282,21 +275,4 @@ function choosecharacter:checkButtons(mx, my, button)
 			end
 		end
 	end
-end
-
-function choosecharacter:updateSaveText(dt)
-	if self.savingText == "Duplicate name, save not created" then
-		self.savingTextTimer = self.savingTextTimer + dt
-		if self.savingTextTimer > 3 then 
-			self.savingTextTimer = 0
-			self.savingText = ""
-		end
-	end
-end
-
-function choosecharacter:setupSaving()
-	self.saving = false
-	self.savingText = ""
-	self.savingTextTimer = 0
-	self.save_name_button = TextBox:new(192, 312, 20, nil)
 end

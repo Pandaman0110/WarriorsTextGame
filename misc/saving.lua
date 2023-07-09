@@ -6,26 +6,34 @@ local levels_directory = "levels/"
 function FileHandler:initialize()
 end
 
+function FileHandler:saveOptions()
+	bitser.dumpLoveFile("options.txt", optionsHandler)
+end
+
+function FileHandler:loadOptions()
+	return bitser.loadLoveFile("options.txt")
+end
+
 function FileHandler:saveLevel(level, level_name)
-	local path = levels_directory .. level_name
+	local path = levels_directory .. level_name ".txt"
 	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
 	local level = bitser.dumps(level)
 	love.filesystem.write(path, level)
 end
 
 function FileHandler:saveGame(game_save, save_name)
-	local path = save_directory .. save_name
+	local path = save_directory .. save_name .. ".txt"
 	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
 	local game_save = bitser.dumps(game_save)
 	love.filesystem.write(path, game_save)
 end
 
 function FileHandler:deleteLevel(level_name)
-	love.filesystem.remove(levels_directory .. level_name)
+	love.filesystem.remove(levels_directory .. level_name .. ".txt")
 end
 
 function FileHandler:deleteSave(save_name)
-	love.filesystem.remove(save_directory .. save_name)
+	love.filesystem.remove(save_directory .. save_name .. ".txt")
 end
 
 function FileHandler:loadLevel(level_name)
@@ -61,24 +69,16 @@ function FileHandler:getLevels()
 end
 
 
-LevelHandler = class("LevelHandler", FileHandler)
-
-function LevelHandler:initialize()
-	FileHandler.initialize(self)
-end
-
-
-OptionsHandler = class("OptionsHandler", FileHandler)
+OptionsHandler = class("OptionsHandler")
 
 function OptionsHandler:initialize()
-	FileHandler.initialize(self, "options.txt")
-	if not self:checkFileExists() then 
-		self:applyDefaults()
-		self:saveFile()
-	else 
-		self:loadData()
-		self:apply() 
-	end
+	self.data = fileHandler:loadOptions()
+	--if not self.data then 
+	--	self:applyDefaults()
+	--	self:saveFile()
+	--else 
+	--	self:apply() 
+	--end
 end
 
 function OptionsHandler:isStretched() 
@@ -101,7 +101,7 @@ end
 
 function OptionsHandler:apply()
 	push:switchStretched(self.data["Stretched"])
-	self:saveFile()
+	fileHandler:saveOptions()
 end
 
 function FileHandler:setupBitser()
@@ -116,6 +116,5 @@ function FileHandler:setupBitser()
 	bitser.registerClass(Player) 
 	bitser.registerClass(FileHandler)
 	bitser.registerClass(OptionsHandler)
-	bitser.registerClass(SaveHandler)
 end
 
