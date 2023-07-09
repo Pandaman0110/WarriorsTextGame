@@ -1,42 +1,55 @@
 FileHandler = class("Handler")
 
-function FileHandler:initialize(file)
-	self.file = file
-	self.data = {}
+local save_directory = "saves/"
+local levels_directory = "levels/"
+
+function FileHandler:initialize()
 end
 
-function FileHandler:checkFileExists()
-	if love.filesystem.getInfo(self.file) == nil then return false
-	else return true end
+function FileHandler:saveLevel(level, level_name)
+	local path = levels_directory .. level_name
+	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	local level = bitser.dumps(level)
+	love.filesystem.write(path, level)
 end
 
-function FileHandler:saveFile()
-	bitser.dumpLoveFile(self.file, self.data)
+function FileHandler:saveGame(game_save, save_name)
+	local path = save_directory .. save_name
+	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	local game_save = bitser.dumps(game_save)
+	love.filesystem.write(path, game_save)
 end
 
-function FileHandler:loadFile()
-	local data = bitser.loadLoveFile(self.file)
-	return data
+function FileHandler:loadLevel(level_name)
+	local path = levels_directory .. level_name
+	local level = love.filesystem.read(path)
+	return bitser.loads(level)
 end
 
-function FileHandler:loadData()
-	local data = self:loadFile()
-	for i, item in pairs(data) do
-		self.data[i] = data[i]
+function FileHandler:loadSaveGame(save_name)
+	local path = save_directory .. save_name
+	local game_save = love.filesystem.read(path)
+	return bitser.loads(game_save)
+end
+
+function FileHandler:getSaves()
+	local save_names = love.filesystem.getDirectoryItems(save_directory)
+	local saves = Map:new()
+
+	for save_name in pairs(save_names)
+		saves:insert(save_name, self:loadSaveGame(save_name))
 	end
+	return saves
 end
 
-function FileHandler:print()
-	for i, data in pairs(self.data) do
-		print(i .. " = " .. tostring(data))
-	end
-end
+function FileHandler:getLevels()
+	local level_names = love.filesystem.getDirectoryItems(levels_directory)
+	local levels = Map:new()
 
-function FileHandler:getName(item)
-	for i, _item in pairs (self.data) do
-		if _item == item then return i end
+	for level_name in pairs(level_names)
+		levels:insert(level_name, self:loadSaveGame(level_name))
 	end
-	return false
+	return levels
 end
 
 

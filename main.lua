@@ -111,6 +111,9 @@ function love.load()
 	for i, filename in ipairs(files) do
 		print(filename)
 	end
+
+
+	saveHandler:saveLevel("cum", "cum_level.txt")
 	
 end
 
