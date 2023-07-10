@@ -17,7 +17,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	self.cat_handler:getPlayer():setGamePos({10, 5})
 
-	self.randomcat = self.cat_handler:findNonPlayer()
+	self.randomcat = self.cat_handler:getRandomNonPlayer()
 
 	for i, cat in self.cat_handler:iterator() do
 		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
@@ -147,7 +147,7 @@ function maingame:setupHandlers(clock)
 	for i, clan in self.clans:iterator() do
 		self.cat_handler:loadCatsFromClan(clan)
 	end
-	self.map_handler = MapHandler:new(self.cat_handler)
+	self.map_handler = MapHandler:new(self.cat_handler:getPlayer())
 	self.decal_handler = DecalHandler:new()
 	self.game_handler = GameHandler:new(clock)
 end

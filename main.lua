@@ -5,6 +5,8 @@ function love.load()
 	assert(success, "failed to create saves directory")
 	success = love.filesystem.createDirectory("levels")
 	assert(success, "failed to create levels directory")
+	success = love.filesystem.createDirectory("tilesets")
+	assert(success, "failed to create tilesets directory")
 
 
 	love.graphics.setDefaultFilter("nearest", "nearest")
@@ -60,6 +62,7 @@ function love.load()
 	require "gamestates/options"
 	require "gamestates/play"
 	require "gamestates/startup"
+	require "gamestates/warning"
 
 	--gamedata
 	require "gamedata/data"
@@ -80,24 +83,34 @@ function love.load()
 	fileHandler = FileHandler:new()
 	fileHandler:setupBitser()
 
+
+	local tile_set = {[0] = "grass", "rock"}
+
 	optionsHandler = OptionsHandler:new()
 
 	--------------------- 
 
 	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "normal")
-	EBG_R_10:setFilter("nearest", "nearest")
+	EBG_R_10:setFilter("linear", "nearest")
 
 	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale, "normal")
-	EBG_R_8:setFilter("nearest", "nearest")
+	EBG_R_8:setFilter("linear", "nearest")
 
 	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale, "normal")
-	EBG_R_20:setFilter("nearest", "nearest")
+	EBG_R_20:setFilter("linear", "nearest")
 
 	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale, "normal")
-	EBG_R_25:setFilter("nearest", "nearest")
+	EBG_R_25:setFilter("linear", "nearest")
 
 	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "normal")
-	EBG_I_Large:setFilter("nearest", "nearest")
+	EBG_I_Large:setFilter("linear", "nearest")
+
+	PIXEL_FONT = love.graphics.newFont(20, "mono")
+	PIXEL_FONT:setFilter("linear", "nearest")
+
+	---------------------
+
+	love.mouse.setCursor(love.mouse.newCursor("Images/cursor_catpaw.png", 7, 7))
 
 	---------------------
 

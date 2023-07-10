@@ -2,23 +2,21 @@ FileHandler = class("Handler")
 
 local save_directory = "saves/"
 local levels_directory = "levels/"
+local tile_set_directory = "tilesets/"
 
 function FileHandler:initialize()
 end
 
-function FileHandler:saveOptions()
-	bitser.dumpLoveFile("options.txt", optionsHandler)
-end
-
-function FileHandler:loadOptions()
-	return bitser.loadLoveFile("options.txt")
-end
-
 function FileHandler:saveLevel(level, level_name)
-	local path = levels_directory .. level_name ".txt"
-	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	local path = levels_directory .. level_name .. ".txt"
+	--[[
+	if love.filesystem.getInfo(path) then 
+		return gamestate.push(warning, "attempt to overwrite level at location: " .. path .. "\nContinue?")
+	end 
+	]]
 	local level = bitser.dumps(level)
-	love.filesystem.write(path, level)
+	assert(love.filesystem.write(path, level), "failure to write: " .. level .. " to path: " .. path)
+	print("here")
 end
 
 function FileHandler:saveGame(game_save, save_name)
@@ -26,6 +24,17 @@ function FileHandler:saveGame(game_save, save_name)
 	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
 	local game_save = bitser.dumps(game_save)
 	love.filesystem.write(path, game_save)
+end
+
+function FileHandler:saveOptions()
+	bitser.dumpLoveFile("options.txt", optionsHandler)
+end
+
+function FileHandler:saveTileSet(tile_set, tile_set_name)
+	local path = tile_set_directory .. tile_set_name .. ".txt"
+	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	local tile_set = bitser.dumps(tile_set)
+	love.filesystem.write(path, tile_set)
 end
 
 function FileHandler:deleteLevel(level_name)
@@ -37,15 +46,30 @@ function FileHandler:deleteSave(save_name)
 end
 
 function FileHandler:loadLevel(level_name)
-	local path = levels_directory .. level_name
+	local path = levels_directory .. level_name .. ".txt"
 	local level = love.filesystem.read(path)
 	return bitser.loads(level)
 end
 
 function FileHandler:loadSaveGame(save_name)
-	local path = save_directory .. save_name
+	local path = save_directory .. save_name .. ".txt"
 	local game_save = love.filesystem.read(path)
 	return bitser.loads(game_save)
+end
+
+function FileHandler:loadOptions()
+	return bitser.loadLoveFile("options.txt")
+end
+
+function FileHandler:loadTileSet(tile_set_name)
+	local path = tile_set_directory .. tile_set_name .. ".txt"
+	local tile_names = love.filesystem.read(path)
+	local tile_names = bitser.loads(tile_names)
+	local tile_set = {}
+	for i, tile_name in pairs (tile_names) do
+		tile_set[#tile_set + 1] = love.graphics.newImage("Images/tiles/" .. tile_name .. ".png")
+	end
+	return tile_set
 end
 
 function FileHandler:getSaves()
@@ -67,6 +91,12 @@ function FileHandler:getLevels()
 	end
 	return levels
 end
+
+
+
+
+
+
 
 
 OptionsHandler = class("OptionsHandler")

@@ -415,32 +415,4 @@ end
 
 
 
-StateMachine = class("StateMachine")
 
-function StateMachine:initialize(...)
-	self.states = {}
-	self.state_stack = Stack:new()
-end
-
-function StateMachine:update(dt)
-	self.state_stack:peek():update(dt)
-end
-
-function StateMachine:switchState()
-
-end
-
-function StateMachine:getState()
-
-
-end
-
-State = class("State") 
-
-function State:initialize()
-
-end
-
-function State:update(dt) 
-
-end

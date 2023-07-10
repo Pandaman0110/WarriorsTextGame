@@ -47,21 +47,21 @@ function CatHandler:checkTile(x, y)
 end
 
 
-function CatHandler:findCat(name)
+function CatHandler:getRandomCat(name)
 	for i, cat in self.cats:iterator() do
 		if cat:getName() == name then return cat end
 	end
 end
 
-function CatHandler:findPlayer()
+function CatHandler:getPlayer()
 	for i, cat in self.cats:iterator() do
 		if cat:isPlayer() == true then return cat end
 	end
 end
 
-function CatHandler:findNonPlayer()
+function CatHandler:getRandomNonPlayer()
 	local cat = self.cats:randomChoice()
-	while cat == self:findPlayer() do
+	while cat == self:getPlayer() do
 		cat = self.cats:randomChoice()
 	end
 	return cat 
