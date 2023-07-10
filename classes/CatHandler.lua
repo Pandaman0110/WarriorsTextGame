@@ -19,9 +19,10 @@ end
 
 function CatHandler:loadCatsFromClan(clan)
 	for i, cat in clan:getCats():iterator() do
-
 		self:insertCat(cat)
-		if cat:isPlayer() then self.player = cat end
+		if cat:isPlayer() then 
+			self.player = cat
+		end
 	end
 end
 
@@ -40,29 +41,27 @@ end
 function CatHandler:checkTile(x, y)
 	for i,cat in self.cats:iterator() do
 		local coords_1 = cat:getGamePos()
-		local coords_2 = cat:getGameDestPos()
-		if coords_1[1] == x and coords_1[2] == y then return true end
-		if coords_2[1] == x and coords_2[2] == y then return true end
+		if coords_1[1] == x and coords_1[2] == y then return cat end
 	end
 	return false
 end
 
 
-function CatHandler:findCat(name)
+function CatHandler:getRandomCat(name)
 	for i, cat in self.cats:iterator() do
 		if cat:getName() == name then return cat end
 	end
 end
 
-function CatHandler:findPlayer()
+function CatHandler:getPlayer()
 	for i, cat in self.cats:iterator() do
 		if cat:isPlayer() == true then return cat end
 	end
 end
 
-function CatHandler:findNonPlayer()
+function CatHandler:getRandomNonPlayer()
 	local cat = self.cats:randomChoice()
-	while cat == self:findPlayer() do
+	while cat == self:getPlayer() do
 		cat = self.cats:randomChoice()
 	end
 	return cat 
@@ -95,13 +94,16 @@ function CatHandler:getCats()
 	return self.cats
 end
 
-function CatHandler:getNumCats()
-	return self.cats:size()
+function CatHandler:getPlayer() 
+	return self.player 
 end
 
+function CatHandler:getNumCats() 
+	return self.cats:size() 
+end
 
-function CatHandler:randomCat()
-	return lume.randomchoice(self.cats)
+function CatHandler:randomCat() 
+	return lume.randomchoice(self.cats) 
 end
 
 function CatHandler:printCatDetails()
@@ -116,6 +118,6 @@ function CatHandler:printCatNames()
 	end
 end
 
-function CatHandler:getRelationships()
-	return self.relationships_handler
+function CatHandler:getRelationships() 
+	return self.relationships_handler 
 end

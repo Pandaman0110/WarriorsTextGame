@@ -289,12 +289,7 @@ function Map:iterator()
 	return pairs(self.map)
 end
 
-function Map:checkType(key)
-	assert(type(key) == "string" or type(key) == "number", type(key) .. " is an invalid type")
-end
-
 function Map:at(key)
-	self:checkType(key)
 	return self.map[key]
 end
 
@@ -303,7 +298,6 @@ function Map:get()
 end
 
 function Map:insert(key, value)
-	self:checkType(key)
 	self.map[key] = value 
 end
 
@@ -325,6 +319,12 @@ function Map:size()
 		i = i + 1
 	end
 	return i 
+end
+
+function Map:empty()
+	for key, val in self:iterator() do
+		self.map[key] = nil
+	end
 end
 
 Graph = class("Graph")
@@ -415,32 +415,4 @@ end
 
 
 
-StateMachine = class("StateMachine")
 
-function StateMachine:initialize(...)
-	self.states = {}
-	self.state_stack = Stack:new()
-end
-
-function StateMachine:update(dt)
-	self.state_stack:peek():update(dt)
-end
-
-function StateMachine:switchState()
-
-end
-
-function StateMachine:getState()
-
-
-end
-
-State = class("State") 
-
-function State:initialize()
-
-end
-
-function State:update(dt) 
-
-end

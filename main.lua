@@ -1,6 +1,14 @@
 local drawDetails = false
 
 function love.load()
+	local success = love.filesystem.createDirectory("saves")
+	assert(success, "failed to create saves directory")
+	success = love.filesystem.createDirectory("levels")
+	assert(success, "failed to create levels directory")
+	success = love.filesystem.createDirectory("tilesets")
+	assert(success, "failed to create tilesets directory")
+
+
 	love.graphics.setDefaultFilter("nearest", "nearest")
 
 	--third party libraries
@@ -10,10 +18,11 @@ function love.load()
 	push = require "libraries/push"
 	gamestate = require "libraries/gamestate"
 	bitser = require "libraries/bitser"
-	cron = require "libraries/cron"
-	sti = require "libraries/sti"
 	grid = require "libraries/jumper.grid"
 	pathfinder = require "libraries/jumper.pathfinder"
+	bresenham = require "libraries/bresenham"
+	
+
 	love.profiler = require "libraries/profile"
 
 	require "conf" 
@@ -22,11 +31,14 @@ function love.load()
 	require	"misc/buttons"
 	require "misc/functions"
 	require "misc/saving"
-	require "misc/data"
 
 	--classes
+	require "classes/Tree/CompositeNode"
+	require "classes/Tree/DecoratorNode"
+	require "classes/Tree/LeafNode"
+	require "classes/Tree/Node"
+	require "classes/Tree/Tree"
 	require "classes/AnimalAi"
-	require "classes/Behavior"
 	require "classes/CatGenerator"
 	require "classes/CatHandler"
 	require "classes/Cats"
@@ -36,23 +48,25 @@ function love.load()
 	require "classes/GameHandler"
 	require "classes/Handler"
 	require "classes/Location"
+	require "classes/Map"
 	require "classes/Medical"
 	require "classes/Relationship"
-	require "classes/Map"
 	require "classes/Timer"
-	require "classes/Tree"
 
 	--gamestates
 	require "gamestates/choosecharacter"
-	require "gamestates/leveleditor"
+	require "gamestates/editor"
 	require "gamestates/loadgame"
 	require "gamestates/maingame"
 	require "gamestates/mainmenu"
 	require "gamestates/options"
 	require "gamestates/play"
 	require "gamestates/startup"
+	require "gamestates/warning"
 
-
+	--gamedata
+	require "gamedata/data"
+	require "gamedata/behaviordata"
 	---------------------
 
 	osString = love.system.getOS()
@@ -65,27 +79,38 @@ function love.load()
 	yScale = windowHeight / 360
 
 	---------------------
-	
-	saveHandler = SaveHandler:new()
+
+	fileHandler = FileHandler:new()
+	fileHandler:setupBitser()
+
+
+	local tile_set = {[0] = "grass", "rock"}
 
 	optionsHandler = OptionsHandler:new()
 
+	--------------------- 
+
+	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "normal")
+	EBG_R_10:setFilter("linear", "nearest")
+
+	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale, "normal")
+	EBG_R_8:setFilter("linear", "nearest")
+
+	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale, "normal")
+	EBG_R_20:setFilter("linear", "nearest")
+
+	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale, "normal")
+	EBG_R_25:setFilter("linear", "nearest")
+
+	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "normal")
+	EBG_I_Large:setFilter("linear", "nearest")
+
+	PIXEL_FONT = love.graphics.newFont(20, "mono")
+	PIXEL_FONT:setFilter("linear", "nearest")
+
 	---------------------
 
-	EBG_R_10 = love.graphics.newFont("fonts/EBG_R.ttf", 10 * xScale, "light")
-	EBG_R_10:setFilter("nearest", "nearest")
-
-	EBG_R_8 = love.graphics.newFont("fonts/EBG_R.ttf", 8 * xScale, "light")
-	EBG_R_8:setFilter("nearest", "nearest")
-
-	EBG_R_20 = love.graphics.newFont("fonts/EBG_R.ttf", 20 * xScale, "light")
-	EBG_R_20:setFilter("nearest", "nearest")
-
-	EBG_R_25 = love.graphics.newFont("fonts/EBG_R.ttf", 25 * xScale, "light")
-	EBG_R_25:setFilter("nearest", "nearest")
-
-	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "light")
-	EBG_I_Large:setFilter("nearest", "nearest")
+	love.mouse.setCursor(love.mouse.newCursor("Images/cursor_catpaw.png", 7, 7))
 
 	---------------------
 
@@ -105,7 +130,7 @@ function love.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
 	end
-	if key == "`" then
+	if key == "f3" then
 		drawDetails = not drawDetails
 	end
 end

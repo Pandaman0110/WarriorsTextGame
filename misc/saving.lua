@@ -1,55 +1,114 @@
 FileHandler = class("Handler")
 
-function FileHandler:initialize(file)
-	self.file = file
-	self.data = {}
+local save_directory = "saves/"
+local levels_directory = "levels/"
+local tile_set_directory = "tilesets/"
+
+function FileHandler:initialize()
 end
 
-function FileHandler:checkFileExists()
-	if love.filesystem.getInfo(self.file) == nil then return false
-	else return true end
+function FileHandler:saveLevel(level, level_name)
+	local path = levels_directory .. level_name .. ".txt"
+	--[[
+	if love.filesystem.getInfo(path) then 
+		return gamestate.push(warning, "attempt to overwrite level at location: " .. path .. "\nContinue?")
+	end 
+	]]
+	local level = bitser.dumps(level)
+	assert(love.filesystem.write(path, level), "failure to write: " .. level .. " to path: " .. path)
+	print("here")
 end
 
-function FileHandler:saveFile()
-	bitser.dumpLoveFile(self.file, self.data)
+function FileHandler:saveGame(game_save, save_name)
+	local path = save_directory .. save_name .. ".txt"
+	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	local game_save = bitser.dumps(game_save)
+	love.filesystem.write(path, game_save)
 end
 
-function FileHandler:loadFile()
-	local data = bitser.loadLoveFile(self.file)
-	return data
+function FileHandler:saveOptions()
+	bitser.dumpLoveFile("options.txt", optionsHandler)
 end
 
-function FileHandler:loadData()
-	local data = self:loadFile()
-	for i, item in pairs(data) do
-		self.data[i] = data[i]
+function FileHandler:saveTileSet(tile_set, tile_set_name)
+	local path = tile_set_directory .. tile_set_name .. ".txt"
+	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	local tile_set = bitser.dumps(tile_set)
+	love.filesystem.write(path, tile_set)
+end
+
+function FileHandler:deleteLevel(level_name)
+	love.filesystem.remove(levels_directory .. level_name .. ".txt")
+end
+
+function FileHandler:deleteSave(save_name)
+	love.filesystem.remove(save_directory .. save_name .. ".txt")
+end
+
+function FileHandler:loadLevel(level_name)
+	local path = levels_directory .. level_name .. ".txt"
+	local level = love.filesystem.read(path)
+	return bitser.loads(level)
+end
+
+function FileHandler:loadSaveGame(save_name)
+	local path = save_directory .. save_name .. ".txt"
+	local game_save = love.filesystem.read(path)
+	return bitser.loads(game_save)
+end
+
+function FileHandler:loadOptions()
+	return bitser.loadLoveFile("options.txt")
+end
+
+function FileHandler:loadTileSet(tile_set_name)
+	local path = tile_set_directory .. tile_set_name .. ".txt"
+	local tile_names = love.filesystem.read(path)
+	local tile_names = bitser.loads(tile_names)
+	local tile_set = {}
+	for i, tile_name in pairs (tile_names) do
+		tile_set[#tile_set + 1] = love.graphics.newImage("Images/tiles/" .. tile_name .. ".png")
 	end
+	return tile_set
 end
 
-function FileHandler:print()
-	for i, data in pairs(self.data) do
-		print(i .. " = " .. tostring(data))
+function FileHandler:getSaves()
+	local save_names = love.filesystem.getDirectoryItems(save_directory)
+	local saves = Map:new()
+
+	for save_name in pairs(save_names) do
+		saves:insert(save_name, self:loadSaveGame(save_name))
 	end
+	return saves
 end
 
-function FileHandler:getName(item)
-	for i, _item in pairs (self.data) do
-		if _item == item then return i end
+function FileHandler:getLevels()
+	local level_names = love.filesystem.getDirectoryItems(levels_directory)
+	local levels = Map:new()
+
+	for level_name in pairs(level_names) do
+		levels:insert(level_name, self:loadSaveGame(level_name))
 	end
-	return false
+	return levels
 end
 
-OptionsHandler = class("OptionsHandler", FileHandler)
+
+
+
+
+
+
+
+OptionsHandler = class("OptionsHandler")
 
 function OptionsHandler:initialize()
-	FileHandler.initialize(self, "options")
-	if not self:checkFileExists() then 
-		self:applyDefaults()
-		self:saveFile()
-	else 
-		self:loadData()
-		self:apply() 
-	end
+	self.data = fileHandler:loadOptions()
+	--if not self.data then 
+	--	self:applyDefaults()
+	--	self:saveFile()
+	--else 
+	--	self:apply() 
+	--end
 end
 
 function OptionsHandler:isStretched() 
@@ -72,67 +131,10 @@ end
 
 function OptionsHandler:apply()
 	push:switchStretched(self.data["Stretched"])
-	self:saveFile()
+	fileHandler:saveOptions()
 end
 
-SaveHandler = class("SaveHandler", FileHandler)
-
-function SaveHandler:initialize()
-	FileHandler.initialize(self, "savegames")
-	self:setupBitser()
-	if self:checkFileExists() then 
-		self:loadData()
-	end
-end
-
-function SaveHandler:getNumSaves()
-	return #self.data 
-end
-
-function SaveHandler:addSave(name, saveData)
-	self.data[name] = saveData
-end
-
-function SaveHandler:loadSave(name)
-	return self.data[name]
-end
-
-function SaveHandler:getSaves()
-	return self.data
-end
-
---maybe where the names are the keys and the save tables are the values
---dump the whole son of a bitch 
-
-function SaveHandler:createSave(name, phase, player, clans, misc)
-	if not self:checkDuplicateSave(name) then return false end
-
-	local saveData = {}
-
-	saveData["Phase"] = phase 
-	saveData["Player"] = player
-	saveData["Clans"] = clans
-
-	self:addSave(name, saveData)
-	self:saveFile()
-
-	return true
-end
-
-function SaveHandler:deleteSave(name)
-	self.data[name] = nil
-	self:saveFile()
-end
-
-
-function SaveHandler:checkDuplicateSave(name)
-	for i, save in pairs(self.data) do
-		if name == i then return false end
-	end
-	return true
-end
-
-function SaveHandler:setupBitser()
+function FileHandler:setupBitser()
 	bitser.registerClass(Cat)
 	bitser.registerClass(Clan)
 	bitser.registerClass(Animal)
@@ -142,9 +144,7 @@ function SaveHandler:setupBitser()
 	bitser.registerClass(Button)
 	bitser.registerClass(Controller) 
 	bitser.registerClass(Player) 
-	--bitser.registerClass(Controller)
 	bitser.registerClass(FileHandler)
 	bitser.registerClass(OptionsHandler)
-	bitser.registerClass(SaveHandler)
 end
 

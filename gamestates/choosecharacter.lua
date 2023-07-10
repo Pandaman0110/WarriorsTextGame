@@ -1,8 +1,6 @@
---put a help button somewhere
 local pairs, ipairs = pairs, ipairs
 
-choosecharacter = {}
-
+choosecharacter = class("choosecharacter")
 
 function choosecharacter:enter(previous, save)
 	self.background = love.graphics.newImage("Images/BrownBackground.png")
@@ -10,33 +8,19 @@ function choosecharacter:enter(previous, save)
 	self.cat_generator = CatGenerator:new()
 
 	self:createButtons()
-	self:setupSaving()
-
-	self.save = nil
-	if save then self.save = save end
 
 	self:clanButtons(true)
 
-	if self.save ~= nil then self.playerClan = self.save["Player"]:getClan()
-	else self.playerClan = self.clans:at(1) end
+	self.playerClan = self.clans:at(1)
 
 	self:catPagesSetup()
 	self:catButtons()
 
-	if self.save ~= nil then self.currentCat = self.save["Player"]
-	else self.currentCat = self.cat_buttons:at(1):getObject() end
+    self.currentCat = self.cat_buttons:at(1):getObject()
 end
 
 function choosecharacter:leave()
 	collectgarbage("collect")
-end
-
-function choosecharacter:update(dt)
-	self:updateSaveText(dt)
-end
-
-function choosecharacter:keypressed(key)
-	self.save_name_button:keypressed(key)
 end
 
 function choosecharacter:mousepressed(x, y, button) 
@@ -50,7 +34,6 @@ function choosecharacter:draw()
 
 	self:drawButtons()
 	self:drawClanButtons()
-	self:drawSaveText()
 	self:drawCurrentClan()
 	self:drawCurrentCat()
 	self:drawCatButtons()
@@ -66,10 +49,7 @@ function choosecharacter:createButtons()
 	self.left_button = ImageButton:new(392, 32, love.graphics.newImage("Images/ArrowLeft.png"), self.buttons)
 	self.right_button = ImageButton:new(576, 32, love.graphics.newImage("Images/ArrowRight.png"), self.buttons)
 
-	if not save then  
-		self.save_button = ImageButton:new(112, 312, love.graphics.newImage("Images/save.png"), self.buttons)
-		self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
-	end
+	self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
 end
 
 function choosecharacter:catPagesSetup()
@@ -87,16 +67,6 @@ function choosecharacter:catPagesSetup()
 			self.catListTables:at(i):insert(self.playerClan:getCats():at(k+(10*(i-1))))
 		end
 	end
-end
-
-function choosecharacter:drawSaveText()
-	textSettings()
-	love.graphics.setFont(EBG_R_10)	
-
-	love.graphics.print(self.savingText, 192, 296, 0, scX())
-	self.save_name_button:draw()
-
-	clearTextSettings()
 end
 
 function choosecharacter:drawButtons()
@@ -225,30 +195,10 @@ function choosecharacter:clanButtons(first)
 	self.clans = Array:new()
 	self.clan_buttons = Array:new()
 
-	local clan1
-	local clan2
-	local clan3
-	local clan4
-
-	if first then 
-		if not self.save then 
-			clan1 = self.cat_generator:genClan("Thunder")
-			clan2 = self.cat_generator:genClan("River")
-			clan3 = self.cat_generator:genClan("Wind")
-			clan4 = self.cat_generator:genClan("Shadow")
-		elseif self.save then
-			clan1 = self.save["Clans"][1]
-			clan2 = self.save["Clans"][2]
-			clan3 = self.save["Clans"][3]
-			clan4 = self.save["Clans"][4]
-		end
-	else
-		clan1 = self.cat_generator:genClan("Thunder")
-		clan2 = self.cat_generator:genClan("River")
-		clan3 = self.cat_generator:genClan("Wind")
-		clan4 = self.cat_generator:genClan("Shadow")
-	end
-
+	local clan1 = self.cat_generator:genClan("Thunder")
+	local clan2 = self.cat_generator:genClan("River")
+	local clan3 = self.cat_generator:genClan("Wind")
+	local clan4 = self.cat_generator:genClan("Shadow")
 
 	self.clans:insert(clan1)
 	self.clans:insert(clan2)
@@ -265,21 +215,23 @@ function choosecharacter:checkButtons(mx, my, button)
 		for i, _button in self.buttons:iterator() do
 			if _button:mouseInside(mx, my) == true then
 				if _button == self.next_button then 
-					self.currentCat:setIsPlayer(true) 
+					self.currentCat:setIsPlayer(true)
 					gamestate.switch(maingame, self.clans, self.currentCat, self.cat_generator) 
 				end
 				if _button == self.back_button then gamestate.switch(mainmenu) end
+				--[[
 				if _button == self.save_button then 
 					self.saving = not(self.saving)
 					if self.saving == true then 
 						self.save_name_button:activate()
 						self.savingText = "Enter save name, and press save button again to save"
 					end
+					
 					if self.saving == false and not(self.save_name_button:isEmpty()) then 
 						local saveName = self.save_name_button:getText()
-						self.currentCat:setIsPlayer("true")
-						local success = saveHandler:createSave(saveName, 1, self.currentCat,  self.clans)
-						self.currentCat:setIsPlayer("false")
+						self.currentCat:setIsPlayer(true)
+						local success = fileHandler:saveGame(saveName, 1, self.currentCat,  self.clans)
+						self.currentCat:setIsPlayer(false)
 
 						if success == false then
 							self.savingText = "Duplicate name, save not created"
@@ -290,6 +242,7 @@ function choosecharacter:checkButtons(mx, my, button)
 						end
 					end
 				end
+				]]
 				if _button == self.regen_button then
 					self:clanButtons()
 					self.playerClan = self.clans:at(1)
@@ -322,21 +275,4 @@ function choosecharacter:checkButtons(mx, my, button)
 			end
 		end
 	end
-end
-
-function choosecharacter:updateSaveText(dt)
-	if self.savingText == "Duplicate name, save not created" then
-		self.savingTextTimer = self.savingTextTimer + dt
-		if self.savingTextTimer > 3 then 
-			self.savingTextTimer = 0
-			self.savingText = ""
-		end
-	end
-end
-
-function choosecharacter:setupSaving()
-	self.saving = false
-	self.savingText = ""
-	self.savingTextTimer = 0
-	self.save_name_button = TextBox:new(192, 312, 20, nil)
 end

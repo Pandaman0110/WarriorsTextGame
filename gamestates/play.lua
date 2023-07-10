@@ -1,6 +1,6 @@
-play = {}
+play = class("play")
 
-function play:init()
+function play:initialize()
 	self.background = love.graphics.newImage("Images/Mapwarriors.png")
 
 	self.buttons = Array:new()
@@ -24,13 +24,11 @@ end
 ----------------------------------------------------------------------------------------------
 
 function play:checkButtons(mx, my, button)
-	if button == 1 then
-		for i, _button in self.buttons:iterator() do
-			if _button:mouseInside(mx, my) == true then
-				if _button == self.new_button then gamestate.switch(choosecharacter) end
-				if _button == self.load_button then gamestate.switch(loadgame) end
-				if _button == self.back_button then gamestate.switch(mainmenu) end
-			end
+	for i, _button in self.buttons:iterator() do
+		if _button:mouseInside(mx, my) == true then
+			if _button == self.new_button then gamestate.switch(choosecharacter) end
+			if _button == self.load_button then gamestate.switch(loadgame) end
+			if _button == self.back_button then gamestate.switch(mainmenu) end
 		end
 	end
 end

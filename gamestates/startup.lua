@@ -1,6 +1,6 @@
-startup = {}
+startup = class("startup")
 
-function startup:init()
+function startup:initialize()
 	self.randQuotes = shuffle(Quotes)
 	self.quote = next(self.randQuotes)
 end

@@ -4,6 +4,10 @@ local pairs, ipairs = pairs, ipairs
 
 local sqrt2 = math.sqrt(2)
 
+
+
+
+
 Animal = class("Animal")
 
 local move_timer_val = .5
@@ -13,8 +17,10 @@ function Animal:initialize()
 	self.image_num = num
 
 	self.controller = controller
-	self.brain = brain
 	self.body = nil
+	self.behavior_tree = behavior_tree
+
+	--self.behavior = BehaviorTree:new(CatBehaviorTree, self)
 
 	self.game_x = 2
 	self.game_y = 2
@@ -28,6 +34,8 @@ function Animal:initialize()
 	self.dest_y = self.real_y * 32 - 32
 
 	self.speed = 1.0
+	self.vision_distance = 4
+
 	self.move_timer = move_timer_val
 	self.t = 0
 	self.is_moving = false
@@ -46,6 +54,10 @@ end
 
 function Animal:getController()
 	return self.controller
+end
+
+function Animal:getBehavior()
+	return self.behavior_tree
 end
 
 function Animal:getRealPos()
@@ -69,7 +81,7 @@ function Animal:getPrevPos()
 end
 
 function Animal:isAt(coords)
-	return self.game_x == coords[1] and self.game_y == coords[2]
+	return (self.game_x == coords[1] and self.game_y == coords[2])
 end
 
 function Animal:toReal(coords)
@@ -106,6 +118,10 @@ function Animal:getSpeed()
 	return self.speed
 end
 
+function Animal:getVisionDistance()
+	return self.vision_distance
+end
+
 function Animal:getClaws()
 	return self.claws 
 end
@@ -124,6 +140,10 @@ end
 
 function Animal:setBody(body)
 	self.body = body
+end
+
+function Animal:setBehavior(tree)
+	self.behavior_tree = tree
 end
 
 function Animal:setController(controller)
@@ -169,8 +189,9 @@ end
 
 
 function Animal:update(dt, cathandler)  --just make sure to update the cats
-	if self.controller then self.controller:update(dt, cathandler) end
+	if self.behavior then self.behavior_tree:tick(dt) end
 	self:updatePosition(dt)
+	self.controller:update(dt, cathandler)
 
 	if self.attacking == true then
 		self.attackTimer = 1 / self.combatSpeed
@@ -180,7 +201,6 @@ function Animal:update(dt, cathandler)  --just make sure to update the cats
 			self.attacking = false 
 		end
 	end
-
 
 	--update controllers last
 end
@@ -228,20 +248,8 @@ end
 
 --moves the animal to coords 
 
-function Animal:moveto(move)
-	self.controller:queueMove(move) --from here switch the state of the ai 
-end
-
-function Animal:idle()
-	self.controller:idle()
-end
-
-function Animal:pause()
-
-end
-
-function Animal:movetolocation(location)
-	self:move(location:getOrigin())
+function Animal:move(coords)
+	self.controller:queueMove(coords)
 end
 
 
@@ -421,8 +429,8 @@ function Cat:setClan(clan)
 	self.clan = clan
 end
 
-function Cat:setIsPlayer(isplayer) 
-	self.is_player = isplayer
+function Cat:setIsPlayer(is_player) 
+	self.is_player = is_player
 end
 
 --put the tile positon here
