@@ -23,8 +23,8 @@ function MapHandler:initialize(camera, map, tile_set)
 	else self.tile_set = fileHandler:loadTileSet("default") end
 
 	self.collidable = {
-		[0] = 0,
-		[1] = 1
+		[1] = 0,
+		[2] = 1
 	}
 	
 	self.collision_map = {}
@@ -40,10 +40,7 @@ function MapHandler:initialize(camera, map, tile_set)
 		end
 	end
 
-	--self.tile_set = {
-	--	love.graphics.newImage("map/grass.png"),
-	--	love.graphics.newImage("map/wall.png")
-	--}
+	self.nav_map = NavigationMesh:new(self.collision_map)
 
 	self.width = #self.tile_map[1]
 	self.height = #self.tile_map
@@ -63,8 +60,7 @@ function MapHandler:draw()
 	for y = 1, (display_y + display_buffer) do
 		for x = 1, (display_x + display_buffer) do
 			if y + firstTile_y >= 1 and y+firstTile_y <= self.height and x + firstTile_x >= 1 and x + firstTile_x <= self.width then 
-				love.graphics.draw(self.tile_set[self.tile_map[y + firstTile_y][x + firstTile_x] + 1], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
-				
+				love.graphics.draw(self.tile_set[self.tile_map[y + firstTile_y][x + firstTile_x]], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
 			end
 		end
 	end
@@ -80,11 +76,33 @@ function MapHandler:update(dt)
 end
 
 function MapHandler:getRenderMap()
-	return self.tile_map 
+	local map = {}
+
+	for i = 1, #self.tile_map do
+		map[i] = {}
+		for k = 1, #self.tile_map[1] do
+			map[i][k] = self.tile_map[i][k]
+		end
+	end
+
+	return map
+end
+
+function MapHandler:getNavMap()
+	return self.nav_map
 end
 
 function MapHandler:getCollisionMap()
-	return self.collision_map
+	local map = {}
+
+	for i = 1, #self.collision_map do
+		map[i] = {}
+		for k = 1, #self.collision_map[1] do
+			map[i][k] = self.collision_map[i][k]
+		end
+	end
+
+	return map
 end
 
 function MapHandler:validPos(tile_x, tile_y)
@@ -95,6 +113,16 @@ end
 
 function MapHandler:changeTile(tx, ty, new_tile)
 	self.tile_map[ty][tx] = new_tile
+end
+
+function MapHandler:getTile(tx, ty)
+	--print(self.tile_map[ty][tx])
+	for i = 1, #self.tile_map do
+		for k = 1, #self.tile_map[1] do
+			if k == tx and i == ty then print(self.tile_map[i][k]) end
+		end
+	end
+	return self.tile_map[ty][tx]
 end
 
 
@@ -185,4 +213,45 @@ function Decal:printDetails()
 	print("Image - Decal "..self.imagenum)
 	print("Pos - ("..self.x..", "..self.y..")")
 	print("Time left - "..self.timer)
+end
+
+
+
+
+NavigationMesh = class("NavigationMesh")
+
+function NavigationMesh:initialize(collision_map)
+	self.collision_map = collision_map
+	self.rectangles = AdjacencyList:new()
+end
+
+function NavigationMesh:addRectangle(rectangle)
+	self.rectangles:addVertex(rectangle)
+end
+
+function NavigationMesh:connectRectangles(rect_1, rect_2)
+	self.rectangles:addEdge(rect_1, rect_2, 1)
+end
+
+function NavigationMesh:findRectangle(tx, ty)
+	for rectangle, adjacent_rectangles in self.rectangles:iterator() do
+
+	end
+end
+
+
+
+Rectangle = class("Rectangle")
+
+function Rectangle:initialize(x, y, w, h)
+	self.x = x 
+	self.y = y 
+	self.w = w 
+	self.h = h
+end
+
+function Rectangle:inside(x, y)
+	if x > self.x and x < (self.x + self.w) and y > self.y and y < (self.y + self.h) then
+		return true
+	else return false end
 end

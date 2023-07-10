@@ -4,6 +4,8 @@ local sqrt2 = math.sqrt(2)
 
 LevelEditorController = class("LevelEditorController")
 
+
+
 function LevelEditorController:initialize()
 	self.speed = 300
 	self.x = 0
@@ -18,6 +20,11 @@ function LevelEditorController:keypressed(key)
 	if key == "r" then
 		self.speed = self.speed + 300
 		if self.speed > 600 then self.speed = 300 end
+	end
+	if key == "z" then
+		if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
+			return "undo"
+		end
 	end
 end
 
@@ -41,6 +48,8 @@ function LevelEditorController:update(dt)
 		vx = vx / sqrt2
 		vy = vy / sqrt2
 	end
+
+
 
 	self.x = self.x + vx * self.speed * dt
 	self.y = self.y + vy * self.speed * dt

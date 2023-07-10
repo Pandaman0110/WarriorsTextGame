@@ -119,6 +119,31 @@ function love.load()
 
 	love.frames = 0
 	love.frame_timer = 10
+
+
+	--[[
+	local map = fileHandler:loadLevel("OldForest")
+
+	for i = 1, #map do
+		for k = 1, #map[1] do
+			map[i][k] = map[i][k] + -1
+		end
+	end
+
+	for i = 1, #map do
+		for k = 1, #map[1] do
+			print(map[i][k])
+		end
+	end
+
+	fileHandler:saveLevel(map, "OldForest")
+
+	local t = fileHandler:loadTileSet("default")
+	]]
+
+	local map = fileHandler:loadLevel("OldForest")
+	local tile_set = fileHandler:loadTileSet("default")
+	print(map[3][3])
 end
 
 function love.resize(w, h)

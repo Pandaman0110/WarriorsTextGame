@@ -9,6 +9,8 @@ function editor:initialize()
 
 	self.file_button = ImageButton:new(0, 0, love.graphics.newImage("Images/filebutton.png"), self.buttons)
 	self.exit_button = ImageButton:new(640 - 64, 0, love.graphics.newImage("Images/exit.png"), self.buttons)
+
+	self.save_warning = love.graphics.newImage("Images/unsaved_changes.png")
 end
 
 function editor:enter(previous)
@@ -17,8 +19,25 @@ function editor:enter(previous)
 	self.controller = LevelEditorController:new()
 	self.map_handler = MapHandler:new(self.controller)
 
+	self.orignal_map = self.map_handler:getRenderMap()
+
+
+	self.unsaved_changes = false
+	self.changes = Stack:new()
+
 	self:setTileButtons("default")
 end
+
+function editor:resume(action)
+	if action == "saved" then 
+		self.unsaved_changes = false 
+		self.orignal_map = self.map_handler:getRenderMap()
+		self.changes:clear()
+		print(self.changes:size())
+	end
+end
+
+
 
 function editor:update(dt)
 	local camera_pos = self.controller:getRealPos()
@@ -26,19 +45,30 @@ function editor:update(dt)
 	self.mouse_x, self.mouse_y = love.mouse.getPosition()
 	self.mouse_x, self.mouse_y = push:toGame(self.mouse_x, self.mouse_y)
 
-	print(self.mouse_x, self.mouse_y)
-
 	if mx == nil or my == nil then mx, my = -999999, -9999999 end
 	local tx, ty = math.floor((self.mouse_x+camera_pos[1]+16)/32 - 9), math.floor((self.mouse_y+camera_pos[2]-8)/32 - 4)
+ 
 
-	--print(self.map_handler:validPos(tx, ty))
-	print(tx, ty)
-	if self.map_handler:validPos(tx, ty) and self.current_tile and love.mouse.isDown(1) then 
-		self.map_handler:changeTile(tx, ty, self.current_tile-1)
+	if self.map_handler:validPos(tx, ty) and self.current_tile and love.mouse.isDown(1) and self.map_handler:getTile(tx, ty) ~= self.current_tile then 
+		self.unsaved_changes = true
+		local tile = self.map_handler:getTile(tx, ty)
+
+		print("current",self.current_tile)
+
+		if self.changes:size() == 0 then 
+			self.changes:push({tx, ty, tile})
+		elseif self.changes:peek()[1] ~= tx and self.changes:peek()[2] ~= ty then
+			self.changes:push({tx, ty, tile})
+		end
+
+		self.map_handler:changeTile(tx, ty, self.current_tile)
 	end
 
 	self.controller:update(dt)
 	self.map_handler:update(dt)
+
+
+	if self.changes:size() == 0 then self.unsaved_changes = false end
 end
 
 function editor:draw()
@@ -50,10 +80,20 @@ function editor:draw()
 		local image = self.tile_buttons:at(self.current_tile):getImage()
 		love.graphics.draw(image, self.mouse_x - image:getWidth() / 2, self.mouse_y - image:getHeight() / 2)
 	end
+
+	if self.unsaved_changes then 
+		love.graphics.draw(self.save_warning, 640 - 48, 48)
+	end
 end
 
 function editor:keypressed(key)
-	self.controller:keypressed(key)
+	local action = self.controller:keypressed(key)
+	if action == "undo" then
+		local change = self.changes:pop()
+		print(change[1], change[2], change[3])
+		if change then self.map_handler:changeTile(change[1], change[2], change[3])
+		end
+	end
 end
 
 function editor:mousepressed(x, y, button)
@@ -148,6 +188,7 @@ function filemenu:enter(from, map_handler)
 end
 
 function filemenu:mousepressed(x, y, button)
+	local action = nil
 	local mx, my = push:toGame(x, y)
 
 	for i, _button in self.buttons:iterator() do
@@ -160,11 +201,12 @@ function filemenu:mousepressed(x, y, button)
 			end
 			if _button == self.save_button then
 				fileHandler:saveLevel(self.map_handler:getRenderMap(), "OldForest")
+				action = "saved"
 			end
 		end
 	end
 
-	gamestate.pop()
+	return gamestate.pop(action)
 end
 
 function filemenu:update(dt)

@@ -16,7 +16,6 @@ function FileHandler:saveLevel(level, level_name)
 	]]
 	local level = bitser.dumps(level)
 	assert(love.filesystem.write(path, level), "failure to write: " .. level .. " to path: " .. path)
-	print("here")
 end
 
 function FileHandler:saveGame(game_save, save_name)

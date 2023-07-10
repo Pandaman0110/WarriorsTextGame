@@ -3,6 +3,14 @@ local ipairs, pairs = ipairs, pairs
 
 local string_meta = getmetatable('')
 
+function compareRect(rect1, rect2)
+	if rect1[1] ~= rect2[1] then return false end
+	if rect1[2] ~= rect2[2] then return false end
+	if rect1[3] ~= rect2[3] then return false end
+	if rect1[4] ~= rect2[4] then return false end
+	return true
+end
+
 function string_meta:__index( key )
     local val = string[ key ]
     if ( val ) then
@@ -240,7 +248,7 @@ function Stack:pop()
 end
 
 function Stack:push(item)
-	table.insert(self.array, #self.array, item)
+	table.insert(self.array, #self.array + 1, item)
 end
 
 function Stack:insert(item, index)
@@ -330,8 +338,8 @@ end
 Graph = class("Graph")
 
 function Graph:initialize(size)
-	self.vertexes_1 = Array:new()
-	self.vertexes_2 = Array:new()
+	self.vertices_1 = Array:new()
+	self.vertices_2 = Array:new()
 	self.graph = {}
 	for i = 1, size do
 		self.graph[i] = {}
@@ -362,13 +370,13 @@ function Graph:iterator()
 end
 
 function Graph:addVertexPair(vertex_1, vertex_2)
-	if not self.vertexes_1:contains(vertex_1) then self.vertexes_1:insert(vertex_1) end
-	if not self.vertexes_2:contains(vertex_2) then self.vertexes_2:insert(vertex_2) end
+	if not self.vertices_1:contains(vertex_1) then self.vertices_1:insert(vertex_1) end
+	if not self.vertices_2:contains(vertex_2) then self.vertices_2:insert(vertex_2) end
 end
 
 function Graph:addEdge(vertex_1, vertex_2, edge)
 	self:addVertexPair(vertex_1, vertex_2)
-	local ver1, ver2 = self.vertexes_1:find(vertex_1), self.vertexes_2:find(vertex_2)
+	local ver1, ver2 = self.vertices_1:find(vertex_1), self.vertices_2:find(vertex_2)
 	self.graph[ver1][ver2] = edge
 end 
 
@@ -381,16 +389,16 @@ function Graph:removeEdge(edge)
 end
 
 function Graph:getEdge(vertex_1, vertex_2)
-	local ver1, ver2 = self.vertexes_1:find(vertex_1), self.vertexes_2:find(vertex_2)
-	assert(ver1 or ver2, "not valid vertexes")
+	local ver1, ver2 = self.vertices_1:find(vertex_1), self.vertices_2:find(vertex_2)
+	assert(ver1 or ver2, "not valid vertices")
 	return self.graph[ver1][ver2]
 end
 
 function Graph:touching(vertex_1)
-	local ver1 = self.vertexes_1:find(vertex)
+	local ver1 = self.vertices_1:find(vertex)
 	if ver1 == false then return false end
 	local edges = Array:new()
-	for ver2, vertex_2 in self.vertexes_2:iterator() do
+	for ver2, vertex_2 in self.vertices_2:iterator() do
 		print(ver1, ver2)
 		edges:insert(self.graph[ver1][ver2])
 	end
@@ -398,21 +406,85 @@ function Graph:touching(vertex_1)
 end
 
 function Graph:outgoing(vertex)
-	local outgoing_vertexes = Array:new()
-	for i, vertex_2 in self.vertexes_2:iterator() do 
-		outgoing_vertexes:insert(self:getEdge(vertex, vertex_2))
+	local outgoing_vertices = Array:new()
+	for i, vertex_2 in self.vertices_2:iterator() do 
+		outgoing_vertices:insert(self:getEdge(vertex, vertex_2))
 	end
-	return outgoing_vertexes
+	return outgoing_vertices
 end
 
 function Graph:incoming(vertex)
-	local incoming_vertexes = Array:new()
-	for i, vertex_1 in self.vertexes_1:iterator() do 
-		incoming_vertexes:insert(self:getEdge(vertex_1, vertex))
+	local incoming_vertices = Array:new()
+	for i, vertex_1 in self.vertices_1:iterator() do 
+		incoming_vertices:insert(self:getEdge(vertex_1, vertex))
 	end
-	return incoming_vertexes
+	return incoming_vertices
 end
 
 
+AdjacencyList = class("AdjacencyList")
 
+function AdjacencyList:initialize()
+	self.vertices = Map:new()
+end
+--[[
+function Graph:iterator()
+	local i = 0
+	local graph_size = table.getn(self.graph)
 
+	for vertex_1, row in pairs(self.graph) do
+		local j = 0
+		for vertex_2, edge in pairs(row) do
+			local row_size = table.getn(row)
+			return function()
+				j = j + 1
+				if j <= row_size then return row[j] end
+			end
+		end
+		return function()
+			i = i + 1
+			if i <= graph_size then return self.graph[i] end
+		end
+	end
+end
+]]
+function AdjacencyList:iterator()
+	return self.vertices:iterator()
+end
+
+function AdjacencyList:adjacent(vertex_1, vertex_2)
+
+end
+
+function AdjacencyList:neighbors(vertex_1)
+
+end
+
+function AdjacencyList:addVertex(vertex)
+	self.vertices:insert(vertex, Array:new())
+	if self.vertices:at(vertex) then
+		print(vertex)
+	end
+end
+
+function AdjacencyList:removeVertex(vertex)
+
+end
+
+function AdjacencyList:addEdge(vertex_1, vertex_2, edge)
+	print(vertex_1)
+	self.vertices:at(vertex_1):insert(edge)
+	self.vertices:at(vertex_2):insert(edge)
+end
+
+function AdjacencyList:removeEdge(vertex_1, vertex_2)
+
+end
+
+function AdjacencyList:getVertex(vertex)
+
+end
+
+function AdjacencyList:setVertex(vertex, value)
+
+end

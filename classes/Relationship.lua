@@ -42,9 +42,7 @@ function RelationshipHandler:getCatRelationships(cat)
 end
 
 function RelationshipHandler:printCatRelationships(cat)
-	print(cat)
 	for i, relationship in self.relationships_graph:touching(cat):iterator() do
-		print(i, relationship)
 		relationship:printDetails()
 	end
 end
