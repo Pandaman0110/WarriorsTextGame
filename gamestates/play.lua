@@ -26,9 +26,9 @@ end
 function play:checkButtons(mx, my, button)
 	for i, _button in self.buttons:iterator() do
 		if _button:mouseInside(mx, my) == true then
-			if _button == self.new_button then gamestate.switch(choosecharacter) end
-			if _button == self.load_button then gamestate.switch(loadgame) end
-			if _button == self.back_button then gamestate.switch(mainmenu) end
+			if _button == self.new_button then return gamestate.switch(choosecharacter) end
+			if _button == self.load_button then return gamestate.switch(loadgame) end
+			if _button == self.back_button then return gamestate.switch(mainmenu) end
 		end
 	end
 end

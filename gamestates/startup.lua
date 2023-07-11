@@ -8,7 +8,7 @@ end
 
 function startup:keypressed(key)
 	if key == "space" then
-		gamestate.switch(mainmenu)
+		return gamestate.switch(mainmenu)
 	end
 	self:changeQuotes(key)
 end

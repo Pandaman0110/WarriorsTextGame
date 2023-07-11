@@ -26,9 +26,15 @@ function LevelEditorController:keypressed(key)
 			return "undo"
 		end
 	end
+	if key == "s" then 
+		if love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl") then
+			return "save"
+		end
+	end
 end
 
 function LevelEditorController:update(dt)
+
 	local vx, vy = 0, 0
 
 	if love.keyboard.isDown("d") then 
@@ -37,7 +43,7 @@ function LevelEditorController:update(dt)
 	if love.keyboard.isDown("a") then
 		vx = vx - 1
 	end
-	if love.keyboard.isDown("s") then
+	if love.keyboard.isDown("s") and not (love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")) then
 		vy = vy + 1
 	end
 	if love.keyboard.isDown("w") then

@@ -75,7 +75,8 @@ function FileHandler:getSaves()
 	local save_names = love.filesystem.getDirectoryItems(save_directory)
 	local saves = Map:new()
 
-	for save_name in pairs(save_names) do
+	for i, save_name in pairs(save_names) do
+		save_name = string.gsub(save_name, "%.txt", "")
 		saves:insert(save_name, self:loadSaveGame(save_name))
 	end
 	return saves
@@ -85,10 +86,18 @@ function FileHandler:getLevels()
 	local level_names = love.filesystem.getDirectoryItems(levels_directory)
 	local levels = Map:new()
 
-	for level_name in pairs(level_names) do
-		levels:insert(level_name, self:loadSaveGame(level_name))
+	for i, level_name in pairs(level_names) do
+		level_name = string.gsub(level_name, "%.txt", "")
+		levels:insert(level_name, self:loadLevel(level_name))
 	end
+
 	return levels
+end
+
+function FileHandler:getRandomLevel()
+	local name = love.filesystem.getDirectoryItems(levels_directory)[1]
+	name = string.gsub(name, "%.txt", "")
+	return name
 end
 
 

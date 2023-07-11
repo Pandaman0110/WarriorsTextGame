@@ -4,6 +4,7 @@ editor = class("editor")
 
 local tile_path = "Map/"
 
+
 function editor:initialize()
 	self.buttons = Array:new()
 
@@ -16,8 +17,14 @@ end
 function editor:enter(previous)
 	self.current_tile = nil
 
+	if fileHandler:getLevels():size() == 0 then 
+		self:createPlaceHolderLevel()
+	end
+
+	self.current_map = fileHandler:getRandomLevel()
+
 	self.controller = LevelEditorController:new()
-	self.map_handler = MapHandler:new(self.controller)
+	self.map_handler = MapHandler:new(self.controller, fileHandler:getRandomLevel())
 
 	self.orignal_map = self.map_handler:getRenderMap()
 
@@ -28,15 +35,12 @@ function editor:enter(previous)
 	self:setTileButtons("default")
 end
 
-function editor:resume(action)
-	if action == "saved" then 
-		self.unsaved_changes = false 
-		self.orignal_map = self.map_handler:getRenderMap()
-		self.changes:clear()
-		print(self.changes:size())
+function editor:resume(state, action, map)
+	self.current_map = map
+	if action == "saved" or "load" then 
+		self:loadMap()
 	end
 end
-
 
 
 function editor:update(dt)
@@ -47,17 +51,15 @@ function editor:update(dt)
 
 	if mx == nil or my == nil then mx, my = -999999, -9999999 end
 	local tx, ty = math.floor((self.mouse_x+camera_pos[1]+16)/32 - 9), math.floor((self.mouse_y+camera_pos[2]-8)/32 - 4)
- 
+
 
 	if self.map_handler:validPos(tx, ty) and self.current_tile and love.mouse.isDown(1) and self.map_handler:getTile(tx, ty) ~= self.current_tile then 
 		self.unsaved_changes = true
 		local tile = self.map_handler:getTile(tx, ty)
 
-		print("current",self.current_tile)
-
 		if self.changes:size() == 0 then 
 			self.changes:push({tx, ty, tile})
-		elseif self.changes:peek()[1] ~= tx and self.changes:peek()[2] ~= ty then
+		elseif self.changes:peek()[1] ~= tx or self.changes:peek()[2] ~= ty then
 			self.changes:push({tx, ty, tile})
 		end
 
@@ -90,9 +92,12 @@ function editor:keypressed(key)
 	local action = self.controller:keypressed(key)
 	if action == "undo" then
 		local change = self.changes:pop()
-		print(change[1], change[2], change[3])
 		if change then self.map_handler:changeTile(change[1], change[2], change[3])
 		end
+	end
+	if action == "save" then 
+		fileHandler:saveLevel(self.map_handler:getRenderMap(), self.current_map)
+		self:loadMap(self.current_map)
 	end
 end
 
@@ -123,17 +128,9 @@ function editor:mousepressed(x, y, button)
 		end
 	end
 
-	if self.map_handler:validPos(tx, ty) and self.current_tile then 
-		self.map_handler:changeTile(tx, ty, self.current_tile-1)
-	end
-
 	::continue::
 end
 
-function editor:mousereleased(x, y, button)
-
-
-end
 
 function editor:drawButtons()
 	for i, button in self.buttons:iterator() do
@@ -172,6 +169,26 @@ function editor:setTileButtons(tile_set)
 end
 
 
+function editor:loadMap()
+	self.unsaved_changes = false 
+	self.map_handler = MapHandler:new(self.controller, self.current_map)
+	self.orignal_map = self.map_handler:getRenderMap()
+	self.changes:clear()
+end
+
+function editor:createPlaceHolderLevel()
+	local level = {}
+	for i = 1, 32 do 
+		level[i] = {}
+		for k = 1, 32 do
+			level[i][k] = 1
+		end
+	end
+
+	fileHandler:saveLevel(level, "default")
+end
+
+
 filemenu = class("filemenu")
 
 function filemenu:initialize()
@@ -185,32 +202,39 @@ end
 function filemenu:enter(from, map_handler)
 	self.from = from
 	self.map_handler = map_handler
+	self.action = nil
 end
 
 function filemenu:mousepressed(x, y, button)
-	local action = nil
+	self.action = nil
 	local mx, my = push:toGame(x, y)
 
 	for i, _button in self.buttons:iterator() do
 		if _button:mouseInside(mx, my) == true then
 			if _button == self.new_button then
-				
+				self.action = "new"
+				return gamestate.push(newmap)
 			end
 			if _button == self.load_button then
-
+				self.action = "load"
+				return gamestate.push(loadmap)
 			end
 			if _button == self.save_button then
 				fileHandler:saveLevel(self.map_handler:getRenderMap(), "OldForest")
-				action = "saved"
+				self.action = "saved"
 			end
 		end
 	end
 
-	return gamestate.pop(action)
+	return gamestate.pop(self.action)
+end
+
+function filemenu:resume(state, map)
+	return gamestate.pop(self.action, map)
 end
 
 function filemenu:update(dt)
-	--self.from:update(dt)
+	self.from:update(dt)
 end
 
 function filemenu:draw()
@@ -218,4 +242,145 @@ function filemenu:draw()
 	for i, button in self.buttons:iterator() do
 		button:draw()
 	end
+end
+
+
+newmap = class("newmap")
+
+function newmap:initialize()
+	self.brown_box = love.graphics.newImage("Images/large_brown_box.png")
+	self.new_level = love.graphics.newImage("Images/new_level.png")
+
+	self.buttons = Array:new()
+
+	self.cancel_button = ImageButton:new(640/2 - 80, 272, love.graphics.newImage("Images/cancel.png"), self.buttons)
+	self.create_button = ImageButton:new(640/2 + 16, 272, love.graphics.newImage("Images/create.png"), self.buttons)
+
+	self.text_boxes = Array:new() 
+
+	self.level_name_box = TextBox:new(640/2 - 4, 164, 64, 16, 15, self.text_boxes)
+	self.level_width_box = TextBox:new(640/2 - 4, 200, 64, 16, 4, self.text_boxes)
+	self.level_height_box = TextBox:new(640/2 - 4, 232, 64, 16, 4, self.text_boxes)
+
+	self.active_text_box = 1
+end
+
+function newmap:enter(from)
+	self.from = from
+end
+
+function newmap:keypressed(key)
+	if self.active_text_box then self.text_boxes:at(self.active_text_box):keypressed(key) end
+
+	if key == "return" then
+		self.active_text_box = self.active_text_box + 1
+		if self.active_text_box == 4 then self.active_text_box = nil end
+	end
+end
+
+function newmap:mousepressed(x, y, button)
+	local mx, my = push:toGame(x, y)
+
+	self.active_text_box = nil
+
+	for i, _button in self.buttons:iterator() do
+		if _button:mouseInside(mx, my) then
+			if _button == self.cancel_button then return gamestate.pop() end
+			if _button == self.create_button then 
+				local level = {}
+				local w, h = self.level_width_box:getText(), self.level_height_box:getText()
+				for i = 1, h do 
+					level[i] = {}
+					for k = 1, w do
+						level[i][k] = 1
+					end
+				end
+				fileHandler:saveLevel(level, self.level_name_box:getText())
+				return gamestate.pop()
+			end
+		end
+	end
+
+	for i, text_box in self.text_boxes:iterator() do
+		if text_box:mouseInside(mx, my) then self.active_text_box = self.text_boxes:find(text_box) end
+	end
+end
+
+
+function newmap:draw()
+	self.from:draw()
+
+	love.graphics.draw(self.brown_box, 640/2 - self.brown_box:getWidth()/2, 360/2 - self.brown_box:getHeight()/2)
+	love.graphics.draw(self.new_level, 640/2 - self.new_level:getWidth()/2, 80)
+
+	for i, button in self.buttons:iterator() do
+		button:draw()
+	end
+
+	love.graphics.setFont(EBG_R_10)
+
+	love.graphics.print("Name: ", 640/2 - 48, 164, 0, scX())
+	love.graphics.print("Width: ", 640/2 - 48, 200, 0, scX())
+	love.graphics.print("Height: ", 640/2 - 48, 232, 0, scX())
+
+
+	for i, text_box in self.text_boxes:iterator() do
+		text_box:draw()
+	end
+
+	clearTextSettings()
+end
+
+
+
+
+
+
+loadmap = class("loadmap")
+
+function loadmap:initialize()
+	self.brown_box = love.graphics.newImage("Images/medium_brown_box.png")
+
+end
+
+function loadmap:enter(from)
+	self.from = from
+
+	self.levels = Array:new()
+	local level_names = fileHandler:getLevels()
+
+	local i = 0
+	for level_name, level in level_names:iterator() do
+		Text:new(level_name, 72, 8 +  16 * i, 32, 16, self.levels)
+		i = i + 1
+	end
+end
+
+function loadmap:mousepressed(x, y, button) 
+	local mx, my = push:toGame(x, y)
+
+	for i, text in self.levels:iterator() do
+		local level_name = text:getText()
+		if text:mouseInside(mx, my) then
+			return gamestate.pop(level_name)
+		end
+	end
+
+	if not mouseInside(mx, my, 128, 0, self.brown_box:getWidth(), self.brown_box:getWidth()) then 
+		return gamestate.pop(level_name)
+	end
+end
+
+function loadmap:draw()
+	self.from:draw()
+
+	love.graphics.draw(self.brown_box, 64, 0)
+
+	love.graphics.setFont(EBG_R_10)
+
+	for i, level_name in self.levels:iterator() do
+		level_name:draw()
+	end
+
+	clearTextSettings()
 end

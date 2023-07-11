@@ -82,39 +82,57 @@ function ObjectButton:setObject(object)
 	self.object = object 
 end
 
+
+
+
 TextBox = class("TextBox")
 
-function TextBox:initialize(x, y, limit)
+function TextBox:initialize(x, y, w, h, limit, t, align)
 	self.x = x 
 	self.y = y
-	self.active = false
 	self.text = ""
 	self.limit = limit
+	self.w = w
+	self.h = h
+	self.align = align
+	t:insert(self)
+	self.blink = 2
 end
 
 function TextBox:draw()
-	if self.active == true then 
-		love.graphics.print(self.text, self.x, self.y, 0, scX())
+	love.graphics.setColor(232/255, 209/255, 169/255)
+	love.graphics.rectangle("fill", self.x - 4, self.y, self.w, self.h)
+	love.graphics.setColor(255, 255, 255)
+
+	textSettings()
+
+	if self.align then 
+		love.graphics.printf(self.text, self.x, self.y, windowWidth, self.align, 0, scX())
+	else 
+		love.graphics.print(self.text, self.x, self.y, 0, scX()) 
 	end
+
+	clearTextSettings()
 end
 
 -- handles some basic text functions
 function TextBox:keypressed(key)
-	if self.active == true then
-		if key == "backspace" and self.text ~= "" then
-      	 	local byteoffset = utf8.offset(self.text, -1)
-      	 	self.text = (string.sub(self.text, 1, byteoffset - 1))
-      	elseif key == "space" then
-      		self.text = self.text .. "_"
-      	elseif key == "return" or key == "lshift" or key == "rshift" or key == "lalt" or key == "ralt" or key == "backspace" then
-   		elseif #self.text <= self.limit then 
-    		self.text = self.text .. key
-   		end
+	if key == "backspace" and self.text ~= "" then
+       	local byteoffset = utf8.offset(self.text, -1)
+       	self.text = (string.sub(self.text, 1, byteoffset - 1))
+    elseif key == "space" then
+      	self.text = self.text .. "_"
+    elseif key == "return" or key == "lshift" or key == "rshift" or key == "lalt" or key == "ralt" or key == "backspace" then
+   	elseif #self.text <= self.limit then 
+   		if love.keyboard.isDown("lshift") then 
+			key = string.gsub(key, "^%l", string.upper(key))
+		end
+    	self.text = self.text .. key
    	end
 end
 
-function TextBox:isActive()
-	return self.active
+function TextBox:mouseInside(mx, my)
+	return mouseInside(mx, my, self.x, self.y, self.w, self.h)
 end
 
 function TextBox:getText()
@@ -122,26 +140,41 @@ function TextBox:getText()
 end
 
 function TextBox:isEmpty()
-	local empty = false
-	if self.text == "" then empty = true end
-	return empty
+	if self.text == "" then return true else return false end
 end
 
-function TextBox:activate()
-	self.active = true
-end
-
-function TextBox:deactivate()
-	self.active = false
+function TextBox:clear()
 	self.text = ""
 end
 
---this should be used when typing text
-function TextBox:addText(text)
-	self.text = self.text .. text
-end
-
---when u just wanna set the text
 function TextBox:setText(text)
 	self.text = text
+end
+
+Text = class("Text")
+
+function Text:initialize(text, x, y, w, h, t, align)
+	self.text = text
+	self.x = x
+	self.y = y
+	self.w = w
+	self.h = h
+	t:insert(self)
+	self.align = align
+end
+
+function Text:mouseInside(mx, my)
+	return mouseInside(mx, my, self.x, self.y, self.w, self.h)
+end
+
+function Text:getText()
+	return self.text
+end
+
+function Text:draw()
+	if self.align then 
+		love.graphics.printf(self.text, self.x, self.y, windowWidth, self.align, 0, scX())
+	else 
+		love.graphics.print(self.text, self.x, self.y, 0, scX()) 
+	end
 end

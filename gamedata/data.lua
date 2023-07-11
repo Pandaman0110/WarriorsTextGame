@@ -547,6 +547,8 @@ Claws = {
 	["unsheathed"] = love.graphics.newImage("Images/mouthbox_paw_unsheathed.png")
 }
 
+TextLine = love.graphics.newImage("Images/text_line.png")
+
 SaveNumbers = {
 	love.graphics.newImage("Images/numbers/one.png"),
 	love.graphics.newImage("Images/numbers/two.png"),

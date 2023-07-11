@@ -1,4 +1,5 @@
 local drawDetails = false
+local console = false
 
 function love.load()
 	local success = love.filesystem.createDirectory("saves")
@@ -105,7 +106,7 @@ function love.load()
 	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "normal")
 	EBG_I_Large:setFilter("linear", "nearest")
 
-	PIXEL_FONT = love.graphics.newFont(20, "mono")
+	PIXEL_FONT = love.graphics.newFont("fonts/EBG_I.ttf", 7, "mono")
 	PIXEL_FONT:setFilter("linear", "nearest")
 
 	---------------------
@@ -141,9 +142,6 @@ function love.load()
 	local t = fileHandler:loadTileSet("default")
 	]]
 
-	local map = fileHandler:loadLevel("OldForest")
-	local tile_set = fileHandler:loadTileSet("default")
-	print(map[3][3])
 end
 
 function love.resize(w, h)
@@ -155,8 +153,11 @@ function love.keypressed(key)
 	if key == "escape" then 
 		love.event.quit()
 	end
-	if key == "f3" then
+	if key == "f2" then
 		drawDetails = not drawDetails
+	end
+	if key == "`" then
+		console = not drawDetails
 	end
 end
 

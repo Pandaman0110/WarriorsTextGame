@@ -30,10 +30,10 @@ end
 function mainmenu:checkButtons(mx, my, button)
 	for i, _button in self.buttons:iterator() do
 		if _button:mouseInside(mx, my) == true then
-			if _button == self.play_button then gamestate.switch(play) end
-			if _button == self.load_game then gamestate.switch(loadgame) end
-			if _button == self.options_button then gamestate.switch(options) end
-			if _button == self.editor_button then gamestate.switch(editor) end
+			if _button == self.play_button then return gamestate.switch(play) end
+			if _button == self.load_game then return gamestate.switch(loadgame) end
+			if _button == self.options_button then return gamestate.switch(options) end
+			if _button == self.editor_button then return gamestate.switch(editor) end
 		end
 	end
 end

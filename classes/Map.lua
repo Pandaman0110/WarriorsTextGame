@@ -16,7 +16,7 @@ local display_buffer = 2
 function MapHandler:initialize(camera, map, tile_set)
 	self.camera = camera
 
-	if map then self.tile_map = map
+	if map then self.tile_map = fileHandler:loadLevel(map)
 	else self.tile_map = fileHandler:loadLevel("OldForest") end
 
 	if tile_set then self.tile_set = tile_set
@@ -116,12 +116,6 @@ function MapHandler:changeTile(tx, ty, new_tile)
 end
 
 function MapHandler:getTile(tx, ty)
-	--print(self.tile_map[ty][tx])
-	for i = 1, #self.tile_map do
-		for k = 1, #self.tile_map[1] do
-			if k == tx and i == ty then print(self.tile_map[i][k]) end
-		end
-	end
 	return self.tile_map[ty][tx]
 end
 
