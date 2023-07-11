@@ -105,6 +105,14 @@ function MapHandler:getCollisionMap()
 	return map
 end
 
+function MapHandler:getWidth()
+	return self.width
+end
+
+function MapHandler:getHeight()
+	return self.height
+end
+
 function MapHandler:validPos(tile_x, tile_y)
 	if tile_x > #self.tile_map[1] or tile_x <= 0 then return false end
 	if tile_y > #self.tile_map or tile_y <= 0 then return false end

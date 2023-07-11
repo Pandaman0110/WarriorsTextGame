@@ -7,6 +7,10 @@ local tile_set_directory = "tilesets/"
 function FileHandler:initialize()
 end
 
+function FileHandler:delete(dir)
+	love.filesystem.remove(dir)
+end
+
 function FileHandler:saveLevel(level, level_name)
 	local path = levels_directory .. level_name .. ".txt"
 	--[[

@@ -56,7 +56,12 @@ function love.load()
 
 	--gamestates
 	require "gamestates/choosecharacter"
-	require "gamestates/editor"
+	require "gamestates/leveleditor/leveleditor"
+	require "gamestates/leveleditor/leveleditor_editmenu"
+	require "gamestates/leveleditor/leveleditor_filemenu"
+	require "gamestates/leveleditor/leveleditor_loadmap"
+	require "gamestates/leveleditor/leveleditor_newmap"
+	require "gamestates/leveleditor/leveleditor_properties"
 	require "gamestates/loadgame"
 	require "gamestates/maingame"
 	require "gamestates/mainmenu"

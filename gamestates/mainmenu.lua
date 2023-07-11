@@ -33,7 +33,7 @@ function mainmenu:checkButtons(mx, my, button)
 			if _button == self.play_button then return gamestate.switch(play) end
 			if _button == self.load_game then return gamestate.switch(loadgame) end
 			if _button == self.options_button then return gamestate.switch(options) end
-			if _button == self.editor_button then return gamestate.switch(editor) end
+			if _button == self.editor_button then return gamestate.switch(leveleditor) end
 		end
 	end
 end

@@ -8,7 +8,7 @@ to-do
 
 10. allow the player to map keys 
 11. do the assert thingy everywhere and be proffesional
-
+12. fix and organize all the images
 
 
 check out moonscript and raylib 
