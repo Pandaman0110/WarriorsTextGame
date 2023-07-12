@@ -11,21 +11,24 @@ function FileHandler:delete(dir)
 	love.filesystem.remove(dir)
 end
 
-function FileHandler:saveLevel(level, level_name)
+function FileHandler:saveLevel(map, row_width, column_width, level_name)
 	local path = levels_directory .. level_name .. ".txt"
 	--[[
 	if love.filesystem.getInfo(path) then 
 		return gamestate.push(warning, "attempt to overwrite level at location: " .. path .. "\nContinue?")
 	end 
 	]]
-	local level = bitser.dumps(level)
-	assert(love.filesystem.write(path, level), "failure to write: " .. level .. " to path: " .. path)
+	local level = {map, row_width, column_width}
+
+	level = bitser.dumps(level)
+
+	assert(love.filesystem.write(path, level), "failure to write: " .. level_name .. " to path: " .. path)
 end
 
 function FileHandler:saveGame(game_save, save_name)
 	local path = save_directory .. save_name .. ".txt"
 	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
-	local game_save = bitser.dumps(game_save)
+	game_save = bitser.dumps(game_save)
 	love.filesystem.write(path, game_save)
 end
 
@@ -35,7 +38,7 @@ end
 
 function FileHandler:saveTileSet(tile_set, tile_set_name)
 	local path = tile_set_directory .. tile_set_name .. ".txt"
-	assert(not love.filesystem.getInfo(path), "attempt to overwrite level at location: " .. path) 
+	assert(not love.filesystem.getInfo(path), "attempt to overwrite tileset at location: " .. path) 
 	local tile_set = bitser.dumps(tile_set)
 	love.filesystem.write(path, tile_set)
 end
@@ -51,7 +54,8 @@ end
 function FileHandler:loadLevel(level_name)
 	local path = levels_directory .. level_name .. ".txt"
 	local level = love.filesystem.read(path)
-	return bitser.loads(level)
+	level = bitser.loads(level)
+	return level[1], level[2], level[3]
 end
 
 function FileHandler:loadSaveGame(save_name)
@@ -92,7 +96,8 @@ function FileHandler:getLevels()
 
 	for i, level_name in pairs(level_names) do
 		level_name = string.gsub(level_name, "%.txt", "")
-		levels:insert(level_name, self:loadLevel(level_name))
+		local level, width, height = self:loadLevel(level_name)
+		levels:insert(level_name, {level, width, height})
 	end
 
 	return levels
@@ -100,7 +105,7 @@ end
 
 function FileHandler:getRandomLevel()
 	local name = love.filesystem.getDirectoryItems(levels_directory)[1]
-	name = string.gsub(name, "%.txt", "")
+	if name then name = string.gsub(name, "%.txt", "") end
 	return name
 end
 

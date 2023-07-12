@@ -20,12 +20,12 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	self.randomcat = self.cat_handler:getRandomNonPlayer()
 
 	for i, cat in self.cat_handler:iterator() do
-		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
+		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap(), self.map_handler:getWidth()))
 	end
 
 
 
-	self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler:getCollisionMap())) 
+	self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler:getCollisionMap(), self.map_handler:getWidth())) 
 
 
 	self.randomcat:move({5,5})

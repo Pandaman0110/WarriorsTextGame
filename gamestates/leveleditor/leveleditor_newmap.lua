@@ -4,6 +4,11 @@ local tile_path = "Map/"
 leveleditor_newmap = class("leveleditor_newmap")
 
 function leveleditor_newmap:initialize()
+end
+
+function leveleditor_newmap:enter(from)
+	self.from = from
+
 	self.brown_box = love.graphics.newImage("Images/large_brown_box.png")
 	self.new_level = love.graphics.newImage("Images/new_level.png")
 
@@ -18,20 +23,45 @@ function leveleditor_newmap:initialize()
 	self.level_width_box = TextBox:new(640/2 - 4, 200, 64, 16, 4, self.text_boxes)
 	self.level_height_box = TextBox:new(640/2 - 4, 232, 64, 16, 4, self.text_boxes)
 
+	self.level_width_box:setText("0")
+	self.level_height_box:setText("0")
+
 	self.active_text_box = 1
 end
 
-function leveleditor_newmap:enter(from)
-	self.from = from
-end
-
 function leveleditor_newmap:keypressed(key)
-	if self.active_text_box then self.text_boxes:at(self.active_text_box):keypressed(key) end
+	--if self.active_text_box then self.text_boxes:at(self.active_text_box):keypressed(key) end
 
 	if key == "return" then
 		self.active_text_box = self.active_text_box + 1
 		if self.active_text_box == 4 then self.active_text_box = nil end
 	end
+
+	if self.level_width_box:getText() == "" then self.level_width_box:setText("0") end
+	if self.level_height_box:getText() == "" then self.level_height_box:setText("0") end
+
+	if tonumber(key) then
+		if tonumber(self.level_width_box:getText()) > 8192 then 
+			self.level_width_box:setText(self.level_width_box:getText():sub(1, -2)) 
+			if tonumber(self.level_width_box:getText()) > 8192 then self.level_width_box:setText(8192) end
+		end
+		if tonumber(self.level_height_box:getText()) > 8192 then 
+			self.level_height_box:setText(self.level_width_box:getText():sub(1, -2)) 
+			if tonumber(self.level_height_box:getText()) > 8192 then self.level_height_box:setText(8192) end
+		end
+	end
+end
+
+function leveleditor_newmap:textinput(text)
+	if tonumber(text) ~= nil and (self.active_text_box == 2 or self.active_text_box == 3) then 
+		self.text_boxes:at(self.active_text_box):textinput(text)
+	elseif self.active_text_box == 1 then
+		self.text_boxes:at(self.active_text_box):textinput(text)
+	end
+end
+
+function leveleditor_newmap:keypressed(key)
+	self.text_boxes:at(self.active_text_box):keypressed(key)
 end
 
 function leveleditor_newmap:mousepressed(x, y, button)
@@ -43,15 +73,20 @@ function leveleditor_newmap:mousepressed(x, y, button)
 		if _button:mouseInside(mx, my) then
 			if _button == self.cancel_button then return gamestate.pop() end
 			if _button == self.create_button then 
-				local level = {}
 				local w, h = self.level_width_box:getText(), self.level_height_box:getText()
-				for i = 1, h do 
-					level[i] = {}
-					for k = 1, w do
-						level[i][k] = 1
-					end
+				local level = {}
+				local i = 1 
+				local max = h*w
+				--WHAT-THE-FUCK 8192 is the max width and height before the games crashes
+				--multiplying these two numbers gives you 67,108,864 
+				while i < max do
+					level[i] = 1
+					i = i + 1
 				end
-				fileHandler:saveLevel(level, self.level_name_box:getText())
+				--for i = 1, h * w do
+				--	level[i] = 1
+				--end
+				fileHandler:saveLevel(level, w, h, self.level_name_box:getText())
 				return gamestate.pop()
 			end
 		end

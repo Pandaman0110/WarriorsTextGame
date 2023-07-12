@@ -1,15 +1,16 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, cat_handler, collision_map)
+function Controller:initialize(animal, cat_handler, collision_map, map_width)
 	self.animal = animal  
 	self.cat_handler = cat_handler
 	self.collision_map = collision_map
+	self.map_width = map_width
 end
 
 function Controller:checkCollision(x, y)
 	assert(x .. " must be a number")
 	assert(y .. " must be a number")
-	if self.collision_map[y][x] == 1 then return false end
+	if self.collision_map[self.width * x + y] then return false end
 	return true
 end
 
@@ -42,8 +43,8 @@ Player = class("Player", Controller)
 
 local keypressed_timer_val = .05
 
-function Player:initialize(animal, cathandler, collision_map)
-	Controller.initialize(self, animal, cathandler, collision_map)
+function Player:initialize(animal, cathandler, collision_map, map_width)
+	Controller.initialize(self, animal, cathandler, collision_map, map_width)
 	self.keypressed_timer = keypressed_timer_val
 end
 
@@ -106,8 +107,8 @@ AnimalController = class("AnimalController", Controller)
 
 local path_blocked_timer_val = 2
 
-function AnimalController:initialize(animal, cathandler, collision_map)
-	Controller.initialize(self, animal, cathandler, collision_map)
+function AnimalController:initialize(animal, cathandler, collision_map, map_width)
+	Controller.initialize(self, animal, cathandler, collision_map, map_width)
 
 	self.move_queue = Queue:new()
 

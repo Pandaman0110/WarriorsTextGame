@@ -17,16 +17,16 @@ end
 function leveleditor:enter(previous)
 	self.current_tile = nil
 
-	if fileHandler:getLevels():size() == 0 then 
+	self.current_map = fileHandler:getRandomLevel()
+
+	if not self.current_map then 
 		self:createPlaceHolderLevel()
 	end
-
-	self.current_map = fileHandler:getRandomLevel()
 
 	self.controller = LevelEditorController:new()
 	self.map_handler = MapHandler:new(self.controller, fileHandler:getRandomLevel())
 
-	self.orignal_map = self.map_handler:getRenderMap()
+	self.original = self.map_handler:getRenderMap()
 
 
 	self.unsaved_changes = false
@@ -36,7 +36,8 @@ function leveleditor:enter(previous)
 end
 
 function leveleditor:resume(state, action, map)
-	self.current_map = map
+	print(map)
+	if action == "load" then self.current_map = map end
 	if action == "saved" or "load" then 
 		self:loadMap()
 	end
@@ -96,9 +97,10 @@ function leveleditor:keypressed(key)
 		end
 	end
 	if action == "save" then 
-		fileHandler:saveLevel(self.map_handler:getRenderMap(), self.current_map)
+		fileHandler:saveLevel(self.map_handler:getRenderMap(), self.map_handler:getWidth(), self.map_handler:getHeight(), self.current_map)
 		self:loadMap(self.current_map)
 	end
+	if key == "l" then print(self.current_map) end
 end
 
 function leveleditor:mousepressed(x, y, button)
@@ -120,7 +122,7 @@ function leveleditor:mousepressed(x, y, button)
 	for i, _button in self.buttons:iterator() do
 		if _button:mouseInside(mx, my) == true then
 			if _button == self.file_button then
-				gamestate.push(leveleditor_filemenu, self.map_handler)
+				gamestate.push(leveleditor_filemenu, self.map_handler, self.current_map)
 				
 			end
 			if _button == self.edit_button then 
@@ -178,18 +180,15 @@ end
 function leveleditor:loadMap()
 	self.unsaved_changes = false 
 	self.map_handler = MapHandler:new(self.controller, self.current_map)
-	self.orignal_map = self.map_handler:getRenderMap()
+	self.original = self.map_handler:getRenderMap()
 	self.changes:clear()
 end
 
 function leveleditor:createPlaceHolderLevel()
 	local level = {}
-	for i = 1, 32 do 
-		level[i] = {}
-		for k = 1, 32 do
-			level[i][k] = 1
-		end
+	for i = 1, 32 * 32 do 
+		level[i] = 1
 	end
-
-	fileHandler:saveLevel(level, "default")
+	self.current_map = "default"
+	fileHandler:saveLevel(level, 32, 32, self.current_map)
 end
