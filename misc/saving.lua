@@ -53,8 +53,8 @@ end
 
 function FileHandler:loadLevel(level_name)
 	local path = levels_directory .. level_name .. ".txt"
-	local level = love.filesystem.read(path)
-	level = bitser.loads(level)
+	level_name = love.filesystem.read(path)
+	level = bitser.loads(level_name)
 	return level[1], level[2], level[3]
 end
 

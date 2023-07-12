@@ -1,17 +1,25 @@
 Controller = class("Controller")
 
-function Controller:initialize(animal, cat_handler, collision_map, map_width)
+function Controller:initialize(animal, cat_handler, map_handler)
 	self.animal = animal  
 	self.cat_handler = cat_handler
-	self.collision_map = collision_map
-	self.map_width = map_width
+	self.map_handler = map_handler
+	self.collision_map = map_handler:getCollisionMap()
+	self.collision_map_2d = map_handler:get2dCollisionMap()
+
+	self.width = map_handler:getWidth()
+	self.height = map_handler:getHeight()
 end
 
 function Controller:checkCollision(x, y)
 	assert(x .. " must be a number")
 	assert(y .. " must be a number")
-	if self.collision_map[self.width * x + y] then return false end
+	if self:outOfBounds(x, y) then return false end 
 	return true
+end
+
+function Controller:outOfBounds(x, y)
+	if x < 1 or x > self.width or y < 1 or y > self.height or not self.collision_map[self.width * x + y] then return false end 
 end
 
 function Controller:getAnimal() 
@@ -43,8 +51,8 @@ Player = class("Player", Controller)
 
 local keypressed_timer_val = .05
 
-function Player:initialize(animal, cathandler, collision_map, map_width)
-	Controller.initialize(self, animal, cathandler, collision_map, map_width)
+function Player:initialize(animal, cathandler, map_handler)
+	Controller.initialize(self, animal, cathandler, map_handler)
 	self.keypressed_timer = keypressed_timer_val
 end
 
@@ -94,8 +102,8 @@ function Player:update(dt)
 
 				local dest_x = input_x + coords[1]
 				local dest_y = input_y + coords[2]
-
-				if self:checkCollision(dest_x, dest_y) then		
+				print("input", dest_x, dest_y)
+				if self:checkCollision(dest_x, dest_y) then
 					self.animal:setDestination(input_x, input_y)
 				end
 			end
@@ -107,8 +115,8 @@ AnimalController = class("AnimalController", Controller)
 
 local path_blocked_timer_val = 2
 
-function AnimalController:initialize(animal, cathandler, collision_map, map_width)
-	Controller.initialize(self, animal, cathandler, collision_map, map_width)
+function AnimalController:initialize(animal, cathandler, map_handler)
+	Controller.initialize(self, animal, cathandler, map_handler)
 
 	self.move_queue = Queue:new()
 
@@ -192,23 +200,8 @@ function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 
 	local map = {}
 
-	--[[
-	for i = 1, #self.collision_map do
-		map[i] = {}
-		for j = 1, #self.collision_map[1] do
-			map[i][j] = self.collision_map[i][j] 
-		end
-	end
 
-	for i, cat in self.cat_handler:iterator() do
-		local coords = cat:getGamePos()
-		map[coords[2][coords[1] = 1
-	end
-
-	]]
-
-
-	local _grid = grid(self.collision_map)
+	local _grid = grid(self.collision_map_2d)
 	local finder = pathfinder(_grid, 'ASTAR', walkable)
 	finder:setTunnelling(false)
 
@@ -222,10 +215,6 @@ function AnimalController:calculatePath(start_x, start_y, end_x, end_y)
 	end
 
 	table.remove(path, 1)
-
-	--for i, move in ipAnimalControllerrs(path) do
-	--	print(move[1], move[2])
-	--end
 
 	return path
 end

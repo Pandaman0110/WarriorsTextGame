@@ -1,4 +1,4 @@
-local pairs, ipairs = pairs, ipairs
+local pairs, ipairs, print = pairs, ipairs, print
 
 local tile_set_directory = "Map/"
 
@@ -32,11 +32,20 @@ function MapHandler:initialize(camera, map, tile_set)
 	self.nav_map = {}
 
 	self.collision_map = {}
+	self.collision_map_2d = {}
 
 
 	for i = 1, #self.tile_map do
 		self.collision_map[i] = self.collidable[self.tile_map[i]]
 	end
+
+	for i = 1, #self.collision_map / self.width - 1 do
+		self.collision_map_2d[i] = {} 
+		for k = 1, self.width do
+			self.collision_map_2d[i][k] = self.collision_map[self.width * i + k]
+		end
+	end
+
 	
 	local camera_coords = self.camera:getRealPos()
 
@@ -83,14 +92,13 @@ function MapHandler:getNavMap()
 end
 
 function MapHandler:getCollisionMap()
-	local map = {}
-
-	for i = 1, #self.collision_map do
-		map[i] = self.tile_map[i]
-	end
-
-	return map
+	return self.collision_map
 end
+
+function MapHandler:get2dCollisionMap()
+	return self.collision_map_2d
+end
+
 
 function MapHandler:getWidth()
 	return self.width
