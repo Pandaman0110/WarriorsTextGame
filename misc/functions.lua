@@ -44,14 +44,6 @@ function textSettings()
 	love.graphics.setColor(58/255, 31/255, 12/255)
 end
 
-function scX()
-	return 1/xScale
-end
-
-function scY()
-	return 1/yScale
-end
-
 --implementation of some useful algorithms
 
 --fisher-yates 

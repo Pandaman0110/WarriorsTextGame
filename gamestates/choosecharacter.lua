@@ -46,25 +46,27 @@ function choosecharacter:createButtons()
 
 	self.back_button = ImageButton:new(32, 312, love.graphics.newImage("Images/back.png"), self.buttons)
 	self.next_button = ImageButton:new(544, 312, love.graphics.newImage("Images/next.png"), self.buttons)
-	self.left_button = ImageButton:new(392, 32, love.graphics.newImage("Images/ArrowLeft.png"), self.buttons)
+	self.left_button = ImageButton:new(364, 32, love.graphics.newImage("Images/ArrowLeft.png"), self.buttons)
 	self.right_button = ImageButton:new(576, 32, love.graphics.newImage("Images/ArrowRight.png"), self.buttons)
 
-	self.regen_button = ImageButton:new(144, 256, love.graphics.newImage("Images/regen.png"), self.buttons)
+	self.regen_button = ImageButton:new(128, 360 - 48, love.graphics.newImage("Images/regen.png"), self.buttons)
 end
 
 function choosecharacter:catPagesSetup()
+	local max_cats_on_page = 10
+
 	self.catListPage = 1
 	self.catListRoles = Array:new()
 	self.catListTables = Array:new()
 	self.pages = 0
 	self.pages = self.pages + (math.floor(self.playerClan:getNumCats() / 10))
-	if self.playerClan:getNumCats() % 10 ~= 0 then self.pages = self.pages + 1 end
+	if self.playerClan:getNumCats() % max_cats_on_page ~= 0 then self.pages = self.pages + 1 end
 
 	for i = 1, self.pages do
 		local t = Array:new()
 		self.catListTables:insert(t)
-		for k = 1, 10 do
-			self.catListTables:at(i):insert(self.playerClan:getCats():at(k+(10*(i-1))))
+		for k = 1, max_cats_on_page do
+			self.catListTables:at(i):insert(self.playerClan:getCats():at(k+(max_cats_on_page*(i-1))))
 		end
 	end
 end
@@ -82,43 +84,41 @@ function choosecharacter:drawClanButtons()
 end
 
 function choosecharacter:drawCurrentClan()
-	local textX = 232
-	self.playerClan:draw(112, 32, 2)
+	local textX = 156
+	self.playerClan:draw(32, 32, 2)
 
 	textSettings()
-	love.graphics.setFont(EBG_R_20)
+	love.graphics.setFont(FONT_16)
 
-	love.graphics.print(self.playerClan:getName(), textX, 32, 0, scX()) 
+	love.graphics.print(self.playerClan:getName(), textX, 32, 0) 
 
-	love.graphics.setFont(EBG_R_10)
+	love.graphics.setFont(FONT_8)
 
-	love.graphics.print("The leader is " .. self.playerClan:getLeader():getName(), textX, 64, 0, scX())
-	love.graphics.print("The deputy is " .. self.playerClan:getDeputy():getName(), textX, 80, 0, scX())
-	love.graphics.print("The medicine cat is " .. self.playerClan:getMedicineCat():getName(), textX, 96, 0, scX())
-	love.graphics.print("There are " .. self.playerClan:getNumCats() .. " cats", textX, 112, 0, scX())
+	love.graphics.print("The leader is " .. self.playerClan:getLeader():getName(), textX, 64, 0)
+	love.graphics.print("The deputy is " .. self.playerClan:getDeputy():getName(), textX, 80, 0)
+	love.graphics.print("The medicine cat is " .. self.playerClan:getMedicineCat():getName(), textX, 96, 0)
+	love.graphics.print("There are " .. self.playerClan:getNumCats() .. " cats", textX, 112, 0)
 
 	clearTextSettings()
 end
 
 function choosecharacter:drawCurrentCat()
-	local textX = 232
-	self.currentCat:drawImage(126, 176, 2)
+	local textX = 156
+	self.currentCat:drawImage(48, 176, 2)
 
 	textSettings()
 
-	love.graphics.setFont(EBG_R_20)
+	love.graphics.setFont(FONT_16)
 
-	love.graphics.print(self.currentCat:getName(), textX, 152, 0, scX())
+	love.graphics.print(self.currentCat:getName(), textX, 152, 0)
 
-	love.graphics.setFont(EBG_R_10)
+	love.graphics.setFont(FONT_8)
 
-	love.graphics.print(self.currentCat:getRole(), textX, 184, 0, scX())
-	love.graphics.print(self.currentCat:getMoons().." moons old", textX, 200, 0, scX())
-	love.graphics.print(self.currentCat:getGender(), textX, 216, 0, scX())
-	love.graphics.print("Mom... "..self.currentCat:getMom():getName(), textX, 232, 0, scX())
-	love.graphics.print("Dad... "..self.currentCat:getDad():getName(), textX, 248, 0, scX())
-
-	-- this is a biug for sure
+	love.graphics.print(self.currentCat:getRole(), textX, 184, 0)
+	love.graphics.print(self.currentCat:getMoons().." moons old", textX, 200, 0)
+	love.graphics.print(self.currentCat:getGender(), textX, 216, 0)
+	love.graphics.print("Mom... "..self.currentCat:getMom():getName(), textX, 232, 0)
+	love.graphics.print("Dad... "..self.currentCat:getDad():getName(), textX, 248, 0)
 
 	if self.currentCat:getRole() == "Kit" then
 		local str = ""
@@ -127,13 +127,13 @@ function choosecharacter:drawCurrentCat()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Littermates... ".. str, textX, 264, 0, scX())
+		love.graphics.print("Littermates... ".. str, textX, 264, 0)
 	end
 
 	local k = 0
-	if self.currentCat:getMate() then love.graphics.print("Mate... " .. self.currentCat:getMate():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
-	if self.currentCat:getMentor() then love.graphics.print("Mentor... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16 , 0, scX()) k = k + 1 end
-	if self.currentCat:getApprentice() then love.graphics.print("Apprentice... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16, 0, scX()) k = k + 1 end
+	if self.currentCat:getMate() then love.graphics.print("Mate... " .. self.currentCat:getMate():getName(), textX, 264 + k * 16, 0) k = k + 1 end
+	if self.currentCat:getMentor() then love.graphics.print("Mentor... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16 , 0) k = k + 1 end
+	if self.currentCat:getApprentice() then love.graphics.print("Apprentice... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16, 0) k = k + 1 end
 	if self.currentCat:hasKits() then 
 		local str = ""
 		for i, kit in ipairs (self.currentCat:getKits()) do 
@@ -141,24 +141,25 @@ function choosecharacter:drawCurrentCat()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0, scX())
+		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0)
 		k = k + 1
 	end
 end
 
 function choosecharacter:catButtons()
+	local buttonX = 356
 	self.cat_buttons = Array:new()
 	local i = 1
 	for i, cat in self.catListTables:at(self.catListPage):iterator() do
 		local cat_button
 		if i > 5 then
 			local k = i - 5
-			cat_button = ObjectButton:new(512, 80 + 32 * (k-1), cat, cat:getImage(), self.cat_buttons)
-			cat_button:setWidth(120)
+			cat_button = ObjectButton:new(364 + 128, 80 + 32 * (k-1), cat, cat:getImage(), self.cat_buttons)
+			cat_button:setWidth(128)
 			cat_button:setHeight(32)
 		else
-			cat_button = ObjectButton:new(392, 80 + 32 * (i-1), cat, cat:getImage(), self.cat_buttons)
-			cat_button:setWidth(120)
+			cat_button = ObjectButton:new(364, 80 + 32 * (i-1), cat, cat:getImage(), self.cat_buttons)
+			cat_button:setWidth(128)
 			cat_button:setHeight(32)
 		end
 		i = i + 1
@@ -166,9 +167,9 @@ function choosecharacter:catButtons()
 end
 
 function choosecharacter:drawCatButtons()
-	love.graphics.setFont(EBG_R_20)
+	love.graphics.setFont(FONT_16)
 
-	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 460, 32, 0, scX())
+	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 418, 32, 0)
 
 	clearTextSettings()
 
@@ -176,16 +177,16 @@ function choosecharacter:drawCatButtons()
 	for i, _button in self.cat_buttons:iterator() do
 		local cat = _button:getObject()
 		textSettings()
-		love.graphics.setFont(EBG_R_10)
+		love.graphics.setFont(FONT_8)
 		if i > 5 then
 			local k = i - 5
-			love.graphics.print(cat:getName(), 560, 88 + 32 * (k-1), 0, scX())
+			love.graphics.print(cat:getName(), 364 + 128 + 40, 96 + 32 * (k-1), 0)
 			clearTextSettings()
-			cat:drawImage(512, 80 + 32 * (k-1))
+			cat:drawImage(364 + 128, 80 + 32 * (k-1))
 		else  
-			love.graphics.print(cat:getName(), 440, 88 + 32 * (i-1), 0, scX())
+			love.graphics.print(cat:getName(), 364 + 40, 96 + 32 * (i-1), 0)
 			clearTextSettings()
-			cat:drawImage(392, 80 + 32 * (i-1))
+			cat:drawImage(364, 80 + 32 * (i-1))
 		end
 		i = i + 1
 	end
@@ -206,7 +207,7 @@ function choosecharacter:clanButtons(first)
 	self.clans:insert(clan4)
 
 	for i, clan in self.clans:iterator() do
-		local _button = ObjectButton:new(32, 32 + 64 * (self.clans:find(clan)-1), clan, clan:getImage(), self.clan_buttons)
+		local _button = ObjectButton:new(192 + (i-1)*80,  360 - 64, clan, clan:getImage(), self.clan_buttons)
 	end
 end
 

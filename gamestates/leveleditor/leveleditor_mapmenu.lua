@@ -112,7 +112,7 @@ function leveleditor_mapmenu:draw()
 		button:draw()
 	end
 
-	love.graphics.setFont(EBG_R_10)
+	love.graphics.setFont(FONT_8)
 
 	love.graphics.print("Name: ", 640/2 - 48, 164, 0, scX())
 	love.graphics.print("Width: ", 640/2 - 48, 200, 0, scX())

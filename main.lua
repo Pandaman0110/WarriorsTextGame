@@ -80,10 +80,12 @@ function love.load()
 	local gameWidth, gameHeight = 640, 360 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()
 	--windowWidth, windowHeight = 1280, 720
-	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true})
+	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true, stretched = false})
 
-	xScale = windowWidth / 640
-	yScale = windowHeight / 360
+	print(push:getWidth(), push:getHeight())
+
+	xScale = math.floor(windowWidth / 640)
+	yScale = math.floor(windowHeight / 360)
 
 	---------------------
 
@@ -112,8 +114,17 @@ function love.load()
 	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "normal")
 	EBG_I_Large:setFilter("linear", "nearest")
 
-	PIXEL_FONT = love.graphics.newFont("fonts/EBG_I.ttf", 7, "mono")
-	PIXEL_FONT:setFilter("linear", "nearest")
+	FONT_4 = love.graphics.newFont("fonts/rainyhearts.ttf", 4 * xScale, "mono")
+	FONT_4:setFilter("nearest", "nearest")
+
+	FONT_8 = love.graphics.newFont("fonts/rainyhearts.ttf", 8 * xScale, "mono")
+	FONT_8:setFilter("nearest", "nearest")
+
+	FONT_16 = love.graphics.newFont("fonts/rainyhearts.ttf", 16 * xScale, "mono")
+	FONT_16:setFilter("nearest", "nearest")
+
+	FONT_32 = love.graphics.newFont("fonts/rainyhearts.ttf", 32 * xScale, "mono")
+	FONT_32:setFilter("nearest", "nearest")
 
 	---------------------
 
@@ -122,7 +133,7 @@ function love.load()
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(startup)
+	gamestate.switch(choosecharacter)
 
 	love.frames = 0
 	love.frame_timer = 10
@@ -177,7 +188,7 @@ function love.draw()
 		love.graphics.setDefaultFilter("nearest", "nearest")
 		gamestate.draw()
 
-		love.graphics.setFont(EBG_R_10)
+		love.graphics.setFont(FONT_16)
 		textSettings()
 
    		if drawDetails == true then 

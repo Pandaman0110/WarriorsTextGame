@@ -562,31 +562,6 @@ SaveNumbers = {
 	love.graphics.newImage("Images/numbers/ten.png"),
 }
 
-Quotes = {
-	'"The only true borders lie between day and night, life and death." \n- Brambleberry',
-	'"Strength doesn\'t have to be proved." \n- Firestar',
-	'"Keep your eyes open, Fireheart. Keep your ears pricked. Keep looking behind you. \nBecause one day I\'ll find you, and then you\'ll be crowfood." \n - Tigerstar',
-	'"We cannot change our destiny. We just have to have the courage to know what it is, and accept it." \n - Cinderpelt', 
-	'"I learned a lot. Friendship and kinship matter more than adventure. Boundaries only exist in our minds. \n A heart can travel to the horizon without moving a paw step. And I made the best friend any cat ever had." \n- Talltail', 
-	'"There is always something that a cat can do, as long as he has courage and loyalty." \n- Firestar', 
-	'"Kill me, kill me and live with the memory. Then tell the stars that you won." \n- Gray Wing', 
-	'"You live like a rogue, you die like a rogue!" \n - Firestar', 
-	'"I have traveled so far and loved so much, and yet I am still following the Sun Trail,\n heading for my new hunting grounds." \n- Gray Wing',
-	'"Oh, and Mistyfoot? Never trust the shadows. My warriors wear the night like second pelts.\n If you wrong ShadowClan, you will never be safe in the dark."\n - Blackstar ',
-	'"Fire alone can save our Clan."',
-	'"Four will become two, Lion and Tiger will meet in battle, and blood will rule the forest."', 
-	'"Before there is peace, blood will spill blood, and the lake will run red."' , 
-	'"There will be three, kin of your kin, who hold the power of the stars in their paws."' , 
-	'"The end of the stars draws near. Three must become four to battle the darkness that lasts forever."' , 
-	'"Embrace what you find in the shadows, for only they can clear the sky."' , 
-	'"This one will see into the shadows."' , 
-	'"We are all born in blood. But it marks the beginning, not the end."' , 
-	'"We came to tell you only one thing. Unite or die."', 
-	'"Redtail was a brave warrior. His loyalty to ThunderClan could never be doubted. \nI always relied on his judgement, for it bore witness to the needs of the Clan, \n and was never swayed by self-interest or pride. He would have made a fine leader."\n - Bluestar',
-	'"Thank you. You were right. I had to tell the Clan myself. You have a good spirit, young one. \n When it is time for you to receive your warrior name, tell Sunfall I would have named you Lionheart."\n - Pinestar'
-
-}
-
 AfflictionSymbols = {
 	["Heavy bleeding"] = "B!+",
 	["Bleeding"] = "B!~",

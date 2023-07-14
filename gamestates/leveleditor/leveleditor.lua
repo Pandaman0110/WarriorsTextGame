@@ -24,7 +24,7 @@ function leveleditor:enter(previous)
 	end
 
 	self.controller = LevelEditorController:new()
-	self.map_handler = MapHandler:new(self.controller, fileHandler:getRandomLevel())
+	self.map_handler = MapHandler:new(self.controller, self.current_map)
 
 	self.original = self.map_handler:getRenderMap()
 
