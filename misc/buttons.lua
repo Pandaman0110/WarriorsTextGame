@@ -115,19 +115,18 @@ function TextBox:draw()
 	clearTextSettings()
 end
 
--- handles some basic text functions
+function TextBox:textinput(text)
+	if self.text == "" or not (tostring(self.text):len() >= self.limit) then
+		self.text = self.text .. text
+	end
+end
+
 function TextBox:keypressed(key)
 	if key == "backspace" and self.text ~= "" then
        	local byteoffset = utf8.offset(self.text, -1)
        	self.text = (string.sub(self.text, 1, byteoffset - 1))
     elseif key == "space" then
       	self.text = self.text .. "_"
-    elseif key == "return" or key == "lshift" or key == "rshift" or key == "lalt" or key == "ralt" or key == "backspace" then
-   	elseif #self.text <= self.limit then 
-   		if love.keyboard.isDown("lshift") then 
-			key = string.gsub(key, "^%l", string.upper(key))
-		end
-    	self.text = self.text .. key
    	end
 end
 

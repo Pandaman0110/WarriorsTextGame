@@ -19,16 +19,19 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	self.randomcat = self.cat_handler:getRandomNonPlayer()
 
+
+	---------------
+
 	for i, cat in self.cat_handler:iterator() do
-		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler:getCollisionMap()))
+		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler))
 	end
 
 
 
-	self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler:getCollisionMap())) 
+	self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler))
 
 
-	self.randomcat:move({5,5})
+	self.randomcat:move({6,8})
 	--self.game_handler:sendCat(self.randomcat, "river_clan_base")
 
 	self.cat_handler:getPlayer():setBehavior(BehaviorTree:new(CatBehaviorTree, self.cat_handler:getPlayer(), self.cat_handler, self.game_handler, self.clock))
@@ -37,7 +40,6 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	local root = self.cat_handler:getPlayer():getBehavior():getRoot()
 
-	root:print()
 
 	self.cat_handler:getPlayer():getBehavior():tick(.001)
 
@@ -60,7 +62,7 @@ function maingame:update(dt)
 	--love.profiler.start()
 	self.game_clock:update(dt)
 	self.cat_handler:update(dt)
-	self.cat_handler:getPlayer():getBehavior():tick(dt)
+	--self.cat_handler:getPlayer():getBehavior():tick(dt)
 	self.decal_handler:update(dt)
 	self.map_handler:update(dt)
 	self.game_handler:update(dt)
@@ -147,7 +149,7 @@ function maingame:setupHandlers(clock)
 	for i, clan in self.clans:iterator() do
 		self.cat_handler:loadCatsFromClan(clan)
 	end
-	self.map_handler = MapHandler:new(self.cat_handler:getPlayer())
+	self.map_handler = MapHandler:new(self.cat_handler:getPlayer(), "default")
 	self.decal_handler = DecalHandler:new()
 	self.game_handler = GameHandler:new(clock)
 end

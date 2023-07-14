@@ -12,9 +12,10 @@ function leveleditor_filemenu:initialize()
 	self.save_button = ImageButton:new(0, 96, love.graphics.newImage("Images/file_savebutton.png"), self.buttons)
 end
 
-function leveleditor_filemenu:enter(from, map_handler)
+function leveleditor_filemenu:enter(from, map_handler, current_map)
 	self.from = from
 	self.map_handler = map_handler
+	self.current_map = current_map
 	self.action = nil
 end
 
@@ -33,7 +34,7 @@ function leveleditor_filemenu:mousepressed(x, y, button)
 				return gamestate.push(leveleditor_loadmap)
 			end
 			if _button == self.save_button then
-				fileHandler:saveLevel(self.map_handler:getRenderMap(), "OldForest")
+				fileHandler:saveLevel(self.map_handler:getRenderMap(), self.map_handler:getWidth(), self.map_handler:getHeight(), self.current_map)
 				self.action = "saved"
 			end
 		end

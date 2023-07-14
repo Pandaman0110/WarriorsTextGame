@@ -1,4 +1,4 @@
-local pairs, ipairs = pairs, ipairs
+local pairs, ipairs, print = pairs, ipairs, print
 
 local tile_set_directory = "Map/"
 
@@ -16,8 +16,10 @@ local display_buffer = 2
 function MapHandler:initialize(camera, map, tile_set)
 	self.camera = camera
 
-	if map then self.tile_map = fileHandler:loadLevel(map)
-	else self.tile_map = fileHandler:loadLevel("OldForest") end
+	self.tile_map, self.width, self.height = fileHandler:loadLevel(map)
+
+	self.width = tonumber(self.width)
+	self.height = tonumber(self.height)
 
 	if tile_set then self.tile_set = tile_set
 	else self.tile_set = fileHandler:loadTileSet("default") end
@@ -27,23 +29,23 @@ function MapHandler:initialize(camera, map, tile_set)
 		[2] = 1
 	}
 	
-	self.collision_map = {}
+	self.nav_map = {}
 
-	function MapHandler:checkCollision(x, y)
-		return self.collidable[self.tile_map[x][y]]
-	end
+	self.collision_map = {}
+	self.collision_map_2d = {}
+
 
 	for i = 1, #self.tile_map do
-		self.collision_map[i] = {}
-		for k = 1, #self.tile_map[i] do
-			self.collision_map[i][k] = self:checkCollision(i, k)
+		self.collision_map[i] = self.collidable[self.tile_map[i]]
+	end
+
+	for i = 1, #self.collision_map / self.width do
+		self.collision_map_2d[i] = {} 
+		for k = 1, self.width do
+			self.collision_map_2d[i][k] = self.collision_map[self.width * (i-1) + k]
 		end
 	end
 
-	self.nav_map = NavigationMesh:new(self.collision_map)
-
-	self.width = #self.tile_map[1]
-	self.height = #self.tile_map
 	
 	local camera_coords = self.camera:getRealPos()
 
@@ -60,11 +62,15 @@ function MapHandler:draw()
 	for y = 1, (display_y + display_buffer) do
 		for x = 1, (display_x + display_buffer) do
 			if y + firstTile_y >= 1 and y+firstTile_y <= self.height and x + firstTile_x >= 1 and x + firstTile_x <= self.width then 
-				love.graphics.draw(self.tile_set[self.tile_map[y + firstTile_y][x + firstTile_x]], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
+				--print(self.width * ((x + firstTile_x) -1) + (y + firstTile_y))
+				--print(x, y, firstTile_x, firstTile_y)
+				--print("break\n") 
+
+				love.graphics.draw(self.tile_set[self.tile_map[self.width * ((x + firstTile_x) -1) + (y + firstTile_y)]], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
 			end
 		end
 	end
-	
+	--error()
 	return offset_x, offset_y, firstTile_x, firstTile_y
 end
 
@@ -79,10 +85,7 @@ function MapHandler:getRenderMap()
 	local map = {}
 
 	for i = 1, #self.tile_map do
-		map[i] = {}
-		for k = 1, #self.tile_map[1] do
-			map[i][k] = self.tile_map[i][k]
-		end
+		map[i] = self.tile_map[i]
 	end
 
 	return map
@@ -93,17 +96,13 @@ function MapHandler:getNavMap()
 end
 
 function MapHandler:getCollisionMap()
-	local map = {}
-
-	for i = 1, #self.collision_map do
-		map[i] = {}
-		for k = 1, #self.collision_map[1] do
-			map[i][k] = self.collision_map[i][k]
-		end
-	end
-
-	return map
+	return self.collision_map
 end
+
+function MapHandler:get2dCollisionMap()
+	return self.collision_map_2d
+end
+
 
 function MapHandler:getWidth()
 	return self.width
@@ -114,17 +113,17 @@ function MapHandler:getHeight()
 end
 
 function MapHandler:validPos(tile_x, tile_y)
-	if tile_x > #self.tile_map[1] or tile_x <= 0 then return false end
-	if tile_y > #self.tile_map or tile_y <= 0 then return false end
+	if tile_x > self.width or tile_x <= 0 then return false end
+	if tile_y > self.height or tile_y <= 0 then return false end
 	return true
 end
 
 function MapHandler:changeTile(tx, ty, new_tile)
-	self.tile_map[ty][tx] = new_tile
+	self.tile_map[self.width * (tx-1) + ty] = new_tile
 end
 
 function MapHandler:getTile(tx, ty)
-	return self.tile_map[ty][tx]
+	return self.tile_map[self.width * (tx-1) + ty]
 end
 
 
