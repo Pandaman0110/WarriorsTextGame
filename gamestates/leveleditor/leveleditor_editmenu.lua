@@ -7,7 +7,7 @@ leveleditor_editmenu = class("leveleditor_editmenu")
 function leveleditor_editmenu:initialize()
 	self.buttons = Array:new()
 
-	self.new_button = ImageButton:new(64, 32, love.graphics.newImage("Images/edit_properties.png"), self.buttons)
+	self.new_button = ImageButton:new(64, 32, love.graphics.newImage("Images/edit_propertiesbutton.png"), self.buttons)
 end
 
 function leveleditor_editmenu:enter(from, map_handler, current_map)
@@ -24,8 +24,13 @@ function leveleditor_editmenu:mousepressed(x, y, button)
 	for i, _button in self.buttons:iterator() do
 		if _button:mouseInside(mx, my) == true then
 			if _button == self.new_button then
-				self.action = "new"
-				return gamestate.push(leveleditor_properties, self.map_handler, self.current_map)
+				if not self.current_map then 
+					self.action = "new"
+					return gamestate.push(leveleditor_newmap)
+				else
+					self.action = "properties"
+					return gamestate.push(leveleditor_properties, self.map_handler, self.current_map)
+				end
 			end
 		end
 	end
@@ -38,7 +43,6 @@ function leveleditor_editmenu:resume(state, map)
 end
 
 function leveleditor_editmenu:update(dt)
-	self.from:update(dt)
 end
 
 function leveleditor_editmenu:draw()

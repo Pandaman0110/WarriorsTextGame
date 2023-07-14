@@ -39,10 +39,10 @@ function MapHandler:initialize(camera, map, tile_set)
 		self.collision_map[i] = self.collidable[self.tile_map[i]]
 	end
 
-	for i = 1, #self.collision_map / self.width - 1 do
+	for i = 1, #self.collision_map / self.width do
 		self.collision_map_2d[i] = {} 
 		for k = 1, self.width do
-			self.collision_map_2d[i][k] = self.collision_map[self.width * i + k]
+			self.collision_map_2d[i][k] = self.collision_map[self.width * (i-1) + k]
 		end
 	end
 
@@ -62,11 +62,15 @@ function MapHandler:draw()
 	for y = 1, (display_y + display_buffer) do
 		for x = 1, (display_x + display_buffer) do
 			if y + firstTile_y >= 1 and y+firstTile_y <= self.height and x + firstTile_x >= 1 and x + firstTile_x <= self.width then 
-				love.graphics.draw(self.tile_set[self.tile_map[self.width * (x + firstTile_x) + (y + firstTile_y)]], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
+				--print(self.width * ((x + firstTile_x) -1) + (y + firstTile_y))
+				--print(x, y, firstTile_x, firstTile_y)
+				--print("break\n") 
+
+				love.graphics.draw(self.tile_set[self.tile_map[self.width * ((x + firstTile_x) -1) + (y + firstTile_y)]], ((x-1) * tile_size) - offset_x - tile_size/2, ((y-1) * tile_size) - offset_y - tile_size/2 - 8)
 			end
 		end
 	end
-	
+	--error()
 	return offset_x, offset_y, firstTile_x, firstTile_y
 end
 
@@ -115,11 +119,11 @@ function MapHandler:validPos(tile_x, tile_y)
 end
 
 function MapHandler:changeTile(tx, ty, new_tile)
-	self.tile_map[self.width * tx + ty] = new_tile
+	self.tile_map[self.width * (tx-1) + ty] = new_tile
 end
 
 function MapHandler:getTile(tx, ty)
-	return self.tile_map[self.width * tx + ty]
+	return self.tile_map[self.width * (tx-1) + ty]
 end
 
 

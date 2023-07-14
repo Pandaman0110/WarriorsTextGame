@@ -116,8 +116,7 @@ function TextBox:draw()
 end
 
 function TextBox:textinput(text)
-	print(text)
-	if self.text == "" or not (self.text:len() >= self.limit) then
+	if self.text == "" or not (tostring(self.text):len() >= self.limit) then
 		self.text = self.text .. text
 	end
 end

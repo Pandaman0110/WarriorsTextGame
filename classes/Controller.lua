@@ -19,7 +19,7 @@ function Controller:checkCollision(x, y)
 end
 
 function Controller:outOfBounds(x, y)
-	if x < 1 or x > self.width or y < 1 or y > self.height or not self.collision_map[self.width * x + y] then return false end 
+	if x < 1 or x > self.width or y < 1 or y > self.height or not self.collision_map[self.width * (x-1) + y] then return false end 
 end
 
 function Controller:getAnimal() 

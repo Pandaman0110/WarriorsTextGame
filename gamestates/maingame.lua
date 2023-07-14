@@ -31,7 +31,7 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler))
 
 
-	self.randomcat:move({5,5})
+	self.randomcat:move({6,8})
 	--self.game_handler:sendCat(self.randomcat, "river_clan_base")
 
 	self.cat_handler:getPlayer():setBehavior(BehaviorTree:new(CatBehaviorTree, self.cat_handler:getPlayer(), self.cat_handler, self.game_handler, self.clock))

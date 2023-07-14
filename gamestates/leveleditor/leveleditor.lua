@@ -36,7 +36,6 @@ function leveleditor:enter(previous)
 end
 
 function leveleditor:resume(state, action, map)
-	print(map)
 	if action == "load" then self.current_map = map end
 	if action == "saved" or "load" then 
 		self:loadMap()
@@ -100,7 +99,6 @@ function leveleditor:keypressed(key)
 		fileHandler:saveLevel(self.map_handler:getRenderMap(), self.map_handler:getWidth(), self.map_handler:getHeight(), self.current_map)
 		self:loadMap(self.current_map)
 	end
-	if key == "l" then print(self.current_map) end
 end
 
 function leveleditor:mousepressed(x, y, button)
@@ -135,6 +133,8 @@ function leveleditor:mousepressed(x, y, button)
 			self.current_tile = nil
 		end
 	end
+
+	print("break\n")
 
 	::continue::
 end

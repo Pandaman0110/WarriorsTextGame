@@ -60,6 +60,7 @@ function love.load()
 	require "gamestates/leveleditor/leveleditor_editmenu"
 	require "gamestates/leveleditor/leveleditor_filemenu"
 	require "gamestates/leveleditor/leveleditor_loadmap"
+	require "gamestates/leveleditor/leveleditor_mapmenu"
 	require "gamestates/leveleditor/leveleditor_newmap"
 	require "gamestates/leveleditor/leveleditor_properties"
 	require "gamestates/loadgame"
@@ -125,27 +126,6 @@ function love.load()
 
 	love.frames = 0
 	love.frame_timer = 10
-
-
-	--[[
-	local map = fileHandler:loadLevel("OldForest")
-
-	for i = 1, #map do
-		for k = 1, #map[1] do
-			map[i][k] = map[i][k] + -1
-		end
-	end
-
-	for i = 1, #map do
-		for k = 1, #map[1] do
-			print(map[i][k])
-		end
-	end
-
-	fileHandler:saveLevel(map, "OldForest")
-
-	local t = fileHandler:loadTileSet("default")
-	]]
 
 end
 
