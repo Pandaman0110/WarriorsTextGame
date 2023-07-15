@@ -55,11 +55,11 @@ function startup:changeQuotes(key)
 end
 
 function startup:drawQuotes()
-	love.graphics.setFont(FONT_8)
+	love.graphics.setFont(FONT_16)
 
-	love.graphics.printf(self.randQuotes[self.quote], 0, 160, push:getWidth(), "center", 0)
+	love.graphics.printf(self.randQuotes[self.quote], 16, 160, push:getWidth() - 32, "center", 0)
 
-	love.graphics.printf("Press space to continue", 0, 320, push:getWidth(), "center", 0)
+	love.graphics.printf("Press space to continue", 0 , 320, push:getWidth(), "center", 0)
 
 	clearTextSettings()
 end

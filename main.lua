@@ -114,17 +114,17 @@ function love.load()
 	EBG_I_Large = love.graphics.newFont("fonts/EBG_I.ttf", 15 * xScale, "normal")
 	EBG_I_Large:setFilter("linear", "nearest")
 
-	FONT_4 = love.graphics.newFont("fonts/rainyhearts.ttf", 4 * xScale, "mono")
-	FONT_4:setFilter("nearest", "nearest")
-
-	FONT_8 = love.graphics.newFont("fonts/rainyhearts.ttf", 8 * xScale, "mono")
+	FONT_8 = love.graphics.newFont("fonts/rainyhearts.ttf", 8, "normal")
 	FONT_8:setFilter("nearest", "nearest")
 
-	FONT_16 = love.graphics.newFont("fonts/rainyhearts.ttf", 16 * xScale, "mono")
+	FONT_16 = love.graphics.newFont("fonts/rainyhearts.ttf", 16, "normal")
 	FONT_16:setFilter("nearest", "nearest")
 
-	FONT_32 = love.graphics.newFont("fonts/rainyhearts.ttf", 32 * xScale, "mono")
+	FONT_32 = love.graphics.newFont("fonts/rainyhearts.ttf", 32, "normal")
 	FONT_32:setFilter("nearest", "nearest")
+
+	FONT_64 = love.graphics.newFont("fonts/rainyhearts.ttf", 64, "normal")
+	FONT_64:setFilter("nearest", "nearest")
 
 	---------------------
 
@@ -133,7 +133,7 @@ function love.load()
 	---------------------
 
 	love.keyboard.setKeyRepeat(true)
-	gamestate.switch(choosecharacter)
+	gamestate.switch(startup)
 
 	love.frames = 0
 	love.frame_timer = 10

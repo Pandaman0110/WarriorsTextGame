@@ -88,11 +88,11 @@ function choosecharacter:drawCurrentClan()
 	self.playerClan:draw(32, 32, 2)
 
 	textSettings()
-	love.graphics.setFont(FONT_16)
+	love.graphics.setFont(FONT_32)
 
 	love.graphics.print(self.playerClan:getName(), textX, 32, 0) 
 
-	love.graphics.setFont(FONT_8)
+	love.graphics.setFont(FONT_16)
 
 	love.graphics.print("The leader is " .. self.playerClan:getLeader():getName(), textX, 64, 0)
 	love.graphics.print("The deputy is " .. self.playerClan:getDeputy():getName(), textX, 80, 0)
@@ -108,11 +108,11 @@ function choosecharacter:drawCurrentCat()
 
 	textSettings()
 
-	love.graphics.setFont(FONT_16)
+	love.graphics.setFont(FONT_32)
 
 	love.graphics.print(self.currentCat:getName(), textX, 152, 0)
 
-	love.graphics.setFont(FONT_8)
+	love.graphics.setFont(FONT_16)
 
 	love.graphics.print(self.currentCat:getRole(), textX, 184, 0)
 	love.graphics.print(self.currentCat:getMoons().." moons old", textX, 200, 0)
@@ -167,7 +167,7 @@ function choosecharacter:catButtons()
 end
 
 function choosecharacter:drawCatButtons()
-	love.graphics.setFont(FONT_16)
+	love.graphics.setFont(FONT_32)
 
 	love.graphics.print("Page ".. self.catListPage .. " / " .. self.pages, 418, 32, 0)
 
@@ -177,7 +177,7 @@ function choosecharacter:drawCatButtons()
 	for i, _button in self.cat_buttons:iterator() do
 		local cat = _button:getObject()
 		textSettings()
-		love.graphics.setFont(FONT_8)
+		love.graphics.setFont(FONT_16)
 		if i > 5 then
 			local k = i - 5
 			love.graphics.print(cat:getName(), 364 + 128 + 40, 96 + 32 * (k-1), 0)
