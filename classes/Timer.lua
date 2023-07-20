@@ -97,10 +97,10 @@ end
 
 function Timer:drawRealTime(x, y)
 	local time = self:getRealTime()
-	love.graphics.print(time, x, y, 0, scX()) 
+	love.graphics.print(time, x, y)
 end
 
 function Timer:drawGameTime(x, y)
 	local time = self:getGameTime()
-	love.graphics.print(time, x, y, 0, scX())
+	love.graphics.print(time, x, y)
 end

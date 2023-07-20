@@ -192,8 +192,8 @@ function love.draw()
 		textSettings()
 
    		if drawDetails == true then 
-   			love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 560, 10, 0, scX()) 
-   			--love.graphics.print(love.report or "Please wait...", 10, 10, 0, scX())
+   			love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 560, 10)
+   			--love.graphics.print(love.report or "Please wait...", 10, 10)
    		end
 
 		clearTextSettings()

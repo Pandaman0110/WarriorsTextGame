@@ -41,5 +41,5 @@ function warning:draw()
 
 	love.graphics.setFont(EBG_I_Large)
 
-	love.graphics.printf(self.text, 0, 360/2, windowWidth, "center", 0, scX())
+	love.graphics.printf(self.text, 0, 360/2, windowWidth, "center")
 end

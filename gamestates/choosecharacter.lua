@@ -136,10 +136,8 @@ function choosecharacter:drawCurrentCat()
 	if self.currentCat:getApprentice() then love.graphics.print("Apprentice... " .. self.currentCat:getMentor():getName(), textX, 264 + k * 16, 0) k = k + 1 end
 	if self.currentCat:hasKits() then 
 		local str = ""
-		for i, kit in ipairs (self.currentCat:getKits()) do 
-			local kits = self.currentCat:getMom():getKits()
-			if i == #kits then str = str .. kit:getName()
-			else str = str .. kit:getName() .. ", " end
+		for i, kit in self.currentCat:getKits():iterator() do 
+			str = str .. kit:getName() .. ", "
 		end
 		love.graphics.print("Kits... ".. str, textX, 264 + k * 16, 0)
 		k = k + 1

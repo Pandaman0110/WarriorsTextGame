@@ -114,9 +114,9 @@ function leveleditor_mapmenu:draw()
 
 	love.graphics.setFont(FONT_8)
 
-	love.graphics.print("Name: ", 640/2 - 48, 164, 0, scX())
-	love.graphics.print("Width: ", 640/2 - 48, 200, 0, scX())
-	love.graphics.print("Height: ", 640/2 - 48, 232, 0, scX())
+	love.graphics.print("Name: ", 640/2 - 48, 164)
+	love.graphics.print("Width: ", 640/2 - 48, 200)
+	love.graphics.print("Height: ", 640/2 - 48, 232)
 
 
 	for i, text_box in self.text_boxes:iterator() do

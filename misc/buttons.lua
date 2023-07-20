@@ -107,9 +107,9 @@ function TextBox:draw()
 	textSettings()
 
 	if self.align then 
-		love.graphics.printf(self.text, self.x, self.y, windowWidth, self.align, 0, scX())
+		love.graphics.printf(self.text, self.x, self.y, windowWidth, self.align)
 	else 
-		love.graphics.print(self.text, self.x, self.y, 0, scX()) 
+		love.graphics.print(self.text, self.x, self.y)
 	end
 
 	clearTextSettings()
@@ -172,8 +172,8 @@ end
 
 function Text:draw()
 	if self.align then 
-		love.graphics.printf(self.text, self.x, self.y, windowWidth, self.align, 0, scX())
+		love.graphics.printf(self.text, self.x, self.y, windowWidth, self.align)
 	else 
-		love.graphics.print(self.text, self.x, self.y, 0, scX()) 
+		love.graphics.print(self.text, self.x, self.y)
 	end
 end

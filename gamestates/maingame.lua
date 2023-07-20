@@ -111,7 +111,7 @@ function maingame:draw()
 	self.game_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 
 	textSettings()
-	love.graphics.setFont(EBG_R_20)
+	love.graphics.setFont(FONT_16)
 	self.game_clock:draw(16, 16)
 	clearTextSettings(00)
 	self:drawButtons()
