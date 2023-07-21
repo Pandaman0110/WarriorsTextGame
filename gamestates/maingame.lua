@@ -23,12 +23,12 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	---------------
 
 	for i, cat in self.cat_handler:iterator() do
-		cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler))
+		--cat:setController(AnimalController:new(cat, self.cat_handler, self.map_handler))
 	end
 
 
 
-	self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler))
+	--self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler))
 
 
 	self.randomcat:move({6,8})
@@ -55,10 +55,8 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	self.cat_buttons = Array:new()
 
 	--catbuttons
-	
-	self.world = hardon_collider(96)
 
-	print(self.world)
+	
 	
 end
 

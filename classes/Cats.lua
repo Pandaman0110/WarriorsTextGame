@@ -37,14 +37,6 @@ function Animal:isSheathed()
 	if self.claws == 1 then return true elseif self.claws == 2 then return false end
 end
 
-function Animal:getSpeed() 
-	return self.speed
-end
-
-function Animal:getVisionDistance()
-	return self.vision_distance
-end
-
 function Animal:getClaws()
 	return self.claws 
 end

@@ -104,21 +104,21 @@ end
 
 function choosecharacter:drawCurrentCat()
 	local textX = 156
-	self.currentCat:drawImage(48, 176, 2)
+	self.currentCat:drawImage(48, 168, 2)
 
 	textSettings()
 
 	love.graphics.setFont(FONT_32)
 
-	love.graphics.print(self.currentCat:getName(), textX, 152, 0)
+	love.graphics.print(self.currentCat:getName(), textX, 144, 0)
 
 	love.graphics.setFont(FONT_16)
 
-	love.graphics.print(self.currentCat:getRole(), textX, 184, 0)
-	love.graphics.print(self.currentCat:getMoons().." moons old", textX, 200, 0)
-	love.graphics.print(self.currentCat:getGender(), textX, 216, 0)
-	love.graphics.print("Mom... "..self.currentCat:getMom():getName(), textX, 232, 0)
-	love.graphics.print("Dad... "..self.currentCat:getDad():getName(), textX, 248, 0)
+	love.graphics.print(self.currentCat:getRole(), textX, 176, 0)
+	love.graphics.print(self.currentCat:getMoons().." moons old", textX, 192, 0)
+	love.graphics.print(self.currentCat:getGender(), textX, 208, 0)
+	love.graphics.print("Mom... "..self.currentCat:getMom():getName(), textX, 224, 0)
+	love.graphics.print("Dad... "..self.currentCat:getDad():getName(), textX, 240, 0)
 
 	if self.currentCat:getRole() == "Kit" then
 		local str = ""
@@ -127,7 +127,7 @@ function choosecharacter:drawCurrentCat()
 			if i == #kits then str = str .. kit:getName()
 			else str = str .. kit:getName() .. ", " end
 		end
-		love.graphics.print("Littermates... ".. str, textX, 264, 0)
+		love.graphics.print("Littermates... ".. str, textX, 256, 0)
 	end
 
 	local k = 0
