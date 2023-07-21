@@ -1,16 +1,9 @@
---This file contains the base class for all cats, "Cat"
-
 local pairs, ipairs = pairs, ipairs
 
 local sqrt2 = math.sqrt(2)
 
-
-
-
-
 Animal = class("Animal")
 
-local move_timer_val = .5
 
 function Animal:initialize()
 	self.image = image
@@ -21,26 +14,6 @@ function Animal:initialize()
 	self.behavior_tree = behavior_tree
 
 	--self.behavior = BehaviorTree:new(CatBehaviorTree, self)
-
-	self.game_x = 2
-	self.game_y = 2
-	self.game_dest_x = self.game_x
-	self.game_dest_y = self.game_y
-	self.real_x = self.game_x * 32 - 32
-	self.real_y = self.game_x * 32 - 32
-	self.prev_x = self.game_x * 32 - 32
-	self.prev_y = self.real_y * 32 - 32
-	self.dest_x = self.game_x * 32 - 32
-	self.dest_y = self.real_y * 32 - 32
-
-	self.speed = 1.0
-	self.vision_distance = 4
-
-	self.move_timer = move_timer_val
-	self.t = 0
-	self.is_moving = false
-
-	self.move_state = Stack:new()
 
 	self.name = name
 	self.gender = gender
@@ -54,56 +27,6 @@ end
 
 function Animal:getController()
 	return self.controller
-end
-
-function Animal:getBehavior()
-	return self.behavior_tree
-end
-
-function Animal:getRealPos()
-	return {self.real_x, self.real_y}
-end
-
-function Animal:getGamePos()
-	return {self.game_x, self.game_y}
-end
-
-function Animal:getGameDestPos()
-	return {self.game_dest_x, self.game_dest_y}
-end
-
-function Animal:getDestPos()
-	return {self.dest_x, self.dest_y}
-end
-
-function Animal:getPrevPos()
-	return {self.prev_x, self.prev_y}
-end
-
-function Animal:isAt(coords)
-	return (self.game_x == coords[1] and self.game_y == coords[2])
-end
-
-function Animal:toReal(coords)
-	local t = {}
-	for i, coord in ipairs(coords) do
-		t[i] = coord * 32 - 32
-	end
-	if #t == 1 then return t[1] end
-	return t
-end
-
-function Animal:toGame(coords)
-	local t = {}
-	for i, coord in ipairs(coords) do
-		t[i] = (coord + 32) / 32
-	end
-	if #t == 1 then return t[1] end
-	return t
-end
-
-function Animal:isMoving()
-	return self.is_moving
 end
 
 function Animal:getImage()
@@ -150,21 +73,9 @@ function Animal:setController(controller)
 	self.controller = controller
 end
 
-function Animal:setGamePos(pos)
-	local x, y = pos[1], pos[2]
-	self.game_x = x 
-	self.game_y = y
-	self.real_x = x * 32 - 32
-	self.real_y = y * 32 - 32
-end
-
 function Animal:setImage(num)
 	self.image_num = num
 	self.image = CatImages[self.image_num]
-end
-
-function Animal:setSpeed(speed) 
-	self.speed = speed 
 end
 
 function Animal:switchClaws()
@@ -186,11 +97,8 @@ function Animal:drawImage(x, y, s)
 	if s then love.graphics.draw(self.image, x, y, 0, s, s) end
 end
 
-
-
 function Animal:update(dt, cathandler)  --just make sure to update the cats
 	if self.behavior then self.behavior_tree:tick(dt) end
-	self:updatePosition(dt)
 	self.controller:update(dt, cathandler)
 
 	if self.attacking == true then
@@ -204,55 +112,6 @@ function Animal:update(dt, cathandler)  --just make sure to update the cats
 
 	--update controllers last
 end
-
-function Animal:updatePosition(dt)
-	local distance_to_next_tile 
-
-	if self.dest_x ~= self.prev_x and self.dest_y ~= self.prev_y then distance_to_next_tile = sqrt2 
-	else distance_to_next_tile = 1 end
-
-	local rate_of_change = 32 / (8 * distance_to_next_tile)
-
-	if self.is_moving == true then 
-		self.move_timer = self.move_timer - dt
-
-		self.t = self.t + (rate_of_change * dt)
-		if self.t > 1 then self.t = 1 end
-
-		self.real_x = self.prev_x + (self.dest_x - self.prev_x) * self.t
-		self.real_y = self.prev_y + (self.dest_y - self.prev_y) * self.t
-
-		if self.real_x == self.dest_x and self.real_y == self.dest_y then 
-			if self.game_x ~= (self.dest_x - 32) / 32 and self.game_y ~= (self.dest_y - 32) / 32 then 
-				self:setGamePos(self:toGame({self.real_x, self.real_y}))
-			end
-		end
-
-		if self.move_timer * self.speed * distance_to_next_tile < 0 then
-			self.is_moving = false
-			self.move_timer = move_timer_val
-			self.t = 0
-		end
-	end
-end
-
-function Animal:setDestination(x, y)
-	self.is_moving = true
-	self.prev_x = self.real_x
-	self.prev_y = self.real_y
-	self.dest_x = (self.real_x + (x * 32))
-	self.dest_y = (self.real_y + (y * 32))
-	self.game_dest_x = self.game_dest_x + x
-	self.game_dest_y = self.game_dest_y + y
-end
-
---moves the animal to coords 
-
-function Animal:move(coords)
-	self.controller:queueMove(coords)
-end
-
-
 
 Cat = class("Cat", Animal)
 

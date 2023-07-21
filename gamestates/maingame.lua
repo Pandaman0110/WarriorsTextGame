@@ -56,6 +56,10 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 
 	--catbuttons
 	
+	self.world = hardon_collider(96)
+
+	print(self.world)
+	
 end
 
 function maingame:update(dt)
