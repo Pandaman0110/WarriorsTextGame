@@ -22,7 +22,8 @@ function love.load()
 	grid = require "libraries/jumper.grid"
 	pathfinder = require "libraries/jumper.pathfinder"
 	bresenham = require "libraries/bresenham"
-	hardon_collider = require "libraries/HardonCollider"
+	hardoncollider = require "libraries/HardonCollider"
+	shapes = require "libraries/HardonCollider.shapes"
 	
 
 	love.profiler = require "libraries/profile"

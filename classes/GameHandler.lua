@@ -6,7 +6,7 @@ function GameHandler:initialize(clock, collision_map)
 	self.locations = Map:new()
 	self.locations:insert("thunder_clan_base", Location:new(5, 6, 10, 10))
 	self.locations:insert("river_clan_base", Location:new(30, 15, 10, 10))
-	self.world = hardon_collider(128)
+	self.world = hardoncollider(128)
 end
 
 function GameHandler:update(dt)

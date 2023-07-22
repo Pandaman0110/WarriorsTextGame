@@ -47,10 +47,10 @@ function MapHandler:initialize(camera, map, tile_set)
 	end
 
 	
-	local camera_coords = self.camera:getRealPos()
+	local camera_x, camera_y = self.camera:getPos()
 
-	self.mapX = (camera_coords[1])
-	self.mapY = (camera_coords[2])
+	self.mapX = (camera_x)
+	self.mapY = (camera_y)
 end
 
 function MapHandler:draw()
@@ -75,10 +75,10 @@ function MapHandler:draw()
 end
 
 function MapHandler:update(dt)
-	local camera_coords = self.camera:getRealPos()
+	local camera_x, camera_y = self.camera:getPos()
 
-	self.mapX = (camera_coords[1] - 10 * tile_size)
-	self.mapY = (camera_coords[2] - 6 * tile_size)
+	self.mapX = (camera_x - 10 * tile_size)
+	self.mapY = (camera_y - 6 * tile_size)
 end
 
 function MapHandler:getRenderMap()

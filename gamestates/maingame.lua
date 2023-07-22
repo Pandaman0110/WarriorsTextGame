@@ -10,12 +10,12 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	self.clans = clans
 	self.cat_generator = cat_generator
 
-
+	self.controller = Controller:new()
 	-----------------------
 
 	self:setupHandlers(self.game_clock)
 
-	self.cat_handler:getPlayer():setGamePos({10, 5})
+	--self.cat_handler:getPlayer():setGamePos({10, 5})
 
 	self.randomcat = self.cat_handler:getRandomNonPlayer()
 
@@ -31,17 +31,17 @@ function maingame:enter(previous, clans, player_cat, cat_generator)
 	--self.cat_handler:getPlayer():setController(Player:new(self.cat_handler:getPlayer(), self.cat_handler, self.map_handler))
 
 
-	self.randomcat:move({6,8})
+	--self.randomcat:move({6,8})
 	--self.game_handler:sendCat(self.randomcat, "river_clan_base")
 
 	self.cat_handler:getPlayer():setBehavior(BehaviorTree:new(CatBehaviorTree, self.cat_handler:getPlayer(), self.cat_handler, self.game_handler, self.clock))
 
 	--self.randomcat:setBehavior(BehaviorTree:new(CatBehaviorTree, self.randomcat, self.cat_handler, self.game_handler, self.clock))
 
-	local root = self.cat_handler:getPlayer():getBehavior():getRoot()
+	--local root = self.cat_handler:getPlayer():getBehavior():getRoot()
 
 
-	self.cat_handler:getPlayer():getBehavior():tick(.001)
+	--self.cat_handler:getPlayer():getBehavior():tick(.001)
 
 
 	self.buttons = Array:new()
@@ -64,6 +64,7 @@ function maingame:update(dt)
 	--love.profiler.start()
 	self.game_clock:update(dt)
 	self.cat_handler:update(dt)
+	self.controller:update(dt)
 	--self.cat_handler:getPlayer():getBehavior():tick(dt)
 	self.decal_handler:update(dt)
 	self.map_handler:update(dt)
@@ -72,7 +73,7 @@ function maingame:update(dt)
 end
 
 function maingame:keypressed(key)
-	self.cat_handler:getPlayer():getController():keypressed(key)
+	--self.cat_handler:getPlayer():getController():keypressed(key)
 	self.mouth_button:setImage(Claws[self.cat_handler:getPlayer():getClaws()])
 
 	self.game_clock:keypressed(key)
@@ -103,14 +104,13 @@ end
 function maingame:draw()
 	local offset_x, offset_y, firstTile_x, firstTile_y = self.map_handler:draw()
 
-
-
 	self.cat_handler:getPlayer():drawImage(640 / 2 - 18, 360 / 2 - 16)
-
+	self.controller:draw()
 
 	self.cat_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	self.decal_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
 	self.game_handler:draw(offset_x, offset_y, firstTile_x, firstTile_y)
+
 
 	textSettings()
 	love.graphics.setFont(FONT_16)
@@ -151,7 +151,7 @@ function maingame:setupHandlers(clock)
 	for i, clan in self.clans:iterator() do
 		self.cat_handler:loadCatsFromClan(clan)
 	end
-	self.map_handler = MapHandler:new(self.cat_handler:getPlayer(), "default")
+	self.map_handler = MapHandler:new(self.controller, "default")
 	self.decal_handler = DecalHandler:new()
 	self.game_handler = GameHandler:new(clock)
 end
