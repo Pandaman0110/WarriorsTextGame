@@ -22,7 +22,6 @@ function love.load()
 	grid = require "libraries/jumper.grid"
 	pathfinder = require "libraries/jumper.pathfinder"
 	bresenham = require "libraries/bresenham"
-	hardon_collider = require "libraries/HardonCollider"
 	
 
 	love.profiler = require "libraries/profile"
@@ -54,7 +53,6 @@ function love.load()
 	require "classes/Medical"
 	require "classes/Relationship"
 	require "classes/Timer"
-	require "classes/World"
 
 	--gamestates
 	require "gamestates/choosecharacter"
@@ -81,8 +79,10 @@ function love.load()
 	osString = love.system.getOS()
 	local gameWidth, gameHeight = 640, 360 --fixed game resolution
 	windowWidth, windowHeight = love.window.getDesktopDimensions()
-
+	--windowWidth, windowHeight = 1280, 720
 	push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true, resizable = true, canvas = false, pixelperfect = true, highdpi = true, stretched = false})
+
+	print(push:getWidth(), push:getHeight())
 
 	xScale = math.floor(windowWidth / 640)
 	yScale = math.floor(windowHeight / 360)
@@ -137,7 +137,6 @@ function love.load()
 
 	love.frames = 0
 	love.frame_timer = 10
-
 
 end
 
