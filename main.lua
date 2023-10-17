@@ -138,6 +138,8 @@ function love.load()
 	love.frames = 0
 	love.frame_timer = 10
 
+	print(1/8 + 1/12 + 1/32)
+
 end
 
 function love.resize(w, h)

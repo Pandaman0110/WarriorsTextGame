@@ -148,22 +148,22 @@ end
 --generates a random age based on the role of the cat
 function CatGenerator:randMoons(role)
 	local moons
-	if role == "Leader" then
-		moons = random(36, 96)
-	elseif role == "Deputy" then
-		moons = random(36, 96)
-	elseif role == "Medicine Cat" then
-		moons = random(24, 96)
-	elseif role == "Warrior" then
-		moons = random(12, 96)
-	elseif role == "Apprentice" then
-		moons = random(6, 12)
-	elseif role == "Kit" then
-		moons = random(0, 5)
-	elseif role == "Elder" then
-		moons = random(88, 120)
-	else moons = random(36, 120)
-	end
+		if role == "Leader" then
+			moons = random(36, 96)
+		elseif role == "Deputy" then
+			moons = random(36, 96)
+		elseif role == "Medicine Cat" then
+			moons = random(24, 96)
+		elseif role == "Warrior" then
+			moons = random(12, 96)
+		elseif role == "Apprentice" then
+			moons = random(6, 12)
+		elseif role == "Kit" then
+			moons = random(0, 5)
+		elseif role == "Elder" then
+			moons = random(88, 120)
+		else moons = random(36, 120)
+		end
 	return moons
 end
 
